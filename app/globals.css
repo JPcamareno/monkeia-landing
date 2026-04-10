@@ -1,0 +1,399 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-blue: #378ADD;
+  --color-blue-dim: #2a6db5;
+  --color-surface: #0d0d0d;
+  --color-surface-2: #141414;
+  --color-border: #1f1f1f;
+  --font-sans: var(--font-dm-sans);
+}
+
+/* Houdini custom property for rotating border */
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+:root { color-scheme: dark; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ── Keyframes ─────────────────────────────────────── */
+
+@keyframes badgeFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-5px); }
+}
+
+@keyframes crmFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* Word blur-in for hero */
+@keyframes wordIn {
+  from { opacity: 0; filter: blur(12px); transform: translateY(10px); }
+  to   { opacity: 1; filter: blur(0px);  transform: translateY(0px); }
+}
+
+/* CTA breathing glow */
+@keyframes ctaGlow {
+  0%, 100% { box-shadow: 0 0 0px rgba(55,138,221,0); }
+  50%       { box-shadow: 0 0 28px rgba(55,138,221,0.55), 0 0 60px rgba(55,138,221,0.2); }
+}
+
+/* CRM progress shimmer */
+@keyframes dataFlow {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Rotating border on proof cards */
+@keyframes rotateBorder {
+  0%   { --border-angle: 0deg; }
+  100% { --border-angle: 360deg; }
+}
+
+/* Timeline traveling dot */
+@keyframes travelDot {
+  0%   { top: 0%;   opacity: 0; }
+  4%   { opacity: 1; }
+  88%  { top: calc(100% - 12px); opacity: 1; }
+  94%  { opacity: 0; top: calc(100% - 12px); }
+  100% { top: 0%;   opacity: 0; }
+}
+
+/* Timeline node pulse */
+@keyframes nodePulse {
+  0%   { box-shadow: 0 0 0 0   rgba(55,138,221,0.5); transform: scale(1); }
+  6%   { box-shadow: 0 0 0 8px rgba(55,138,221,0.15); transform: scale(1.25); }
+  12%  { box-shadow: 0 0 0 14px rgba(55,138,221,0); transform: scale(1); }
+  100% { box-shadow: 0 0 0 0   rgba(55,138,221,0); transform: scale(1); }
+}
+
+/* Giant "5" glitch — fires every ~6s */
+@keyframes glitch5 {
+  0%, 90%, 100% { transform: none;           color: rgba(55,138,221,0.15); text-shadow: none; }
+  91%  { transform: translateX(4px);  color: rgba(255,255,255,0.35); text-shadow:  3px 0 rgba(55,138,221,0.5); }
+  92%  { transform: translateX(-4px); color: rgba(55,138,221,0.22); text-shadow: -3px 0 rgba(255,255,255,0.2); }
+  93%  { transform: translateX(3px);  color: rgba(255,255,255,0.28); text-shadow:  2px 0 rgba(55,138,221,0.4); }
+  94%  { transform: translateX(-2px); color: rgba(55,138,221,0.18); text-shadow: none; }
+  95%  { transform: none; }
+}
+
+/* Blue underline slide-in for metrics */
+@keyframes underlineIn {
+  from { transform: scaleX(0); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
+/* Problem card spring fly-in */
+@keyframes springFlyIn {
+  0%   { opacity: 0; transform: translateY(40px) scale(0.96); }
+  60%  { opacity: 1; transform: translateY(-6px) scale(1.01); }
+  80%  { transform: translateY(3px) scale(0.995); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Metric shimmer */
+@keyframes shimmer {
+  0%   { background-position: 100% center; }
+  100% { background-position: -100% center; }
+}
+
+/* Scanline scroll on "5" */
+@keyframes scanlineScroll {
+  from { transform: translateY(0); }
+  to   { transform: translateY(4px); }
+}
+
+/* Notification slide in/out */
+@keyframes notifIn {
+  from { opacity: 0; transform: translateX(24px) scale(0.95); }
+  to   { opacity: 1; transform: translateX(0)    scale(1); }
+}
+@keyframes notifOut {
+  from { opacity: 1; transform: translateX(0)    scale(1); }
+  to   { opacity: 0; transform: translateX(24px) scale(0.95); }
+}
+
+/* ── Utility classes ──────────────────────────────── */
+
+.badge-float { animation: badgeFloat 3s ease-in-out infinite; }
+.crm-float   { animation: crmFloat  4s ease-in-out infinite; }
+
+/* Hero word animation */
+.word-animate {
+  display: inline-block;
+  opacity: 0;
+  animation: wordIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Terminal section label */
+.terminal-label {
+  font-family: 'Courier New', 'Lucida Console', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #378ADD;
+  text-shadow: 0 0 16px rgba(55,138,221,0.45);
+}
+
+/* CTA button breathing */
+.cta-breathe {
+  animation: ctaGlow 2.2s ease-in-out infinite;
+}
+
+/* Progress bar shimmer */
+.progress-flow {
+  position: relative;
+  overflow: hidden;
+}
+.progress-flow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.35) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: dataFlow 1.8s linear infinite;
+}
+
+/* Problem cards */
+.card-problem {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #1f1f1f;
+  border-left: 2px solid #378ADD;
+  cursor: default;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0;
+}
+.card-problem.spring-visible {
+  animation: springFlyIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.card-problem:hover {
+  box-shadow: 0 0 24px rgba(55,138,221,0.35), 0 12px 32px rgba(0,0,0,0.5);
+}
+
+/* Animated top border on problem card hover */
+.card-top-border {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: #378ADD;
+  box-shadow: 0 0 8px rgba(55,138,221,0.7);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+  z-index: 1;
+}
+.card-problem:hover .card-top-border { transform: scaleX(1); }
+
+/* Proof cards — rotating border */
+.proof-card {
+  position: relative;
+  border-radius: 1rem;
+}
+.proof-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent 0%,
+    transparent 68%,
+    #378ADD 78%,
+    rgba(170,215,255,0.9) 84%,
+    #378ADD 90%,
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rotateBorder 3s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Metric count-up value */
+.metric-value {
+  background: linear-gradient(
+    90deg,
+    #378ADD 0%, #378ADD 30%, #aadfff 50%, #378ADD 70%, #378ADD 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 2.8s linear infinite;
+}
+
+/* Metric underline */
+.metric-underline {
+  height: 2px;
+  width: 100%;
+  background: #378ADD;
+  border-radius: 1px;
+  box-shadow: 0 0 8px rgba(55,138,221,0.6);
+  transform-origin: left center;
+  transform: scaleX(0);
+  opacity: 0;
+  transition: none;
+}
+.metric-underline.underline-visible {
+  animation: underlineIn 0.6s cubic-bezier(0.4,0,0.2,1) 0.3s forwards;
+}
+
+/* Timeline */
+.timeline-line {
+  position: absolute;
+  left: 5px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(55,138,221,0.08) 0%,
+    #378ADD 12%,
+    #378ADD 88%,
+    rgba(55,138,221,0.08) 100%
+  );
+  pointer-events: none;
+}
+
+.timeline-travel-dot {
+  position: absolute;
+  left: -4px;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #378ADD;
+  box-shadow: 0 0 14px rgba(55,138,221,0.95), 0 0 4px rgba(255,255,255,0.7);
+  animation: travelDot 4.5s linear infinite;
+}
+
+.timeline-node {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #378ADD;
+  border: 2px solid rgba(55,138,221,0.25);
+  box-shadow: 0 0 8px rgba(55,138,221,0.55);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  animation: nodePulse 4.5s ease-in-out infinite;
+}
+
+/* Glitch on "5" */
+.glitch-5 {
+  display: inline-block;
+  animation: glitch5 6s steps(1) infinite;
+}
+
+/* Scanline on "5" */
+.scanline-5 {
+  position: relative;
+  display: inline-block;
+}
+.scanline-5::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(55,138,221,0.04) 2px,
+    rgba(55,138,221,0.04) 4px
+  );
+  animation: scanlineScroll 0.4s linear infinite;
+  pointer-events: none;
+}
+
+/* CRM notification pop */
+.crm-notif-enter { animation: notifIn  0.35s cubic-bezier(0.22,1,0.36,1) forwards; }
+.crm-notif-exit  { animation: notifOut 0.3s  ease-in forwards; }
+
+/* Clients carousel infinite scroll */
+@keyframes scrollLeft {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Activity feed item fade-in */
+@keyframes feedItemIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.feed-item-enter { animation: feedItemIn 0.4s ease forwards; }
+
+/* ── Solution diagram ─────────────────────────────── */
+.solution-card {
+  background: rgba(8,12,28,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(55,138,221,0.15);
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 20px 60px rgba(55,138,221,0.12), 0 0 0 1px rgba(55,138,221,0.08);
+  overflow: hidden;
+  position: relative;
+}
+
+@keyframes solutionFloat {
+  0%, 100% { transform: translateY(-6px); }
+  50%       { transform: translateY(6px); }
+}
+
+.solution-float-1 {
+  animation: solutionFloat 4s ease-in-out infinite;
+  animation-delay: 0s;
+}
+.solution-float-2 {
+  animation: solutionFloat 4s ease-in-out infinite;
+  animation-delay: 1s;
+}
+.solution-float-3 {
+  animation: solutionFloat 4s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+/* ── Reduced motion ──────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+  .word-animate { opacity: 1; filter: none; }
+  .card-problem { opacity: 1; }
+}

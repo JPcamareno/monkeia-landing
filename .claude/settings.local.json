@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"futuristic dark SaaS automation AI CRM landing page premium motion\" --design-system -p \"Monkeia\")",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"futuristic dark SaaS automation AI CRM landing page premium motion\" --design-system -p \"Monkeia\")",
+      "Bash(npx next:*)",
+      "Bash(npx tsc:*)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"futuristic SaaS landing page dark tech automation AI\" --design-system -p \"Monkeia\")",
+      "Bash(py .claude/skills/ui-ux-pro-max/scripts/search.py \"futuristic SaaS landing page dark tech automation AI\" --design-system -p \"Monkeia\")",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"SaaS automation CRM AI dark minimal landing page\" --design-system -p \"Monkeia\")",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"SaaS automation CRM AI dark minimal landing page\" --design-system -p \"Monkeia\")",
+      "Bash(npm run:*)"
+    ]
+  }
+}
