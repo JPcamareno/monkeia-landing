@@ -9,7 +9,12 @@
       "Bash(py .claude/skills/ui-ux-pro-max/scripts/search.py \"futuristic SaaS landing page dark tech automation AI\" --design-system -p \"Monkeia\")",
       "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"SaaS automation CRM AI dark minimal landing page\" --design-system -p \"Monkeia\")",
       "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"SaaS automation CRM AI dark minimal landing page\" --design-system -p \"Monkeia\")",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(powershell:*)",
+      "Bash(python3:*)",
+      "Bash(py --version)",
+      "Bash(py)",
+      "Bash(py -c ':*)"
     ]
   }
 }

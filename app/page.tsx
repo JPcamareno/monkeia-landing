@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, Fragment } from "react";
 
 const WA =
   "https://wa.me/50683225178?text=Hola%2C%20quiero%20solicitar%20el%20diagn%C3%B3stico%20gratuito%20de%20Monkeia";
@@ -57,7 +57,7 @@ function BookingModal({ onClose }: { onClose: () => void }) {
             justifyContent: "center",
           }}
         >
-          ✕
+          âœ•
         </button>
         <iframe
           src={TIDYCAL}
@@ -225,7 +225,7 @@ function NetworkBackground() {
     const RGB = "55,138,221";
     let W = 0, H = 0;
 
-    // Hub positions (0–1 relative) and labels
+    // Hub positions (0â€“1 relative) and labels
     const HUB_DEFS = [
       { rx: 0.12, ry: 0.22, label: "Meta" },
       { rx: 0.33, ry: 0.12, label: "Leads" },
@@ -298,7 +298,7 @@ function NetworkBackground() {
           }
         }
       }
-      // 2–4 packets per edge, staggered
+      // 2â€“4 packets per edge, staggered
       for (const edge of edges) {
         const count = 2 + Math.floor(Math.random() * 3);
         for (let k = 0; k < count; k++) {
@@ -1003,6 +1003,334 @@ function Hero() {
 }
 
 /* ─────────────────────────────────────────────
+   WORKFLOW ROADMAP
+───────────────────────────────────────────── */
+type WFStep = {
+  badge: string;
+  color: string;
+  title: string;
+  body: string;
+  tag: string;
+  side: "left" | "right" | "center";
+};
+
+// Layout constants (px) — shared between cards and SVG overlay
+const WF_CONTAINER_W = 760;
+const WF_CARD_W      = 280;
+const WF_CARD_H      = 190; // estimated card height for SVG endpoint calc
+const WF_ROW_GAP     = 240; // vertical distance between card tops
+const WF_TOP_START   = 0;
+
+const WF_X: Record<"left" | "right" | "center", number> = {
+  left:   0,
+  right:  WF_CONTAINER_W - WF_CARD_W,          // 480
+  center: (WF_CONTAINER_W - WF_CARD_W) / 2,   // 240
+};
+
+// Horizontal center of each card
+const WF_CX: Record<"left" | "right" | "center", number> = {
+  left:   WF_X.left   + WF_CARD_W / 2,   // 140
+  right:  WF_X.right  + WF_CARD_W / 2,   // 620
+  center: WF_X.center + WF_CARD_W / 2,   // 380
+};
+
+function wfCardTop(idx: number): number {
+  return WF_TOP_START + idx * WF_ROW_GAP;
+}
+
+// Cubic-bezier path: bottom-center of card[from] → top-center of card[to]
+function wfPath(steps: WFStep[], from: number, to: number): string {
+  const x0 = WF_CX[steps[from].side];
+  const y0 = wfCardTop(from) + WF_CARD_H;
+  const x1 = WF_CX[steps[to].side];
+  const y1 = wfCardTop(to);
+  const my = (y0 + y1) / 2;
+  return `M${x0},${y0} C${x0},${my} ${x1},${my} ${x1},${y1}`;
+}
+
+const WF_STEPS: WFStep[] = [
+  { badge: "PASO 01", color: "#378ADD", side: "left",   title: "Agendas el diagnóstico",  body: "30 minutos gratis. Nos cuentas tu situación actual.",                         tag: "● Zoom call"       },
+  { badge: "PASO 02", color: "#10b981", side: "right",  title: "Revisamos tu operación",   body: "IA analiza la llamada y detecta exactamente dónde pierdes ventas.",            tag: "● IA activa"       },
+  { badge: "PASO 03", color: "#f59e0b", side: "left",   title: "Recibes tu hoja de ruta",  body: "Documento con qué sistema necesitas y resultados esperados.",                  tag: "● Entregable PDF"  },
+  { badge: "PASO 04", color: "#8b5cf6", side: "right",  title: "Construimos tu sistema",   body: "Implementamos a medida. Tú ves el avance en tiempo real.",                    tag: "● 2 semanas"       },
+  { badge: "PASO 05", color: "#378ADD", side: "center", title: "Tu negocio en automático", body: "30 días o seguimos trabajando sin costo adicional.",                           tag: "● Garantía incluida" },
+];
+
+function WorkflowCard({ step, idx }: { step: WFStep; idx: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.style.transitionDelay = `${idx * 200}ms`;
+          el.classList.add("wf-card-visible");
+          io.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [idx]);
+
+  return (
+    <div
+      ref={ref}
+      className="wf-card"
+      style={{
+        position: "absolute",
+        left: WF_X[step.side],
+        top: wfCardTop(idx),
+        width: WF_CARD_W,
+        background: "rgba(15,20,40,0.9)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: 12,
+        padding: "20px 24px",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        boxShadow: `0 8px 32px ${step.color}26`,
+        transition: "border-color 0.25s ease, transform 0.25s ease",
+        zIndex: 2,
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = `${step.color}80`;
+        e.currentTarget.style.transform = "translateY(-4px)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+        e.currentTarget.style.transform = "";
+      }}
+    >
+      {/* Badge + dot */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+        <span style={{
+          fontSize: 9, fontWeight: 700, letterSpacing: "0.1em",
+          textTransform: "uppercase" as const,
+          color: step.color, background: `${step.color}18`,
+          border: `1px solid ${step.color}30`,
+          borderRadius: 999, padding: "2px 8px",
+        }}>
+          {step.badge}
+        </span>
+        <span style={{
+          width: 6, height: 6, borderRadius: "50%",
+          background: step.color, flexShrink: 0,
+          boxShadow: `0 0 6px ${step.color}`,
+        }} />
+      </div>
+      {/* Title */}
+      <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem", lineHeight: 1.35, margin: "0 0 8px" }}>
+        {step.title}
+      </h3>
+      {/* Body */}
+      <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.8rem", lineHeight: 1.6, margin: "0 0 14px" }}>
+        {step.body}
+      </p>
+      {/* Tag */}
+      <span style={{
+        fontSize: "0.72rem", fontWeight: 600, color: step.color,
+        background: `${step.color}12`, borderRadius: 6,
+        padding: "4px 10px", display: "inline-block",
+      }}>
+        {step.tag}
+      </span>
+    </div>
+  );
+}
+
+function WorkflowLines({ sectionRef }: { sectionRef: React.RefObject<HTMLDivElement> }) {
+  const pathRefs = useRef<(SVGPathElement | null)[]>([]);
+  const paths = WF_STEPS.slice(0, -1).map((_, i) => wfPath(WF_STEPS, i, i + 1));
+  const svgH = wfCardTop(WF_STEPS.length - 1) + WF_CARD_H + 40;
+
+  useEffect(() => {
+    // Measure actual path lengths, set up draw animation start state
+    pathRefs.current.forEach((path) => {
+      if (!path) return;
+      const len = path.getTotalLength();
+      path.style.strokeDasharray = String(len);
+      path.style.strokeDashoffset = String(len);
+    });
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        pathRefs.current.forEach((path, i) => {
+          if (!path) return;
+          setTimeout(() => {
+            if (!path) return;
+            // Animate the line drawing
+            path.style.transition = "stroke-dashoffset 1.5s ease-in-out";
+            path.style.strokeDashoffset = "0";
+            // After draw completes, switch to dashed style
+            setTimeout(() => {
+              if (!path) return;
+              path.style.transition = "";
+              path.style.strokeDasharray = "6 4";
+              path.style.strokeDashoffset = "0";
+            }, 1560);
+          }, i * 300);
+        });
+        io.disconnect();
+      },
+      { threshold: 0.1 }
+    );
+    if (sectionRef.current) io.observe(sectionRef.current);
+    return () => io.disconnect();
+  }, [sectionRef]);
+
+  return (
+    <svg
+      width={WF_CONTAINER_W}
+      height={svgH}
+      style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none", zIndex: 1, overflow: "visible" }}
+      aria-hidden="true"
+    >
+      <defs>
+        <filter id="wf-dot-glow" x="-150%" y="-150%" width="400%" height="400%">
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+      {paths.map((d, i) => {
+        const pid = `wf-p${i}`;
+        return (
+          <g key={i}>
+            {/* The path that draws itself in, then switches to dashed */}
+            <path
+              id={pid}
+              ref={(el) => { pathRefs.current[i] = el; }}
+              d={d}
+              fill="none"
+              stroke="rgba(55,138,221,0.3)"
+              strokeWidth={1.5}
+            />
+            {/* Glowing dot that travels along each path */}
+            <circle r={3} fill="white" filter="url(#wf-dot-glow)">
+              <animateMotion dur={`${2.4 + i * 0.35}s`} repeatCount="indefinite" begin={`${i * 0.55}s`}>
+                <mpath href={`#${pid}`} />
+              </animateMotion>
+            </circle>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+function Roadmap() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const containerH = wfCardTop(WF_STEPS.length - 1) + WF_CARD_H + 60;
+
+  return (
+    <section
+      ref={sectionRef}
+      style={{
+        background: "#000",
+        backgroundImage: "radial-gradient(circle, rgba(55,138,221,0.15) 1px, transparent 1px)",
+        backgroundSize: "24px 24px",
+        borderTop: "1px solid #1f1f1f",
+        position: "relative",
+        width: "100%",
+        overflow: "hidden",
+      }}
+    >
+      {/* Subtle radial ambient glow */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute", inset: 0, pointerEvents: "none",
+          background: "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(55,138,221,0.04) 0%, transparent 70%)",
+        }}
+      />
+
+      {/* Section header */}
+      <div style={{ position: "relative", zIndex: 5, textAlign: "center", padding: "80px 24px 0" }}>
+        <div className="mb-4">
+          <span className="terminal-label">&gt;&gt; ASÍ TRABAJAMOS CONTIGO</span>
+        </div>
+        <h2
+          className="mb-4 text-balance font-extrabold tracking-tight text-white"
+          style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)" }}
+        >
+          Simple. Claro. Sin sorpresas.
+        </h2>
+        <p
+          className="mb-0 text-white/40"
+          style={{ fontSize: "clamp(1rem, 2vw, 1.125rem)" }}
+        >
+          Esto es exactamente lo que pasa desde que nos contactas hasta que tu sistema está funcionando.
+        </p>
+      </div>
+
+      {/* Desktop: zigzag workflow map */}
+      <div
+        className="hidden md:block"
+        style={{
+          position: "relative",
+          maxWidth: WF_CONTAINER_W,
+          margin: "64px auto 80px",
+          height: containerH,
+        }}
+      >
+        <WorkflowLines sectionRef={sectionRef as React.RefObject<HTMLDivElement>} />
+        {WF_STEPS.map((step, i) => (
+          <WorkflowCard key={i} step={step} idx={i} />
+        ))}
+      </div>
+
+      {/* Mobile: stacked cards */}
+      <div
+        className="md:hidden flex flex-col gap-4"
+        style={{ maxWidth: 380, margin: "60px auto 80px", padding: "0 16px" }}
+      >
+        {WF_STEPS.map((step, i) => (
+          <div
+            key={i}
+            style={{
+              background: "rgba(15,20,40,0.9)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 12,
+              padding: "20px 24px",
+              boxShadow: `0 8px 32px ${step.color}26`,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+              <span style={{
+                fontSize: 9, fontWeight: 700, letterSpacing: "0.1em",
+                textTransform: "uppercase" as const,
+                color: step.color, background: `${step.color}18`,
+                border: `1px solid ${step.color}30`,
+                borderRadius: 999, padding: "2px 8px",
+              }}>
+                {step.badge}
+              </span>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: step.color, boxShadow: `0 0 6px ${step.color}` }} />
+            </div>
+            <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem", lineHeight: 1.35, margin: "0 0 8px" }}>
+              {step.title}
+            </h3>
+            <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.8rem", lineHeight: 1.6, margin: "0 0 14px" }}>
+              {step.body}
+            </p>
+            <span style={{
+              fontSize: "0.72rem", fontWeight: 600, color: step.color,
+              background: `${step.color}12`, borderRadius: 6,
+              padding: "4px 10px", display: "inline-block",
+            }}>
+              {step.tag}
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────
    PROBLEM
 ───────────────────────────────────────────── */
 function Problem() {
@@ -1080,457 +1408,6 @@ function ProblemCard({
     </div>
   );
 }
-
-/* ─────────────────────────────────────────────
-   SOLUTION (canvas animation)
-───────────────────────────────────────────── */
-function Solution() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animRef  = useRef<number>(0);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let gridOffset  = 0;
-    let ring1Angle  = 0;
-    let ring2Angle  = 0;
-    let ring3Angle  = 0;
-    let dashOffset  = 0;
-    let centerFlash = 0; // 0-1, decays each frame
-
-    // Active glowing intersection points: {gx, gy (grid indices), life (0→1)}
-    const intersections: Array<{ gx: number; gy: number; life: number }> = [];
-    let nextIntersection = Date.now() + 1500;
-
-    // Signal bursts
-    const signalBursts: Array<{ startTime: number }> = [];
-    let nextBurst = Date.now() + 4000;
-
-    const resize = () => {
-      canvas.width  = 480;
-      canvas.height = 480;
-    };
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas.parentElement ?? canvas);
-
-    const B = (a: number) => `rgba(55,138,221,${a})`;
-
-    const draw = () => {
-      const W = canvas.width;
-      const H = canvas.height;
-      if (W === 0 || H === 0) { animRef.current = requestAnimationFrame(draw); return; }
-
-      const now = Date.now();
-      ctx.clearRect(0, 0, W, H);
-
-      const cx = 240;
-      const cy = 240;
-
-      // ── Background radial gradient ──
-      const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * 0.6);
-      bg.addColorStop(0, B(0.12));
-      bg.addColorStop(1, "transparent");
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, W, H);
-
-      // ── Animated diagonal grid (barely visible: 0.025) ──
-      gridOffset = (gridOffset + 0.2) % 40;
-      ctx.strokeStyle = B(0.025);
-      ctx.lineWidth = 1;
-      for (let x = gridOffset - 40; x < W + 40; x += 40) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
-      }
-      for (let y = gridOffset - 40; y < H + 40; y += 40) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
-      }
-
-      // ── Pulsing intersection points ──
-      if (now > nextIntersection) {
-        const cols = Math.floor(W / 40);
-        const rows = Math.floor(H / 40);
-        intersections.push({
-          gx: Math.floor(Math.random() * cols),
-          gy: Math.floor(Math.random() * rows),
-          life: 0,
-        });
-        nextIntersection = now + 1500 + Math.random() * 1500;
-      }
-      for (let k = intersections.length - 1; k >= 0; k--) {
-        const pt = intersections[k];
-        pt.life += 0.012;
-        if (pt.life >= 1) { intersections.splice(k, 1); continue; }
-        const pulse = Math.sin(pt.life * Math.PI); // bell curve 0→1→0
-        const px = pt.gx * 40 + gridOffset;
-        const py = pt.gy * 40 + gridOffset;
-        const gr = ctx.createRadialGradient(px, py, 0, px, py, 14 * pulse);
-        gr.addColorStop(0, `rgba(55,138,221,${0.7 * pulse})`);
-        gr.addColorStop(1, "transparent");
-        ctx.fillStyle = gr;
-        ctx.beginPath();
-        ctx.arc(px, py, 14 * pulse, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // ── Card anchor points (canvas edges toward cards in grid) ──
-      const anchors = [
-        { x: 0,  y: cy }, // left edge  → card 1
-        { x: W,  y: cy }, // right edge → card 2
-        { x: cx, y: H  }, // bottom edge → card 3
-      ];
-
-      // ── Connecting lines + parallel depth line + data packets ──
-      dashOffset -= 0.8;
-      let flashThisFrame = 0;
-
-      anchors.forEach((a, i) => {
-        // Direction perpendicular to line (for parallel offset)
-        const dx = cx - a.x;
-        const dy = cy - a.y;
-        const len = Math.sqrt(dx * dx + dy * dy);
-        const nx = -dy / len; // perpendicular unit vector
-        const ny =  dx / len;
-        const OFF = 3; // px offset for parallel line
-
-        // Primary dashed line – brighter
-        ctx.strokeStyle = B(0.6);
-        ctx.lineWidth = 1;
-        ctx.setLineDash([6, 6]);
-        ctx.lineDashOffset = dashOffset + i * 10;
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(cx, cy);
-        ctx.stroke();
-
-        // Secondary faint parallel line
-        ctx.strokeStyle = B(0.18);
-        ctx.lineWidth = 1;
-        ctx.lineDashOffset = dashOffset + i * 10 + 3;
-        ctx.beginPath();
-        ctx.moveTo(a.x + nx * OFF, a.y + ny * OFF);
-        ctx.lineTo(cx + nx * OFF, cy + ny * OFF);
-        ctx.stroke();
-
-        ctx.setLineDash([]);
-
-        // 5 data packets per line with glow tails
-        for (let d = 0; d < 5; d++) {
-          const t = (now / 1400 + d / 5 + i * 0.18) % 1;
-          if (t > 0.98) flashThisFrame = Math.max(flashThisFrame, (t - 0.98) / 0.02);
-
-          const hx = a.x + (cx - a.x) * t;
-          const hy = a.y + (cy - a.y) * t;
-
-          // Glow tail (8 trailing dots, fading)
-          for (let tail = 1; tail <= 8; tail++) {
-            const tt = Math.max(0, t - tail * 0.016);
-            const tx = a.x + (cx - a.x) * tt;
-            const ty = a.y + (cy - a.y) * tt;
-            const alpha = (1 - tail / 9) * 0.55;
-            const r = Math.max(0.5, 4 - tail * 0.4);
-            ctx.beginPath();
-            ctx.arc(tx, ty, r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(55,138,221,${alpha})`;
-            ctx.fill();
-          }
-
-          // Main packet dot (5px)
-          ctx.beginPath();
-          ctx.arc(hx, hy, 5, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(255,255,255,0.98)";
-          ctx.fill();
-          // Blue halo around packet
-          const halo = ctx.createRadialGradient(hx, hy, 0, hx, hy, 14);
-          halo.addColorStop(0, B(0.65));
-          halo.addColorStop(1, "transparent");
-          ctx.fillStyle = halo;
-          ctx.beginPath();
-          ctx.arc(hx, hy, 14, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      });
-
-      // Update center flash
-      if (flashThisFrame > 0) centerFlash = Math.max(centerFlash, flashThisFrame);
-      else centerFlash = Math.max(0, centerFlash - 0.04);
-
-      // ── Signal burst trigger ──
-      if (now > nextBurst) {
-        signalBursts.push({ startTime: now });
-        nextBurst = now + 4000;
-      }
-
-      // ── Signal bursts (drawn behind orb, at canvas coords) ──
-      for (let k = signalBursts.length - 1; k >= 0; k--) {
-        const elapsed = now - signalBursts[k].startTime;
-        const burstDuration = 1200;
-        if (elapsed > burstDuration) { signalBursts.splice(k, 1); continue; }
-        const progress = elapsed / burstDuration;
-        const maxRadius = Math.min(W, H) * 0.48;
-        const radius = progress * maxRadius;
-        const alpha = (1 - progress) * 0.7;
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(120,180,255,${alpha})`;
-        ctx.lineWidth = 2.5 * (1 - progress);
-        ctx.stroke();
-        // Second ring slightly behind
-        const radius2 = Math.max(0, progress * maxRadius - 30);
-        const alpha2 = (1 - progress) * 0.35;
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius2, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(55,138,221,${alpha2})`;
-        ctx.lineWidth = 1.5 * (1 - progress);
-        ctx.stroke();
-      }
-
-      // ── Orb pulse scale (breathes 0.95→1.05 every 3 s) ──
-      const pulsePhase = (now % 3000) / 3000;
-      const orbScale   = 0.95 + 0.10 * (0.5 + 0.5 * Math.sin(pulsePhase * Math.PI * 2));
-
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.scale(orbScale, orbScale);
-
-      // ── 5-layer deep electric blue glow ──
-      // Layer 5: 625px – outer halo
-      const glow5 = ctx.createRadialGradient(0, 0, 0, 0, 0, 625);
-      glow5.addColorStop(0,   "rgba(55,138,221,0.04)");
-      glow5.addColorStop(1,   "transparent");
-      ctx.fillStyle = glow5;
-      ctx.beginPath(); ctx.arc(0, 0, 625, 0, Math.PI * 2); ctx.fill();
-
-      // Layer 4: 375px
-      const glow4 = ctx.createRadialGradient(0, 0, 0, 0, 0, 375);
-      glow4.addColorStop(0,   "rgba(55,138,221,0.12)");
-      glow4.addColorStop(1,   "transparent");
-      ctx.fillStyle = glow4;
-      ctx.beginPath(); ctx.arc(0, 0, 375, 0, Math.PI * 2); ctx.fill();
-
-      // Layer 3: 250px
-      const glow3 = ctx.createRadialGradient(0, 0, 0, 0, 0, 250);
-      glow3.addColorStop(0,   "rgba(55,138,221,0.4)");
-      glow3.addColorStop(1,   "transparent");
-      ctx.fillStyle = glow3;
-      ctx.beginPath(); ctx.arc(0, 0, 250, 0, Math.PI * 2); ctx.fill();
-
-      // Layer 2: 134px
-      const glow2 = ctx.createRadialGradient(0, 0, 0, 0, 0, 134);
-      glow2.addColorStop(0,   "rgba(55,138,221,0.8)");
-      glow2.addColorStop(1,   "transparent");
-      ctx.fillStyle = glow2;
-      ctx.beginPath(); ctx.arc(0, 0, 134, 0, Math.PI * 2); ctx.fill();
-
-      // Layer 1: 66px – white core fading to solid blue
-      const flashBoost = 0.0 + centerFlash * 0.3;
-      const glow1 = ctx.createRadialGradient(0, 0, 0, 0, 0, 66 + centerFlash * 25);
-      glow1.addColorStop(0,   `rgba(255,255,255,${0.95 + flashBoost})`);
-      glow1.addColorStop(0.35, "rgba(55,138,221,1)");
-      glow1.addColorStop(1,   "transparent");
-      ctx.fillStyle = glow1;
-      ctx.beginPath(); ctx.arc(0, 0, 66 + centerFlash * 25, 0, Math.PI * 2); ctx.fill();
-
-      // Ring 3 – outer dashed, clockwise (electric)
-      ring3Angle += 0.001;
-      ctx.save();
-      ctx.rotate(ring3Angle);
-      ctx.strokeStyle = "rgba(55,138,221,0.3)";
-      ctx.lineWidth = 0.5;
-      ctx.setLineDash([8, 4]);
-      ctx.beginPath();
-      ctx.arc(0, 0, 200, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.restore();
-
-      // Ring 2 – counter-clockwise (electric)
-      ring2Angle -= 0.002;
-      ctx.save();
-      ctx.rotate(ring2Angle);
-      ctx.strokeStyle = "rgba(55,138,221,0.6)";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.arc(0, 0, 150, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
-
-      // Ring 1 – clockwise, 6 bright white dots (electric)
-      ring1Angle += 0.003;
-      ctx.save();
-      ctx.rotate(ring1Angle);
-      ctx.strokeStyle = "rgba(120,180,255,0.9)";
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.arc(0, 0, 100, 0, Math.PI * 2);
-      ctx.stroke();
-      for (let i = 0; i < 6; i++) {
-        const a   = (i / 6) * Math.PI * 2;
-        const px  = Math.cos(a) * 100;
-        const py  = Math.sin(a) * 100;
-        // Dot glow halo
-        const dgrd = ctx.createRadialGradient(px, py, 0, px, py, 12);
-        dgrd.addColorStop(0, "rgba(120,180,255,0.7)");
-        dgrd.addColorStop(1, "transparent");
-        ctx.fillStyle = dgrd;
-        ctx.beginPath();
-        ctx.arc(px, py, 12, 0, Math.PI * 2);
-        ctx.fill();
-        // Bright white dot
-        ctx.beginPath();
-        ctx.arc(px, py, 3.5, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(255,255,255,1)";
-        ctx.fill();
-      }
-      ctx.restore();
-
-      // Center label
-      ctx.font = "bold 11px monospace";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillStyle = `rgba(255,255,255,${0.95 + centerFlash * 0.05})`;
-      ctx.fillText("SISTEMA", 0, -7);
-      ctx.fillText("MONKEIA", 0,  7);
-
-      ctx.restore(); // end orb scale group
-
-      animRef.current = requestAnimationFrame(draw);
-    };
-
-    animRef.current = requestAnimationFrame(draw);
-
-    return () => {
-      cancelAnimationFrame(animRef.current);
-      ro.disconnect();
-    };
-  }, []);
-
-  const mobileCards = [
-    { dot: "#378ADD", title: "Captura leads al instante", sub: "Responde en segundos" },
-    { dot: "#22c55e", title: "Hace seguimiento constante", sub: "Hasta que compran" },
-    { dot: "#a855f7", title: "Y tú ves todo", sub: "En tiempo real" },
-  ];
-
-  return (
-    <section
-      className="border-t border-[#1f1f1f] relative"
-      style={{
-        overflow: "hidden",
-        padding: "60px 0 40px",
-        background: "#000",
-      }}
-    >
-      {/* Section header */}
-      <div className="px-6 pb-0 relative z-10 mx-auto max-w-6xl">
-        <div className="mb-4 text-center">
-          <span className="terminal-label">&gt;&gt; Cómo funciona</span>
-        </div>
-        <h2
-          className="mb-4 text-balance text-center font-extrabold tracking-tight text-white"
-          style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)" }}
-        >
-          Esto lo cambia todo.
-        </h2>
-        <p
-          className="text-center text-white/40"
-          style={{ fontSize: "clamp(1rem, 2vw, 1.125rem)" }}
-        >
-          No es un chatbot. No es un CRM.<br />
-          Es un sistema. Diseñado a medida para tu negocio.
-        </p>
-      </div>
-
-      {/* Desktop: Flexbox layout — cards + orb always visible */}
-      <div className="hidden md:block" style={{ padding: "20px 0 0" }}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "32px",
-            width: "100%",
-            maxWidth: "1000px",
-            margin: "0 auto",
-            padding: "0 24px",
-          }}
-        >
-          {/* Card 1 – left */}
-          <div
-            className="solution-card solution-float-1"
-            style={{ flexShrink: 0, width: 200, minWidth: 200, maxWidth: 240 }}
-          >
-            {/* Inner radial glow */}
-            <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: 120, height: 60, background: "radial-gradient(ellipse, rgba(55,138,221,0.15), transparent)", filter: "blur(20px)", pointerEvents: "none" }} />
-            <p style={{ color: "#fff", fontWeight: 700, fontSize: 14, marginBottom: 6, position: "relative", wordWrap: "break-word", overflowWrap: "break-word" }}>
-              Captura leads al instante
-            </p>
-            <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, position: "relative", wordWrap: "break-word", overflowWrap: "break-word" }}>Responde en segundos</p>
-            {/* Bottom glow line */}
-            <div style={{ position: "absolute", bottom: 0, left: 0, height: 2, width: "100%", background: "linear-gradient(90deg, transparent, #378ADD, transparent)", boxShadow: "0 0 20px 4px rgba(55,138,221,0.6), 0 0 40px 8px rgba(55,138,221,0.3)" }} />
-          </div>
-
-          {/* Canvas/Orb – center */}
-          <div style={{ flexShrink: 0, width: 480, height: 480, position: "relative" }}>
-            <canvas
-              ref={canvasRef}
-              style={{ width: 480, height: 480, display: "block" }}
-            />
-          </div>
-
-          {/* Card 2 – right */}
-          <div
-            className="solution-card solution-float-2"
-            style={{ flexShrink: 0, width: 200, minWidth: 200, maxWidth: 240 }}
-          >
-            {/* Inner radial glow */}
-            <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: 120, height: 60, background: "radial-gradient(ellipse, rgba(55,138,221,0.15), transparent)", filter: "blur(20px)", pointerEvents: "none" }} />
-            <p style={{ color: "#fff", fontWeight: 700, fontSize: 14, marginBottom: 6, position: "relative", wordWrap: "break-word", overflowWrap: "break-word" }}>
-              Hace seguimiento constante
-            </p>
-            <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, position: "relative", wordWrap: "break-word", overflowWrap: "break-word" }}>Hasta que compran</p>
-            {/* Bottom glow line */}
-            <div style={{ position: "absolute", bottom: 0, left: 0, height: 2, width: "100%", background: "linear-gradient(90deg, transparent, #378ADD, transparent)", boxShadow: "0 0 20px 4px rgba(55,138,221,0.6), 0 0 40px 8px rgba(55,138,221,0.3)" }} />
-          </div>
-        </div>
-
-        {/* Card 3 – centered below */}
-        <div
-          className="solution-card solution-float-3"
-          style={{ width: 200, minWidth: 200, maxWidth: 240, margin: "16px auto 0", position: "relative", zIndex: 1 }}
-        >
-          {/* Inner radial glow */}
-          <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: 120, height: 60, background: "radial-gradient(ellipse, rgba(55,138,221,0.15), transparent)", filter: "blur(20px)", pointerEvents: "none" }} />
-          <p style={{ color: "#fff", fontWeight: 600, fontSize: 14, marginBottom: 6, textAlign: "center", position: "relative", wordWrap: "break-word", overflowWrap: "break-word" }}>
-            Y tú ves todo
-          </p>
-          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, textAlign: "center", position: "relative", wordWrap: "break-word", overflowWrap: "break-word" }}>En tiempo real</p>
-          {/* Bottom glow line */}
-          <div style={{ position: "absolute", bottom: 0, left: 0, height: 2, width: "100%", background: "linear-gradient(90deg, transparent, #378ADD, transparent)", boxShadow: "0 0 20px 4px rgba(55,138,221,0.6), 0 0 40px 8px rgba(55,138,221,0.3)" }} />
-        </div>
-      </div>
-
-      {/* Mobile: simple vertical list */}
-      <div className="md:hidden px-6 pt-10 pb-20 flex flex-col gap-4 max-w-sm mx-auto">
-        {mobileCards.map((card, i) => (
-          <div key={i} className="solution-card">
-            {/* Inner radial glow */}
-            <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: 120, height: 60, background: "radial-gradient(ellipse, rgba(55,138,221,0.15), transparent)", filter: "blur(20px)", pointerEvents: "none" }} />
-            <p style={{ color: "#fff", fontWeight: 600, fontSize: 15, marginBottom: 6, position: "relative" }}>
-              {card.title}
-            </p>
-            <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, position: "relative" }}>{card.sub}</p>
-            {/* Bottom glow line */}
-            <div style={{ position: "absolute", bottom: 0, left: 0, height: 2, width: "100%", background: "linear-gradient(90deg, transparent, #378ADD, transparent)", boxShadow: "0 0 20px 4px rgba(55,138,221,0.6), 0 0 40px 8px rgba(55,138,221,0.3)" }} />
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 /* ─────────────────────────────────────────────
    PROOF (rotating border cards)
 ───────────────────────────────────────────── */
@@ -1991,7 +1868,7 @@ export default function Home() {
         <Hero />
         {/* <ClientsCarousel /> */}
         <Problem />
-        <Solution />
+        <Roadmap />
         <Proof />
         <Services />
         <Exclusivity />

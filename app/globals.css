@@ -387,6 +387,121 @@ body {
   animation-delay: 2s;
 }
 
+/* ── Roadmap Section ─────────────────────────────── */
+.roadmap-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(55,138,221,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(55,138,221,0.045) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: roadmapGridScroll 25s linear infinite;
+  pointer-events: none;
+}
+@keyframes roadmapGridScroll {
+  0%   { background-position: 0 0; }
+  100% { background-position: 40px 40px; }
+}
+
+.roadmap-card {
+  position: relative;
+  background: rgba(8, 12, 28, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+  padding: 20px 18px;
+  border: 1px solid;
+  width: 100%;
+  opacity: 0;
+  transition: box-shadow 0.3s ease;
+}
+.roadmap-card.spring-visible {
+  animation: roadmapFlyIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes roadmapFlyIn {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.roadmap-badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 2px 8px;
+  margin-bottom: 14px;
+}
+
+.roadmap-step-num {
+  font-family: 'Courier New', 'Lucida Console', monospace;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0 0 10px 0;
+  display: block;
+}
+
+.roadmap-packet-h {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  top: calc(50% - 3px);
+  animation: packetH 1.8s linear infinite;
+}
+@keyframes packetH {
+  0%   { left: -6px;             opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { left: calc(100% + 6px); opacity: 0; }
+}
+
+.roadmap-packet-v {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  left: calc(50% - 3px);
+  animation: packetV 1.8s linear infinite;
+}
+@keyframes packetV {
+  0%   { top: -6px;             opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { top: calc(100% + 6px); opacity: 0; }
+}
+
+/* ── Orbital roadmap cards ───────────────────────── */
+.orb-card {
+  opacity: 0;
+}
+.orb-card.spring-visible {
+  animation:
+    orbCardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    orbFloat  4.5s ease-in-out 0.6s infinite;
+}
+@keyframes orbCardIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
+
+/* ── Workflow Roadmap cards ──────────────────────── */
+.wf-card {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.wf-card-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ── Reduced motion ──────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -396,4 +511,8 @@ body {
   html { scroll-behavior: auto; }
   .word-animate { opacity: 1; filter: none; }
   .card-problem { opacity: 1; }
+  .roadmap-card { opacity: 1; }
+  .roadmap-bg   { animation: none; }
+  .orb-card     { opacity: 1; }
+  .wf-card      { opacity: 1; transform: none; }
 }
