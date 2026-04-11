@@ -1409,39 +1409,314 @@ function ProblemCard({
   );
 }
 /* ─────────────────────────────────────────────
-   PROOF (rotating border cards)
+   PROOF (rotating border cards + testimonials)
 ───────────────────────────────────────────── */
-function Proof() {
-  const cases = [
-    {
-      name: "Gianpiero Fusco",
-      role: "Fundador, sector inmobiliario",
-      metrics: [
-        { value: "$40,000", label: "en ventas" },
-        { value: "3x",      label: "retorno" },
-        { value: "897K",    label: "impresiones" },
-      ],
-      quote:
-        "Antes perdía leads todos los días. Ahora el sistema los trabaja solo.",
-    },
-    {
-      name: "Jimm Lavin",
-      role: "Director comercial, servicios B2B",
-      metrics: [
-        { value: "+250%",  label: "leads calificados" },
-        { value: "3x",     label: "ROI" },
-        { value: "+500K",  label: "alcance" },
-      ],
-      quote:
-        "Dejé de depender de mi equipo para el seguimiento. El sistema lo hace todo.",
-    },
-  ];
+const TESTIMONIALS = [
+  {
+    name: "Gerardo",
+    initials: "GE",
+    color: "#378ADD",
+    business: "Toro 650 — E-commerce",
+    stars: 5,
+    quote:
+      "Facturamos más de $2,500 en un solo mes gracias a una estrategia en Instagram Stories. Monkeia transformó cómo vendemos online.",
+    date: "Verificado",
+  },
+  {
+    name: "Maribel Agüero",
+    initials: "MA",
+    color: "#10b981",
+    business: "Latina Pizza",
+    stars: 5,
+    quote:
+      "Incrementamos las ventas un 45% en los primeros 2 meses. No esperábamos resultados tan rápidos. Totalmente recomendado.",
+    date: "Verificado",
+  },
+  {
+    name: "Juan Cáceres",
+    initials: "JC",
+    color: "#f59e0b",
+    business: "Multinivel",
+    stars: 5,
+    quote:
+      "Llevamos más de 10,000 leads a un webinar gracias a la automatización que implementó Monkeia. Un sistema que trabaja solo.",
+    date: "Verificado",
+  },
+  {
+    name: "Eliana",
+    initials: "EL",
+    color: "#8b5cf6",
+    business: "Flowback — Soporte",
+    stars: 5,
+    quote:
+      "El soporte de Monkeia es excepcional. Siempre disponibles, siempre resolviendo. Nos dieron tranquilidad total en el proceso.",
+    date: "Verificado",
+  },
+  {
+    name: "Gianpiero Fusco",
+    initials: "GF",
+    color: "#378ADD",
+    business: "@sw_gianpiero",
+    stars: 5,
+    photoUrl: "https://cdn.ln-cdn.com/c/recQV0G1EGj5iilpD/images/03137106.jpg",
+    quote:
+      "Antes perdía leads todos los días. Ahora el sistema los trabaja solo y yo solo cierro los que ya están listos.",
+    date: "Verificado",
+  },
+  {
+    name: "Jimmy Labin",
+    initials: "JL",
+    color: "#378ADD",
+    business: "Dueño de Flowback",
+    stars: 5,
+    photoUrl: "https://cdn.ln-cdn.com/c/recQV0G1EGj5iilpD/images/56048203.png",
+    quote:
+      "Dejé de depender de mi equipo para el seguimiento. El pipeline trabaja 24/7. Nunca pensé que sería tan simple de instalar.",
+    date: "Verificado",
+  },
+  {
+    name: "Rubén Ocampo Licea",
+    initials: "RO",
+    color: "#10b981",
+    business: "Mi Ranking — Tennis",
+    stars: 5,
+    quote:
+      "Pasamos de atender 300 jugadores mensuales a más de 7 mil. El sistema revolucionó nuestra atención al cliente con respuestas instantáneas 24/7.",
+    date: "Sep 2023",
+  },
+  {
+    name: "Alejandro Restrepo",
+    initials: "AR",
+    color: "#f59e0b",
+    business: "Agencia de Marketing",
+    stars: 5,
+    quote:
+      "Nunca fui partidario de los chatbots pero wow, totalmente satisfecho. El tiempo y lo que me ahorro no tiene precio.",
+    date: "Sep 2023",
+  },
+  {
+    name: "SERcuidados",
+    initials: "SC",
+    color: "#8b5cf6",
+    business: "Servicio de Enfermería",
+    stars: 5,
+    quote:
+      "El enfoque orientado a resultados me da la confianza para recomendar Monkeia en el orden más alto. Profesionalismo y valor real.",
+    date: "Sep 2023",
+  },
+  {
+    name: "Gonzalo Ollarzún",
+    initials: "GO",
+    color: "#378ADD",
+    business: "Cliente Monkeia",
+    stars: 5,
+    quote:
+      "Monkeia superó mis expectativas en soporte técnico. Siempre disponibles para responder y resolver cualquier problema al instante.",
+    date: "Verificado",
+  },
+  {
+    name: "Alan Solís",
+    initials: "AS",
+    color: "#10b981",
+    business: "Cliente Monkeia",
+    stars: 5,
+    quote:
+      "La atención es excelente y el servicio muy innovador. Me gustó mucho la explicación y la resolución de dudas desde el primer día.",
+    date: "Verificado",
+  },
+  {
+    name: "Graciela Arredondo",
+    initials: "GA",
+    color: "#f59e0b",
+    business: "Cliente Monkeia",
+    stars: 5,
+    quote:
+      "Gran soporte al cliente. Me solucionaron todas mis dudas. Monkeia es super eficiente y el equipo siempre está dispuesto a ayudar.",
+    date: "Verificado",
+  },
+  {
+    name: "Cliente verificado",
+    initials: "CV",
+    color: "#8b5cf6",
+    business: "E-commerce",
+    stars: 5,
+    quote:
+      "¡Monkeia es simplemente fenomenal! Nos ayudaron a personalizar nuestras soluciones y siempre estuvieron ahí para asegurarse de que estuviéramos satisfechos.",
+    date: "Verificado",
+  },
+  {
+    name: "Cliente verificado",
+    initials: "CV",
+    color: "#378ADD",
+    business: "Negocio digital",
+    stars: 5,
+    quote:
+      "Han demostrado profesionalismo al resolver nuestros problemas y ofrecer valiosas mentorías. Sus capacitaciones nos ayudaron a maximizar nuestro impacto en línea.",
+    date: "Verificado",
+  },
+  {
+    name: "Cliente verificado",
+    initials: "CV",
+    color: "#10b981",
+    business: "Empresa",
+    stars: 5,
+    quote:
+      "No podríamos estar más satisfechos. Su chatbot IA ha superado todas nuestras expectativas y ha elevado nuestra empresa al siguiente nivel.",
+    date: "Verificado",
+  },
+  {
+    name: "Cliente verificado",
+    initials: "CV",
+    color: "#f59e0b",
+    business: "Cliente Monkeia",
+    stars: 5,
+    quote:
+      "Desarrollaron un chatbot IA personalizado para nuestra empresa que superó todas nuestras expectativas. Definitivamente los recomendaría.",
+    date: "Verificado",
+  },
+];
 
+function MarqueeCard({ t }: { t: (typeof TESTIMONIALS)[number] }) {
+  return (
+    <div
+      style={{
+        width: 320,
+        flexShrink: 0,
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: "12px",
+        padding: "20px 24px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
+      }}
+    >
+      {/* Header: avatar + name + stars */}
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        {t.photoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={t.photoUrl}
+            alt={t.name}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              objectFit: "cover",
+              border: `2px solid ${t.color}`,
+              flexShrink: 0,
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              background: t.color + "33",
+              border: `1px solid ${t.color}66`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#fff",
+              fontWeight: 600,
+              fontSize: 13,
+              flexShrink: 0,
+            }}
+          >
+            {t.initials}
+          </div>
+        )}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              fontSize: 14,
+              fontWeight: 600,
+              color: "#fff",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {t.name}
+          </div>
+          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
+            {t.business}
+          </div>
+        </div>
+        <div style={{ fontSize: 12, color: "#f59e0b", flexShrink: 0 }}>
+          {"★".repeat(t.stars)}
+        </div>
+      </div>
+
+      {/* Quote */}
+      <p
+        style={{
+          fontSize: 13,
+          color: "rgba(255,255,255,0.7)",
+          lineHeight: 1.6,
+          fontStyle: "italic",
+          margin: 0,
+        }}
+      >
+        &ldquo;{t.quote}&rdquo;
+      </p>
+
+      {/* Date */}
+      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>
+        {t.date}
+      </div>
+    </div>
+  );
+}
+
+function MarqueeRow({
+  cards,
+  direction,
+  duration,
+}: {
+  cards: (typeof TESTIMONIALS)[number][];
+  direction: "left" | "right";
+  duration: number;
+}) {
+  const [paused, setPaused] = useState(false);
+  const allCards = [...cards, ...cards];
+
+  return (
+    <div
+      style={{
+        overflow: "hidden",
+        maskImage:
+          "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+        WebkitMaskImage:
+          "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+      }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div
+        style={{
+          display: "flex",
+          gap: "16px",
+          width: "max-content",
+          animation: `${direction === "left" ? "marqueeLeft" : "marqueeRight"} ${duration}s linear infinite`,
+          animationPlayState: paused ? "paused" : "running",
+        }}
+      >
+        {allCards.map((card, i) => (
+          <MarqueeCard key={i} t={card} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Proof() {
   return (
     <section className="border-t border-[#1f1f1f] px-6 py-20">
       <div className="mx-auto max-w-6xl">
         <div className="mb-4 text-center">
-          <span className="terminal-label">&gt;&gt; Resultados de clientes</span>
+          <span className="terminal-label">&gt;&gt; RESULTADOS DE CLIENTES</span>
         </div>
         <h2
           className="mb-16 text-balance text-center font-extrabold tracking-tight text-white"
@@ -1450,33 +1725,18 @@ function Proof() {
           Funciona.
         </h2>
 
-        <div className="grid gap-8 lg:grid-cols-2">
-          {cases.map((c) => (
-            <div
-              key={c.name}
-              className="proof-card border border-[#1f1f1f] bg-[#0d0d0d] p-8"
-            >
-              <div className="relative z-10">
-                <div className="mb-8 grid grid-cols-3 gap-4 border-b border-[#1f1f1f] pb-8">
-                  {c.metrics.map((m) => (
-                    <MetricItem key={m.label} value={m.value} label={m.label} />
-                  ))}
-                </div>
-                <blockquote className="mb-6 border-l-2 border-[#378ADD] pl-4 text-base leading-relaxed text-white/70 italic">
-                  &ldquo;{c.quote}&rdquo;
-                </blockquote>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#378ADD]/10 font-bold text-[#378ADD]">
-                    {c.name.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="font-semibold text-white">{c.name}</div>
-                    <div className="text-sm text-white/40">{c.role}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+        {/* Testimonials marquee */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <MarqueeRow
+            cards={TESTIMONIALS.slice(0, 8)}
+            direction="left"
+            duration={35}
+          />
+          <MarqueeRow
+            cards={TESTIMONIALS.slice(7, 15)}
+            direction="right"
+            duration={40}
+          />
         </div>
       </div>
     </section>
@@ -1732,18 +1992,23 @@ function Services() {
 }
 
 /* ─────────────────────────────────────────────
-   EXCLUSIVITY
+   CLOSING CTA
 ───────────────────────────────────────────── */
-function Exclusivity() {
+function ClosingCTA() {
   return (
-    <section className="border-t border-[#1f1f1f] px-6 py-20">
+    <section
+      id="cta"
+      className="border-t border-[#1f1f1f] px-6"
+      style={{ background: "#000", paddingTop: "100px", paddingBottom: "100px" }}
+    >
       <div className="mx-auto max-w-3xl text-center">
-        <div className="scanline-5 mb-4 select-none" aria-hidden="true">
+        {/* Giant glitch "5" background */}
+        <div className="scanline-5 mb-0 select-none" aria-hidden="true">
           <span
             className="glitch-5 font-black leading-none"
             style={{
-              fontSize: "clamp(6rem, 20vw, 14rem)",
-              color: "rgba(55,138,221,0.15)",
+              fontSize: "clamp(8rem, 28vw, 18rem)",
+              color: "rgba(55,138,221,0.08)",
               display: "inline-block",
             }}
           >
@@ -1751,72 +2016,56 @@ function Exclusivity() {
           </span>
         </div>
 
-        <h2
-          className="relative -mt-6 mb-6 font-extrabold tracking-tight text-white"
-          style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)" }}
-        >
-          No es para todos.
-        </h2>
-
-        <p
-          className="mx-auto max-w-xl text-balance leading-relaxed text-white/50"
-          style={{ fontSize: "clamp(1rem, 2vw, 1.125rem)" }}
-        >
-          Solo 5 negocios por mes.
-          <br />
-          Porque cada sistema se diseña e implementa a medida para tu negocio.
-          <br />
-          Y se optimiza hasta que funcione.
-        </p>
-
-        <p
-          className="mx-auto mt-6 max-w-xl text-balance text-white/30"
-          style={{ fontSize: "clamp(0.875rem, 1.5vw, 1rem)" }}
-        >
-          No ves resultados en 30 días — se sigue trabajando. Sin costo.
-        </p>
-
-        <div className="mt-10 flex flex-col items-center gap-6">
-          <div className="inline-flex items-center gap-3 rounded-full border border-[#378ADD]/20 bg-[#378ADD]/5 px-6 py-3">
-            <span className="h-2 w-2 rounded-full bg-[#378ADD] animate-pulse" />
-            <span className="terminal-label" style={{ letterSpacing: "0.14em" }}>
-              Quedan 3 cupos
+        {/* Badge */}
+        <div className="relative -mt-8 mb-8 flex justify-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-5 py-2">
+            <span
+              className="h-2 w-2 rounded-full bg-red-500 animate-pulse"
+              style={{ boxShadow: "0 0 6px rgba(239,68,68,0.8)" }}
+            />
+            <span
+              className="font-mono text-xs font-semibold tracking-widest text-red-400"
+              style={{ letterSpacing: "0.16em" }}
+            >
+              QUEDAN 3 CUPOS ESTE MES
             </span>
           </div>
-          <CTAButton large>
-            Asegurar mi cupo ahora
-          </CTAButton>
         </div>
-      </div>
-    </section>
-  );
-}
 
-/* ─────────────────────────────────────────────
-   FINAL CTA
-───────────────────────────────────────────── */
-function FinalCTA() {
-  return (
-    <section id="cta" className="border-t border-[#1f1f1f] px-6 py-20">
-      <div className="mx-auto max-w-3xl text-center">
-        <div className="mb-4 text-center">
-          <span className="terminal-label">&gt;&gt; Arrancá hoy</span>
-        </div>
+        {/* Main headline */}
         <h2
-          className="mb-6 text-balance font-extrabold tracking-tight text-white"
-          style={{ fontSize: "clamp(2rem, 5vw, 3.75rem)" }}
+          className="mb-8 font-extrabold tracking-tight text-white"
+          style={{ fontSize: "clamp(2rem, 5vw, 3.75rem)", lineHeight: 1.1 }}
         >
-          30 minutos. Eso es todo lo que necesitas.
+          No es para todos.
+          <br />
+          Solo 5 negocios por mes.
         </h2>
+
+        {/* Subtext — three lines */}
         <p
-          className="mb-10 text-balance leading-relaxed text-white/50"
-          style={{ fontSize: "clamp(1rem, 2vw, 1.125rem)" }}
+          className="mb-10 leading-loose"
+          style={{ fontSize: "clamp(0.95rem, 2vw, 1.1rem)", color: "rgba(255,255,255,0.45)" }}
         >
-          Para ver cuántos leads pierdes, dónde se rompen tus ventas, y qué sistema necesitas.
+          Cada sistema se diseña e implementa a medida.
+          <br />
+          Si no ves resultados en 30 días — seguimos sin costo.
+          <br />
+          30 minutos es todo lo que necesitas para saber si hay fit.
         </p>
+
+        {/* CTA */}
         <CTAButton large>
           Solicitar diagnóstico gratuito
         </CTAButton>
+
+        {/* Trust signals */}
+        <p
+          className="mt-6"
+          style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)" }}
+        >
+          🔒 Sin compromiso · ⚡ Respuesta en menos de 24h
+        </p>
       </div>
     </section>
   );
@@ -1871,8 +2120,7 @@ export default function Home() {
         <Roadmap />
         <Proof />
         <Services />
-        <Exclusivity />
-        <FinalCTA />
+        <ClosingCTA />
       </main>
       <Footer />
     </div>
