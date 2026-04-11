@@ -993,18 +993,17 @@ function Hero() {
         </div>
 
         <AnimatedHeadline
-          text="Tus leads llegan. Pero no se convierten."
-          accent="Porque no tienes un sistema."
+          text="El 78% de los leads compra al primero en responder."
+          accent="Si no tienes un sistema, ese primero es tu competencia."
         />
 
         <div
           className="mx-auto mb-10 max-w-2xl text-white/60"
           style={{ fontSize: "clamp(1rem, 2vw, 1.2rem)" }}
         >
-          <p>Este sistema responde en segundos.</p>
-          <p>Hace seguimiento automático.</p>
-          <p>Y convierte leads en clientes. 24/7.</p>
-          <p className="mt-4 text-white/40">Resultados en 30 días. O se sigue trabajando hasta lograrlos.</p>
+          <p>Mientras duermes, el sistema trabaja.</p>
+          <p>Cada lead respondido. Cada venta perseguida.</p>
+          <p>Solo.</p>
         </div>
 
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -1561,13 +1560,13 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
           className="mb-4 text-balance text-center font-extrabold tracking-tight text-white"
           style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)" }}
         >
-          ¿Cuánto dinero está perdiendo tu negocio hoy?
+          En 2 minutos sabes exactamente por qué no estás cerrando más.
         </h2>
         <p
           className="mb-12 text-center text-white/40"
           style={{ fontSize: "clamp(1rem, 2vw, 1.15rem)" }}
         >
-          5 preguntas. 2 minutos. Descubre exactamente dónde se rompe tu proceso de ventas.
+          5 preguntas. Sin rodeos. Con tu resultado al final.
         </p>
 
         {/* Card */}
@@ -1863,19 +1862,19 @@ function Problem() {
     {
       icon: <IconClock />,
       title: "Respondes tarde.",
-      body: "El lead se enfría. Compra en otro lado.",
+      body: "El lead ya compró en otro lado.",
       delay: 0,
     },
     {
       icon: <IconEye />,
       title: "No sabes qué pasó.",
-      body: "Si abrió. Si leyó. Si desapareció.",
+      body: "Solo sabes que no cerró.",
       delay: 120,
     },
     {
       icon: <IconUsers />,
-      title: "Todo depende de alguien.",
-      body: "Y eso no escala.",
+      title: "Todo depende de ti.",
+      body: "Y tú no puedes estar en todas partes.",
       delay: 240,
     },
   ];
@@ -2273,9 +2272,9 @@ function Proof() {
 ───────────────────────────────────────────── */
 const SERVICE_CARDS = [
   {
-    badge: "Para empezar",
+    badge: "Quiero entender primero",
     badgeColor: "gray" as const,
-    title: "Auditoría + Hoja de Ruta",
+    title: "Diagnóstico Profundo",
     description:
       "Analizamos tu proceso actual de ventas y leads. Te entregamos un documento con exactamente dónde se rompe tu embudo y qué sistema necesitas.",
     features: [
@@ -2288,7 +2287,7 @@ const SERVICE_CARDS = [
     featured: false,
   },
   {
-    badge: "Más solicitado",
+    badge: "Quiero arrancar ya",
     badgeColor: "blue" as const,
     title: "Instalamos tu sistema",
     description:
@@ -2303,9 +2302,9 @@ const SERVICE_CARDS = [
     featured: true,
   },
   {
-    badge: "Proyectos grandes",
+    badge: "Lo quiero todo",
     badgeColor: "purple" as const,
-    title: "Sistema Completo a Medida",
+    title: "Sistema Completo — De cero a automático",
     description:
       "Para negocios que necesitan un sistema completo: captura, calificación, nurturing, cierre y dashboard. Todo conectado. Todo automatizado.",
     features: [
@@ -2562,9 +2561,9 @@ function ClosingCTA() {
           className="mb-8 font-extrabold tracking-tight text-white"
           style={{ fontSize: "clamp(2rem, 5vw, 3.75rem)", lineHeight: 1.1 }}
         >
-          No es para todos.
+          No trabajamos con todos.
           <br />
-          Solo 5 negocios por mes.
+          Elegimos los negocios que queremos ver crecer.
         </h2>
 
         {/* Subtext — three lines */}
