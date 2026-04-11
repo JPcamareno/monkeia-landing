@@ -14,7 +14,8 @@
       "Bash(python3:*)",
       "Bash(py --version)",
       "Bash(py)",
-      "Bash(py -c ':*)"
+      "Bash(py -c ':*)",
+      "Bash(npm install:*)"
     ]
   }
 }

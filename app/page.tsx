@@ -1,6 +1,27 @@
 ﻿"use client";
 
-import { useEffect, useRef, useState, useCallback, Fragment } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import Image from "next/image";
+import { createClient } from "@supabase/supabase-js";
+
+// -- SQL to run once in Supabase dashboard --
+// create table quiz_results (
+//   id uuid default gen_random_uuid() primary key,
+//   score int,
+//   q1 text, q2 text, q3 text, q4 text, q5 text,
+//   whatsapp text,
+//   created_at timestamp with time zone default now()
+// );
+
+let _supabase: ReturnType<typeof createClient> | null = null;
+function getSupabase() {
+  if (!_supabase) {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+    if (url && key) _supabase = createClient(url, key);
+  }
+  return _supabase;
+}
 
 const WA =
   "https://wa.me/50683225178?text=Hola%2C%20quiero%20solicitar%20el%20diagn%C3%B3stico%20gratuito%20de%20Monkeia";
@@ -498,7 +519,7 @@ function AnimatedHeadline({ text, accent }: { text: string; accent: string }) {
         fontSize: "clamp(2.8rem, 6.5vw, 5.2rem)",
         display: "flex",
         flexWrap: "wrap",
-        gap: "0 0.28em",
+        gap: "0 0.3em",
         justifyContent: "center",
       }}
     >
@@ -506,7 +527,7 @@ function AnimatedHeadline({ text, accent }: { text: string; accent: string }) {
         <span
           key={i}
           className={`word-animate${i >= accentStart ? " text-[#378ADD]" : ""}`}
-          style={{ animationDelay: `${i * 80}ms` }}
+          style={{ animationDelay: `${i * 80}ms`, display: "inline-block" }}
         >
           {word}
         </span>
@@ -947,10 +968,8 @@ function Nav() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#1f1f1f] bg-black/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <span className="text-xl font-bold tracking-tight">
-          Monk<span className="text-[#378ADD]">ei</span>a
-        </span>
-        <CTAButton>Agendar diagnóstico gratis</CTAButton>
+        <Image src="/logo.svg" alt="Monkeia" width={120} height={40} style={{objectFit: 'contain'}} />
+        <CTAButton>Diagnóstico gratis</CTAButton>
       </div>
     </header>
   );
@@ -1052,7 +1071,7 @@ const WF_STEPS: WFStep[] = [
   { badge: "PASO 01", color: "#378ADD", side: "left",   title: "Agendas el diagnóstico",  body: "30 minutos gratis. Nos cuentas tu situación actual.",                         tag: "● Zoom call"       },
   { badge: "PASO 02", color: "#10b981", side: "right",  title: "Revisamos tu operación",   body: "IA analiza la llamada y detecta exactamente dónde pierdes ventas.",            tag: "● IA activa"       },
   { badge: "PASO 03", color: "#f59e0b", side: "left",   title: "Recibes tu hoja de ruta",  body: "Documento con qué sistema necesitas y resultados esperados.",                  tag: "● Entregable PDF"  },
-  { badge: "PASO 04", color: "#8b5cf6", side: "right",  title: "Construimos tu sistema",   body: "Implementamos a medida. Tú ves el avance en tiempo real.",                    tag: "● 2 semanas"       },
+  { badge: "PASO 04", color: "#8b5cf6", side: "right",  title: "Construimos tu sistema",   body: "Implementamos a medida. Tú ves el avance en tiempo real.",                    tag: "● A tu ritmo"      },
   { badge: "PASO 05", color: "#378ADD", side: "center", title: "Tu negocio en automático", body: "30 días o seguimos trabajando sin costo adicional.",                           tag: "● Garantía incluida" },
 ];
 
@@ -1325,6 +1344,512 @@ function Roadmap() {
             </span>
           </div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   AUTOMATION SCORE QUIZ
+───────────────────────────────────────────── */
+type QuizQuestion = {
+  question: string;
+  options: { label: string; pts: number }[];
+};
+
+const QUIZ_QUESTIONS: QuizQuestion[] = [
+  {
+    question: "¿Cuántos leads recibes por mes?",
+    options: [
+      { label: "Menos de 30", pts: 10 },
+      { label: "Entre 30 y 100", pts: 25 },
+      { label: "Más de 100", pts: 40 },
+    ],
+  },
+  {
+    question: "¿En cuánto tiempo respondes a un lead nuevo?",
+    options: [
+      { label: "En minutos — tengo sistema", pts: 40 },
+      { label: "En horas", pts: 20 },
+      { label: "Al día siguiente o más", pts: 0 },
+    ],
+  },
+  {
+    question: "¿Tienes seguimiento automático después del primer contacto?",
+    options: [
+      { label: "Sí, está automatizado", pts: 40 },
+      { label: "Lo hago manual", pts: 15 },
+      { label: "No tengo seguimiento", pts: 0 },
+    ],
+  },
+  {
+    question: "¿Sabes exactamente cuántos leads se convirtieron este mes?",
+    options: [
+      { label: "Sí, tengo datos claros", pts: 30 },
+      { label: "Más o menos", pts: 15 },
+      { label: "No tengo idea", pts: 0 },
+    ],
+  },
+  {
+    question: "¿Qué pasa cuando tu equipo no está disponible?",
+    options: [
+      { label: "El sistema responde solo", pts: 30 },
+      { label: "Pierdo leads, lo sé", pts: 10 },
+      { label: "Depende del día", pts: 5 },
+    ],
+  },
+];
+
+type QuizTier = {
+  label: string;
+  color: string;
+  title: string;
+  body: string;
+  cta: string;
+};
+
+function getQuizTier(score: number): QuizTier {
+  if (score <= 39) {
+    return {
+      label: "CRÍTICO",
+      color: "#ef4444",
+      title: "Tu negocio está perdiendo dinero todos los días.",
+      body: "Sin un sistema, cada lead que no respondes a tiempo es dinero que se va con tu competencia. Esto tiene solución inmediata.",
+      cta: "Quiero solucionar esto ahora",
+    };
+  }
+  if (score <= 69) {
+    return {
+      label: "EN RIESGO",
+      color: "#f59e0b",
+      title: "Tienes base, pero te faltan las piezas clave.",
+      body: "Tu negocio funciona, pero está dejando dinero sobre la mesa. Un sistema bien conectado puede duplicar tu conversión.",
+      cta: "Ver cómo mejorar mi sistema",
+    };
+  }
+  return {
+    label: "LISTO PARA ESCALAR",
+    color: "#10b981",
+    title: "Estás cerca. Solo necesitas conectar las piezas.",
+    body: "Tienes la base. Con el sistema correcto puedes escalar sin contratar más gente.",
+    cta: "Quiero escalar mi sistema",
+  };
+}
+
+function AnimatedScore({ target }: { target: number }) {
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    let start: number | null = null;
+    const duration = 1500;
+    const step = (ts: number) => {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(eased * target));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [target]);
+
+  return <>{display}</>;
+}
+
+function CircularProgress({ score, color }: { score: number; color: string }) {
+  const r = 54;
+  const circ = 2 * Math.PI * r;
+  const [offset, setOffset] = useState(circ);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setOffset(circ - (score / 180) * circ);
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, [score, circ]);
+
+  return (
+    <svg width="136" height="136" viewBox="0 0 136 136" style={{ display: "block" }}>
+      <circle cx="68" cy="68" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
+      <circle
+        cx="68" cy="68" r={r}
+        fill="none"
+        stroke={color}
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeDasharray={circ}
+        strokeDashoffset={offset}
+        transform="rotate(-90 68 68)"
+        style={{ transition: "stroke-dashoffset 1.5s cubic-bezier(0.34,1.56,0.64,1)" }}
+      />
+    </svg>
+  );
+}
+
+function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
+  const [step, setStep] = useState<"quiz" | "result">("quiz");
+  const [current, setCurrent] = useState(0);
+  const [answers, setAnswers] = useState<string[]>([]);
+  const [selectedPts, setSelectedPts] = useState<number[]>([]);
+  const [score, setScore] = useState(0);
+  const [visible, setVisible] = useState(true);
+  const [phone, setPhone] = useState("");
+  const [waSent, setWaSent] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const totalQuestions = QUIZ_QUESTIONS.length;
+  const progress = ((current) / totalQuestions) * 100;
+
+  function handleOption(label: string, pts: number) {
+    setVisible(false);
+    setTimeout(() => {
+      const newAnswers = [...answers, label];
+      const newPts = [...selectedPts, pts];
+      if (current + 1 < totalQuestions) {
+        setAnswers(newAnswers);
+        setSelectedPts(newPts);
+        setCurrent(current + 1);
+        setVisible(true);
+      } else {
+        const total = newPts.reduce((a, b) => a + b, 0);
+        setAnswers(newAnswers);
+        setSelectedPts(newPts);
+        setScore(total);
+        setStep("result");
+        setVisible(true);
+        // save to supabase
+        if (!saved) {
+          setSaved(true);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (getSupabase()?.from("quiz_results") as any)?.insert({
+            score: total,
+            q1: newAnswers[0] ?? null,
+            q2: newAnswers[1] ?? null,
+            q3: newAnswers[2] ?? null,
+            q4: newAnswers[3] ?? null,
+            q5: newAnswers[4] ?? null,
+          });
+        }
+      }
+    }, 300);
+  }
+
+  function handleWhatsApp() {
+    const tier = getQuizTier(score);
+    const summary = answers.map((a, i) => `P${i + 1}: ${a}`).join(" | ");
+    const msg = encodeURIComponent(
+      `Hola, hice el diagnóstico de Monkeia.\nMi puntaje: ${score}/180 (${tier.label})\n${summary}`
+    );
+    if (phone) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (getSupabase()?.from("quiz_results") as any)?.update({ whatsapp: phone }).eq("score", score);
+    }
+    window.open(`https://wa.me/50683225178?text=${msg}`, "_blank");
+    setWaSent(true);
+  }
+
+  const tier = step === "result" ? getQuizTier(score) : null;
+  const q = QUIZ_QUESTIONS[current];
+
+  return (
+    <section className="relative border-t border-[#1f1f1f] px-6 py-20">
+      <div className="mx-auto max-w-6xl">
+        {/* Header */}
+        <div className="mb-4 text-center">
+          <span className="terminal-label">&gt;&gt; DIAGNÓSTICO GRATUITO</span>
+        </div>
+        <h2
+          className="mb-4 text-balance text-center font-extrabold tracking-tight text-white"
+          style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)" }}
+        >
+          ¿Cuánto dinero está perdiendo tu negocio hoy?
+        </h2>
+        <p
+          className="mb-12 text-center text-white/40"
+          style={{ fontSize: "clamp(1rem, 2vw, 1.15rem)" }}
+        >
+          5 preguntas. 2 minutos. Descubre exactamente dónde se rompe tu proceso de ventas.
+        </p>
+
+        {/* Card */}
+        <div
+          style={{
+            background: "rgba(10,15,30,0.95)",
+            border: "1px solid rgba(55,138,221,0.2)",
+            borderRadius: "16px",
+            padding: "clamp(24px, 5vw, 40px)",
+            maxWidth: "600px",
+            margin: "0 auto",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {/* Top progress bar */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: "3px",
+              background: "rgba(55,138,221,0.15)",
+            }}
+          >
+            <div
+              style={{
+                height: "100%",
+                background: "#378ADD",
+                width: `${step === "result" ? 100 : progress}%`,
+                transition: "width 0.4s ease",
+              }}
+            />
+          </div>
+
+          {/* Quiz step */}
+          {step === "quiz" && (
+            <div
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(8px)",
+                transition: "opacity 0.3s ease, transform 0.3s ease",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "0.75rem",
+                  color: "#378ADD",
+                  fontWeight: 600,
+                  letterSpacing: "0.1em",
+                  marginBottom: "20px",
+                  marginTop: "8px",
+                }}
+              >
+                Pregunta {current + 1} de {totalQuestions}
+              </p>
+              <h3
+                style={{
+                  fontSize: "clamp(1.1rem, 2.5vw, 1.35rem)",
+                  fontWeight: 700,
+                  color: "#fff",
+                  marginBottom: "24px",
+                  lineHeight: 1.3,
+                }}
+              >
+                {q.question}
+              </h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                {q.options.map((opt) => (
+                  <button
+                    key={opt.label}
+                    onClick={() => handleOption(opt.label, opt.pts)}
+                    style={{
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "14px 18px",
+                      background: "rgba(255,255,255,0.03)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      borderRadius: "10px",
+                      color: "rgba(255,255,255,0.85)",
+                      fontSize: "0.95rem",
+                      cursor: "pointer",
+                      transition: "all 0.18s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.background =
+                        "rgba(55,138,221,0.1)";
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = "#378ADD";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.background =
+                        "rgba(255,255,255,0.03)";
+                      (e.currentTarget as HTMLButtonElement).style.borderColor =
+                        "rgba(255,255,255,0.08)";
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Result step */}
+          {step === "result" && tier && (
+            <div
+              style={{
+                opacity: visible ? 1 : 0,
+                transition: "opacity 0.4s ease",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "0.75rem",
+                  color: "#378ADD",
+                  fontWeight: 600,
+                  letterSpacing: "0.1em",
+                  marginBottom: "24px",
+                  marginTop: "8px",
+                }}
+              >
+                Tu resultado
+              </p>
+
+              {/* Score ring */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "24px",
+                  gap: "24px",
+                  flexWrap: "wrap",
+                }}
+              >
+                <div style={{ position: "relative", width: 136, height: 136, flexShrink: 0 }}>
+                  <CircularProgress score={score} color={tier.color} />
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "2rem",
+                        fontWeight: 800,
+                        color: tier.color,
+                        lineHeight: 1,
+                      }}
+                    >
+                      <AnimatedScore target={score} />
+                    </span>
+                    <span style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.35)" }}>
+                      / 180
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      padding: "4px 12px",
+                      borderRadius: "100px",
+                      background: `${tier.color}22`,
+                      color: tier.color,
+                      fontSize: "0.75rem",
+                      fontWeight: 700,
+                      letterSpacing: "0.12em",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    {tier.label}
+                  </span>
+                  <h3
+                    style={{
+                      fontSize: "clamp(1rem, 2.5vw, 1.2rem)",
+                      fontWeight: 700,
+                      color: "#fff",
+                      marginBottom: "8px",
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {tier.title}
+                  </h3>
+                  <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>
+                    {tier.body}
+                  </p>
+                </div>
+              </div>
+
+              {/* CTA */}
+              <button
+                onClick={onOpenBooking}
+                style={{
+                  width: "100%",
+                  padding: "16px 24px",
+                  background: tier.color,
+                  border: "none",
+                  borderRadius: "10px",
+                  color: "#fff",
+                  fontSize: "1rem",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "opacity 0.2s",
+                  marginBottom: "24px",
+                }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.opacity = "0.85")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.opacity = "1")}
+              >
+                {tier.cta}
+              </button>
+
+              {/* WhatsApp capture */}
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: "12px",
+                  padding: "20px",
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: "0.85rem",
+                    color: "rgba(255,255,255,0.6)",
+                    marginBottom: "14px",
+                    fontWeight: 600,
+                  }}
+                >
+                  Recibe tu plan de acción personalizado por WhatsApp
+                </p>
+                {waSent ? (
+                  <p style={{ fontSize: "0.85rem", color: "#10b981" }}>
+                    ¡Listo! Te enviamos tu plan.
+                  </p>
+                ) : (
+                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+506 8322 5178"
+                      style={{
+                        flex: 1,
+                        minWidth: "140px",
+                        padding: "12px 14px",
+                        background: "rgba(255,255,255,0.05)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        borderRadius: "8px",
+                        color: "#fff",
+                        fontSize: "0.9rem",
+                        outline: "none",
+                      }}
+                    />
+                    <button
+                      onClick={handleWhatsApp}
+                      style={{
+                        padding: "12px 18px",
+                        background: "#25D366",
+                        border: "none",
+                        borderRadius: "8px",
+                        color: "#fff",
+                        fontSize: "0.85rem",
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Enviar mi plan por WhatsApp
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
@@ -1759,22 +2284,22 @@ const SERVICE_CARDS = [
       "Hoja de ruta de implementación",
       "Se descuenta si contratas el sistema",
     ],
-    cta: "Solicitar auditoría",
+    cta: "Quiero la auditoría",
     featured: false,
   },
   {
     badge: "Más solicitado",
     badgeColor: "blue" as const,
-    title: "Solución Específica",
+    title: "Instalamos tu sistema",
     description:
       "Implementamos la pieza exacta que tu negocio necesita. Desde un bot de WhatsApp hasta un dashboard conectado a Meta Ads.",
     features: [
       "Diagnóstico gratuito incluido",
-      "Implementación en menos de 2 semanas",
+      "Timeline definido según tu proyecto",
       "IA + supervisión humana",
       "30 días de soporte incluido",
     ],
-    cta: "Agendar diagnóstico gratis",
+    cta: "Quiero mi diagnóstico",
     featured: true,
   },
   {
@@ -1789,7 +2314,7 @@ const SERVICE_CARDS = [
       "IA + equipo humano de supervisión",
       "Soporte y optimización continua",
     ],
-    cta: "Hablar con el equipo",
+    cta: "Hablar con nosotros",
     featured: false,
   },
 ];
@@ -2056,7 +2581,7 @@ function ClosingCTA() {
 
         {/* CTA */}
         <CTAButton large>
-          Solicitar diagnóstico gratuito
+          Quiero mi diagnóstico
         </CTAButton>
 
         {/* Trust signals */}
@@ -2064,7 +2589,7 @@ function ClosingCTA() {
           className="mt-6"
           style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)" }}
         >
-          🔒 Sin compromiso · ⚡ Respuesta en menos de 24h
+          Sin compromiso · Respuesta en menos de 24h · Diagnóstico 100% gratuito
         </p>
       </div>
     </section>
@@ -2084,20 +2609,18 @@ function Footer() {
         <p className="text-sm text-white/30">© 2026 Monkeia · Sistemas de ventas autónomos para negocios que crecen.</p>
         <div className="flex items-center gap-6">
           <a
-            href="https://instagram.com/monkeia"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="cursor-pointer text-sm text-white/40 transition-colors duration-200 hover:text-[#378ADD]"
-          >
-            Instagram
-          </a>
-          <a
             href={WA}
             target="_blank"
             rel="noopener noreferrer"
             className="cursor-pointer text-sm text-white/40 transition-colors duration-200 hover:text-[#378ADD]"
           >
             WhatsApp
+          </a>
+          <a
+            href="mailto:hi@monkeia.com"
+            className="cursor-pointer text-sm text-white/40 transition-colors duration-200 hover:text-[#378ADD]"
+          >
+            hi@monkeia.com
           </a>
         </div>
       </div>
@@ -2109,6 +2632,8 @@ function Footer() {
    HOME
 ───────────────────────────────────────────── */
 export default function Home() {
+  const [bookingOpen, setBookingOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-black text-white">
       <CursorGlow />
@@ -2117,6 +2642,8 @@ export default function Home() {
         <Hero />
         {/* <ClientsCarousel /> */}
         <Problem />
+        <AutomationQuiz onOpenBooking={() => setBookingOpen(true)} />
+        {bookingOpen && <BookingModal onClose={() => setBookingOpen(false)} />}
         <Roadmap />
         <Proof />
         <Services />

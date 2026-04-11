@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Monkeia — Automatización con IA para escalar tu negocio",
   description:
     "Instalamos el sistema que convierte tus leads de Meta en clientes. Sin setters. Sin seguimiento manual. Pipeline autónomo en 30 días.",
+  icons: { icon: '/logo.svg' },
 };
 
 export default function RootLayout({
