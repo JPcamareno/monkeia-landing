@@ -993,8 +993,8 @@ function Hero() {
         </div>
 
         <AnimatedHeadline
-          text="El 78% de los leads compra al primero en responder."
-          accent="Si no tienes un sistema, ese primero es tu competencia."
+          text="El 78% de tus leads le compra al primero que responde."
+          accent="¿Ese primero eres tú?"
         />
 
         <div
