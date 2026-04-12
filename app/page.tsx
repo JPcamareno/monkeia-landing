@@ -593,55 +593,52 @@ function CTAButton({
    CRM PIPELINE MOCKUP — Kanban board style
 ───────────────────────────────────────────── */
 interface DealCard {
+  id: string;
   company: string;
   contact: string;
   value: string;
+  numericValue: number;
   date: string;
 }
 
 interface PipelineStage {
   label: string;
   color: string;
-  total: string;
   deals: DealCard[];
 }
 
-const PIPELINE_STAGES: PipelineStage[] = [
+const INITIAL_STAGES: PipelineStage[] = [
   {
     label: "Nuevo Lead",
     color: "#378ADD",
-    total: "$7,400",
     deals: [
-      { company: "Restaurante El Fogón", contact: "Carlos Mendez", value: "$2,400/mes", date: "Hoy, 9:42am" },
-      { company: "Clínica Estética Glow", contact: "Ana Reyes", value: "$3,800", date: "Hoy, 11:15am" },
-      { company: "Academia FitPro", contact: "Luis Torres", value: "$1,200/mes", date: "Ayer" },
+      { id: "d1", company: "Restaurante El Fogón", contact: "Carlos Mendez", value: "$2,400/mes", numericValue: 2400, date: "Hoy, 9:42am" },
+      { id: "d2", company: "Clínica Estética Glow", contact: "Ana Reyes", value: "$3,800", numericValue: 3800, date: "Hoy, 11:15am" },
+      { id: "d3", company: "Academia FitPro", contact: "Luis Torres", value: "$1,200/mes", numericValue: 1200, date: "Ayer" },
     ],
   },
   {
     label: "Calificado",
     color: "#10b981",
-    total: "$7,300",
     deals: [
-      { company: "Ecommerce ModaLatam", contact: "Sofia Herrera", value: "$4,500", date: "Hace 2 días" },
-      { company: "Coach Marco Vidal", contact: "Marco Vidal", value: "$2,800", date: "Hace 3 días" },
+      { id: "d4", company: "Ecommerce ModaLatam", contact: "Sofia Herrera", value: "$4,500", numericValue: 4500, date: "Hace 2 días" },
+      { id: "d5", company: "Coach Marco Vidal", contact: "Marco Vidal", value: "$2,800", numericValue: 2800, date: "Hace 3 días" },
     ],
   },
   {
     label: "Propuesta",
     color: "#f59e0b",
-    total: "$10,000",
     deals: [
-      { company: "Universidad TechHub", contact: "Diana Flores", value: "$8,500", date: "Esta semana" },
-      { company: "Influencer @nataliav", contact: "Natalia V.", value: "$1,500/mes", date: "Esta semana" },
+      { id: "d6", company: "Universidad TechHub", contact: "Diana Flores", value: "$8,500", numericValue: 8500, date: "Esta semana" },
+      { id: "d7", company: "Influencer @nataliav", contact: "Natalia V.", value: "$1,500/mes", numericValue: 1500, date: "Esta semana" },
     ],
   },
   {
     label: "Cerrado",
     color: "#8b5cf6",
-    total: "$52,000",
     deals: [
-      { company: "Gianpiero Fusco", contact: "Gianpiero F.", value: "$40,000", date: "Este mes" },
-      { company: "Jimm Lavin", contact: "Jimm L.", value: "$12,000", date: "Este mes" },
+      { id: "d8", company: "Gianpiero Fusco", contact: "Gianpiero F.", value: "$40,000", numericValue: 40000, date: "Este mes" },
+      { id: "d9", company: "Jimm Lavin", contact: "Jimm L.", value: "$12,000", numericValue: 12000, date: "Este mes" },
     ],
   },
 ];
@@ -659,13 +656,23 @@ const FEED_EVENTS = [
   "→ Sistema cerró trato con Jimm L.",
 ];
 
-const NOTIF_NAMES = [
-  "Restaurante El Fogón",
-  "Clínica Estética Glow",
-  "Academia FitPro",
-  "Ecommerce ModaLatam",
-  "Coach Marco Vidal",
+const NEW_LEAD_POOL: Omit<DealCard, "id" | "date">[] = [
+  { company: "Distribuidora Arias & Hijos", contact: "Roberto Arias", value: "$1,800/mes", numericValue: 1800 },
+  { company: "Consultora BizGrow MX", contact: "Fernanda López", value: "$3,200", numericValue: 3200 },
+  { company: "Spa Bienestar Total", contact: "Valeria Ruiz", value: "$950/mes", numericValue: 950 },
+  { company: "Importadora TechSur", contact: "Andrés Castillo", value: "$5,500", numericValue: 5500 },
+  { company: "Agencia Digital Rocket", contact: "Pablo Moreno", value: "$2,100/mes", numericValue: 2100 },
+  { company: "Joyería Oro & Arte", contact: "Carmen Delgado", value: "$1,400", numericValue: 1400 },
+  { company: "Clínica Dental Sonrisa", contact: "Dr. Héctor Vega", value: "$2,800", numericValue: 2800 },
+  { company: "Inmobiliaria Alta Vista", contact: "Marcela Fuentes", value: "$6,000", numericValue: 6000 },
+  { company: "Academia de Inglés Oxford", contact: "Sandra Jiménez", value: "$1,100/mes", numericValue: 1100 },
+  { company: "Ferretería Los Andes", contact: "Juan Pérez", value: "$2,300", numericValue: 2300 },
 ];
+
+function sumDeals(deals: DealCard[]): string {
+  const total = deals.reduce((acc, d) => acc + d.numericValue, 0);
+  return "$" + total.toLocaleString("en-US");
+}
 
 function getInitials(name: string) {
   return name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
@@ -674,20 +681,29 @@ function getInitials(name: string) {
 function DealCardItem({
   deal,
   color,
-  flashNew,
+  isNew,
+  onDragStart,
+  onDragEnd,
 }: {
   deal: DealCard;
   color: string;
-  flashNew?: boolean;
+  isNew?: boolean;
+  onDragStart: (e: React.DragEvent) => void;
+  onDragEnd: () => void;
 }) {
   return (
     <div
+      draggable
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+      className={isNew ? "crm-card-new" : ""}
       style={{
-        background: flashNew ? `rgba(55,138,221,0.10)` : "rgba(255,255,255,0.04)",
-        border: `1px solid ${flashNew ? "rgba(55,138,221,0.35)" : "rgba(255,255,255,0.08)"}`,
+        background: isNew ? `rgba(55,138,221,0.10)` : "rgba(255,255,255,0.04)",
+        border: `1px solid ${isNew ? "rgba(55,138,221,0.35)" : "rgba(255,255,255,0.08)"}`,
         borderLeft: `3px solid ${color}`,
         borderRadius: "8px",
         padding: "12px",
+        cursor: "grab",
         transition: "background 0.4s ease, border-color 0.4s ease",
       }}
     >
@@ -726,31 +742,26 @@ function DealCardItem({
 }
 
 function CRMMockup() {
-  const [notif, setNotif] = useState<{ name: string; visible: boolean } | null>(null);
+  const [stages, setStages] = useState<PipelineStage[]>(INITIAL_STAGES);
+  const [notif, setNotif] = useState<{ name: string; value: string; visible: boolean } | null>(null);
   const [feed, setFeed] = useState(FEED_EVENTS.slice(0, 3));
-  const [flashIdx, setFlashIdx] = useState<number | null>(null);
-  const notifIdx = useRef(0);
+  const [newDealIds, setNewDealIds] = useState<Set<string>>(new Set());
+  const [colsVisible, setColsVisible] = useState(false);
+  const [dragOver, setDragOver] = useState<number | null>(null);
+  const [lastLeadLabel, setLastLeadLabel] = useState("hace 4 min");
+
+  const dragRef = useRef<{ dealId: string; fromCol: number } | null>(null);
   const feedIdx = useRef(3);
-  const mounted = useRef(false);
+  const leadPoolIdx = useRef(0);
+  const leadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Trigger staggered column entrance
+  useEffect(() => {
+    const t = setTimeout(() => setColsVisible(true), 80);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
-    if (mounted.current) return;
-    mounted.current = true;
-
-    // Toast notification cycle every 4s
-    const cycle = () => {
-      const name = NOTIF_NAMES[notifIdx.current % NOTIF_NAMES.length];
-      notifIdx.current++;
-      setNotif({ name, visible: true });
-      // Flash col-1 card 0 on new lead
-      setFlashIdx(0);
-      setTimeout(() => setFlashIdx(null), 1200);
-      setTimeout(() => setNotif((n) => n ? { ...n, visible: false } : null), 2800);
-    };
-    const iv1 = setInterval(cycle, 4000);
-    // initial fire after short delay
-    setTimeout(cycle, 800);
-
     // Activity feed: rotate a new event every 2s
     const iv2 = setInterval(() => {
       const next = FEED_EVENTS[feedIdx.current % FEED_EVENTS.length];
@@ -758,8 +769,92 @@ function CRMMockup() {
       setFeed((prev) => [...prev.slice(1), next]);
     }, 2000);
 
-    return () => { clearInterval(iv1); clearInterval(iv2); };
+    // New lead every 8-12s
+    function scheduleNewLead() {
+      const delay = 8000 + Math.random() * 4000;
+      leadTimerRef.current = setTimeout(() => {
+        const pool = NEW_LEAD_POOL[leadPoolIdx.current % NEW_LEAD_POOL.length];
+        leadPoolIdx.current++;
+        const id = `lead-${Date.now()}`;
+        const newDeal: DealCard = { ...pool, id, date: "Ahora mismo" };
+
+        setStages((prev) => {
+          const next = prev.map((s) => ({ ...s, deals: [...s.deals] }));
+          next[0] = { ...next[0], deals: [newDeal, ...next[0].deals] };
+          return next;
+        });
+        setNewDealIds((prev) => new Set([...prev, id]));
+        setNotif({ name: pool.company, value: pool.value, visible: true });
+        setLastLeadLabel("ahora mismo");
+        setFeed((prev) => {
+          const evt = `→ ${pool.contact} ingresó al pipeline`;
+          return [...prev.slice(1), evt];
+        });
+
+        // Clear new-card highlight after animation
+        setTimeout(() => setNewDealIds((prev) => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        }), 1500);
+
+        // Hide toast after 3s
+        setTimeout(() => setNotif((n) => n ? { ...n, visible: false } : null), 3000);
+
+        scheduleNewLead();
+      }, delay);
+    }
+    scheduleNewLead();
+
+    return () => {
+      clearInterval(iv2);
+      if (leadTimerRef.current) clearTimeout(leadTimerRef.current);
+    };
   }, []);
+
+  function handleDragStart(e: React.DragEvent, fromCol: number, dealId: string) {
+    dragRef.current = { dealId, fromCol };
+    e.dataTransfer.effectAllowed = "move";
+  }
+
+  function handleDragOver(e: React.DragEvent, colIdx: number) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOver(colIdx);
+  }
+
+  function handleDragLeave(e: React.DragEvent) {
+    // Only clear if leaving the column container itself
+    if (!(e.currentTarget as HTMLElement).contains(e.relatedTarget as Node)) {
+      setDragOver(null);
+    }
+  }
+
+  function handleDrop(e: React.DragEvent, toColIdx: number) {
+    e.preventDefault();
+    setDragOver(null);
+    if (!dragRef.current) return;
+    const { dealId, fromCol } = dragRef.current;
+    dragRef.current = null;
+    if (fromCol === toColIdx) return;
+
+    setStages((prev) => {
+      const next = prev.map((s) => ({ ...s, deals: [...s.deals] }));
+      const dealIdx = next[fromCol].deals.findIndex((d) => d.id === dealId);
+      if (dealIdx === -1) return prev;
+      const [deal] = next[fromCol].deals.splice(dealIdx, 1);
+      next[toColIdx].deals.unshift(deal);
+      return next;
+    });
+  }
+
+  function handleDragEnd() {
+    dragRef.current = null;
+    setDragOver(null);
+  }
+
+  const pipelineTotal = stages.reduce((acc, s) => acc + s.deals.reduce((a, d) => a + d.numericValue, 0), 0);
+  const STAGGER_DELAYS = [0, 90, 180, 270];
 
   return (
     <div
@@ -776,7 +871,6 @@ function CRMMockup() {
 
       {/* App top bar */}
       <div className="flex items-center gap-3 border-b border-[#1f1f1f] bg-[#111] px-4 py-2">
-        {/* Search mockup */}
         <div
           className="flex items-center gap-2 rounded-md px-3 py-1.5"
           style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", minWidth: "110px" }}
@@ -787,13 +881,15 @@ function CRMMockup() {
           </svg>
           <span className="text-[10px] text-white/25">Buscar deal…</span>
         </div>
-        {/* Title */}
         <span className="flex-1 text-center font-mono text-[11px] font-semibold text-white/60">
           Pipeline activo
         </span>
-        {/* Live badge */}
+        {/* Live badge — ping animation */}
         <span className="flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[10px] font-semibold" style={{ background: "rgba(55,138,221,0.12)", color: "#378ADD", border: "1px solid rgba(55,138,221,0.25)" }}>
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#378ADD]" />
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#378ADD] opacity-60" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#378ADD]" />
+          </span>
           En vivo
         </span>
       </div>
@@ -815,6 +911,7 @@ function CRMMockup() {
               Nuevo lead
             </div>
             <div className="text-xs font-semibold text-white">{notif.name}</div>
+            <div className="text-[10px] font-semibold" style={{ color: "#378ADD" }}>{notif.value}</div>
           </div>
           <span className="ml-1 h-1.5 w-1.5 rounded-full bg-[#378ADD] animate-pulse" />
         </div>
@@ -822,8 +919,15 @@ function CRMMockup() {
 
       {/* Pipeline Kanban board */}
       <div className="grid grid-cols-2 gap-2.5 p-3 md:grid-cols-4">
-        {PIPELINE_STAGES.map((stage, si) => (
-          <div key={stage.label} className="flex flex-col gap-2">
+        {stages.map((stage, si) => (
+          <div
+            key={stage.label}
+            className={`flex flex-col gap-2 ${colsVisible ? "crm-col-enter" : "opacity-0"}`}
+            style={colsVisible ? { animationDelay: `${STAGGER_DELAYS[si]}ms` } : {}}
+            onDragOver={(e) => handleDragOver(e, si)}
+            onDragLeave={handleDragLeave}
+            onDrop={(e) => handleDrop(e, si)}
+          >
             {/* Column header */}
             <div style={{ marginBottom: "4px" }}>
               <div className="flex items-center justify-between mb-1">
@@ -843,19 +947,29 @@ function CRMMockup() {
                   {stage.deals.length}
                 </span>
               </div>
-              <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.3)", paddingLeft: "14px" }}>
-                Total: {stage.total}
+              <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.3)", paddingLeft: "14px", transition: "all 0.5s ease" }}>
+                Total: {sumDeals(stage.deals)}
               </div>
             </div>
 
-            {/* Deal cards */}
-            <div className="flex flex-col gap-2">
-              {stage.deals.map((deal, di) => (
+            {/* Cards — drop zone highlight when dragging over */}
+            <div
+              className="flex flex-col gap-2 rounded-lg transition-all duration-200"
+              style={{
+                minHeight: "60px",
+                background: dragOver === si ? `${stage.color}0d` : "transparent",
+                border: dragOver === si ? `1px dashed ${stage.color}55` : "1px solid transparent",
+                padding: dragOver === si ? "4px" : "0",
+              }}
+            >
+              {stage.deals.map((deal) => (
                 <DealCardItem
-                  key={deal.company}
+                  key={deal.id}
                   deal={deal}
                   color={stage.color}
-                  flashNew={si === 0 && di === 0 && flashIdx === 0}
+                  isNew={newDealIds.has(deal.id)}
+                  onDragStart={(e) => handleDragStart(e, si, deal.id)}
+                  onDragEnd={handleDragEnd}
                 />
               ))}
             </div>
@@ -879,9 +993,9 @@ function CRMMockup() {
 
       {/* Status bar */}
       <div className="flex items-center justify-between border-t border-[#1f1f1f] px-4 py-2">
-        <span className="font-mono text-[10px] text-white/30">Último lead: hace 4 min</span>
+        <span className="font-mono text-[10px] text-white/30">Último lead: {lastLeadLabel}</span>
         <span className="font-mono text-[10px] font-semibold text-[#378ADD]">
-          Total pipeline: $76,700
+          Total pipeline: ${pipelineTotal.toLocaleString("en-US")}
         </span>
       </div>
     </div>
@@ -1399,6 +1513,11 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
 ];
 
+const MAX_RAW_SCORE = 180;
+function normalizeScore(raw: number) { return Math.round((raw / MAX_RAW_SCORE) * 100); }
+function getScoreColor(n: number) { return n <= 30 ? "#f87171" : n <= 60 ? "#facc15" : "#4ade80"; }
+function getScoreLabel(n: number) { return n <= 30 ? "Crítico" : n <= 60 ? "En riesgo" : "Listo para escalar"; }
+
 type QuizTier = {
   label: string;
   color: string;
@@ -1408,28 +1527,29 @@ type QuizTier = {
 };
 
 function getQuizTier(score: number): QuizTier {
-  if (score <= 39) {
+  const n = normalizeScore(score);
+  if (n <= 30) {
     return {
       label: "CRÍTICO",
-      color: "#ef4444",
-      title: "Tu negocio está perdiendo dinero todos los días.",
+      color: "#f87171",
+      title: "Tu negocio está perdiendo ventas cada día.",
       body: "Sin un sistema, cada lead que no respondes a tiempo es dinero que se va con tu competencia. Esto tiene solución inmediata.",
       cta: "Quiero solucionar esto ahora",
     };
   }
-  if (score <= 69) {
+  if (n <= 60) {
     return {
       label: "EN RIESGO",
-      color: "#f59e0b",
-      title: "Tienes base, pero te faltan las piezas clave.",
-      body: "Tu negocio funciona, pero está dejando dinero sobre la mesa. Un sistema bien conectado puede duplicar tu conversión.",
+      color: "#facc15",
+      title: "Estás dejando dinero sobre la mesa.",
+      body: "Tu negocio funciona, pero le faltan piezas clave. Un sistema bien conectado puede duplicar tu conversión.",
       cta: "Ver cómo mejorar mi sistema",
     };
   }
   return {
     label: "LISTO PARA ESCALAR",
-    color: "#10b981",
-    title: "Estás cerca. Solo necesitas conectar las piezas.",
+    color: "#4ade80",
+    title: "Estás listo para automatizar — actuemos rápido.",
     body: "Tienes la base. Con el sistema correcto puedes escalar sin contratar más gente.",
     cta: "Quiero escalar mi sistema",
   };
@@ -1454,6 +1574,29 @@ function AnimatedScore({ target }: { target: number }) {
   return <>{display}</>;
 }
 
+function LiveScore({ value }: { value: number }) {
+  const [display, setDisplay] = useState(0);
+  const prevRef = useRef(0);
+
+  useEffect(() => {
+    const from = prevRef.current;
+    prevRef.current = value;
+    if (from === value) return;
+    let start: number | null = null;
+    const duration = 500;
+    const tick = (ts: number) => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplay(Math.round(from + eased * (value - from)));
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [value]);
+
+  return <>{display}</>;
+}
+
 function CircularProgress({ score, color }: { score: number; color: string }) {
   const r = 54;
   const circ = 2 * Math.PI * r;
@@ -1461,7 +1604,7 @@ function CircularProgress({ score, color }: { score: number; color: string }) {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setOffset(circ - (score / 180) * circ);
+      setOffset(circ - (score / 100) * circ);
     }, 100);
     return () => clearTimeout(timeout);
   }, [score, circ]);
@@ -1491,16 +1634,22 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
   const [selectedPts, setSelectedPts] = useState<number[]>([]);
   const [score, setScore] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [liveScore, setLiveScore] = useState(0);
+  const [lastAnswer, setLastAnswer] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
   const [waSent, setWaSent] = useState(false);
   const [saved, setSaved] = useState(false);
 
   const totalQuestions = QUIZ_QUESTIONS.length;
-  const progress = ((current) / totalQuestions) * 100;
 
   function handleOption(label: string, pts: number) {
+    setSelectedOption(label);
+    setLiveScore((prev) => prev + pts);
     setVisible(false);
     setTimeout(() => {
+      setSelectedOption(null);
+      setLastAnswer(label);
       const newAnswers = [...answers, label];
       const newPts = [...selectedPts, pts];
       if (current + 1 < totalQuestions) {
@@ -1536,7 +1685,7 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
     const tier = getQuizTier(score);
     const summary = answers.map((a, i) => `P${i + 1}: ${a}`).join(" | ");
     const msg = encodeURIComponent(
-      `Hola, hice el diagnóstico de Monkeia.\nMi puntaje: ${score}/180 (${tier.label})\n${summary}`
+      `Hola, hice el diagnóstico de Monkeia.\nMi puntaje: ${normalizeScore(score)}/100 (${tier.label})\n${summary}`
     );
     if (phone) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1548,9 +1697,12 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
 
   const tier = step === "result" ? getQuizTier(score) : null;
   const q = QUIZ_QUESTIONS[current];
+  const normalizedLiveScore = normalizeScore(liveScore);
+  const scoreColor = getScoreColor(normalizedLiveScore);
+  const scoreLabel = getScoreLabel(normalizedLiveScore);
 
   return (
-    <section className="relative border-t border-[#1f1f1f] px-6 py-20">
+    <section className="relative border-t border-[#1f1f1f] px-6 py-12">
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="mb-4 text-center">
@@ -1571,18 +1723,18 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
 
         {/* Card */}
         <div
-          style={{
-            background: "rgba(10,15,30,0.95)",
-            border: "1px solid rgba(55,138,221,0.2)",
-            borderRadius: "16px",
-            padding: "clamp(24px, 5vw, 40px)",
-            maxWidth: "600px",
-            margin: "0 auto",
-            position: "relative",
-            overflow: "hidden",
-          }}
+          className="quiz-card"
+          style={{ maxWidth: "600px", margin: "0 auto" }}
         >
-          {/* Top progress bar */}
+          <div
+            style={{
+              borderRadius: "16px",
+              padding: "clamp(24px, 5vw, 40px)",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+          {/* Top progress bar — 3px gradient */}
           <div
             style={{
               position: "absolute",
@@ -1590,15 +1742,15 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
               left: 0,
               right: 0,
               height: "3px",
-              background: "rgba(55,138,221,0.15)",
+              background: "rgba(255,255,255,0.06)",
             }}
           >
             <div
               style={{
                 height: "100%",
-                background: "#378ADD",
-                width: `${step === "result" ? 100 : progress}%`,
-                transition: "width 0.4s ease",
+                background: "linear-gradient(90deg, #3b82f6, #8b5cf6)",
+                width: `${step === "result" ? 100 : ((current + 1) / totalQuestions) * 100}%`,
+                transition: "width 0.5s ease",
               }}
             />
           </div>
@@ -1606,67 +1758,186 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
           {/* Quiz step */}
           {step === "quiz" && (
             <div
+              key={current}
+              className="quiz-question-enter"
               style={{
                 opacity: visible ? 1 : 0,
-                transform: visible ? "translateY(0)" : "translateY(8px)",
-                transition: "opacity 0.3s ease, transform 0.3s ease",
+                transform: visible ? "translateX(0)" : "translateX(-20px)",
+                transition: "opacity 0.25s ease, transform 0.25s ease",
               }}
             >
-              <p
+              {/* Header row: counter + live score */}
+              <div
                 style={{
-                  fontSize: "0.75rem",
-                  color: "#378ADD",
-                  fontWeight: 600,
-                  letterSpacing: "0.1em",
-                  marginBottom: "20px",
-                  marginTop: "8px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  marginTop: "12px",
+                  marginBottom: "22px",
+                  gap: "16px",
                 }}
               >
-                Pregunta {current + 1} de {totalQuestions}
-              </p>
+                <div style={{ flex: 1 }}>
+                  <p
+                    style={{
+                      fontSize: "0.7rem",
+                      color: "rgba(255,255,255,0.35)",
+                      fontWeight: 600,
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    Pregunta {current + 1} de {totalQuestions}
+                  </p>
+                  {/* Progress bar */}
+                  <div
+                    style={{
+                      height: "3px",
+                      background: "rgba(255,255,255,0.08)",
+                      borderRadius: "999px",
+                      overflow: "hidden",
+                      maxWidth: "160px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: "100%",
+                        background: "linear-gradient(90deg, #3b82f6, #8b5cf6)",
+                        borderRadius: "999px",
+                        width: `${((current + 1) / totalQuestions) * 100}%`,
+                        transition: "width 0.5s ease",
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Live score */}
+                <div style={{ textAlign: "right", flexShrink: 0 }}>
+                  <div
+                    style={{
+                      fontSize: "48px",
+                      fontWeight: 800,
+                      color: scoreColor,
+                      lineHeight: 1,
+                      transition: "color 0.5s ease",
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    <LiveScore value={normalizedLiveScore} />
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "0.62rem",
+                      fontWeight: 700,
+                      letterSpacing: "0.1em",
+                      color: scoreColor,
+                      textTransform: "uppercase",
+                      transition: "color 0.5s ease",
+                      marginTop: "2px",
+                    }}
+                  >
+                    {scoreLabel}
+                  </div>
+                </div>
+              </div>
+
+              {/* Question */}
               <h3
                 style={{
-                  fontSize: "clamp(1.1rem, 2.5vw, 1.35rem)",
+                  fontSize: "clamp(1.05rem, 2.5vw, 1.3rem)",
                   fontWeight: 700,
                   color: "#fff",
-                  marginBottom: "24px",
-                  lineHeight: 1.3,
+                  marginBottom: "16px",
+                  lineHeight: 1.35,
                 }}
               >
                 {q.question}
               </h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                {q.options.map((opt) => (
-                  <button
-                    key={opt.label}
-                    onClick={() => handleOption(opt.label, opt.pts)}
-                    style={{
-                      width: "100%",
-                      textAlign: "left",
-                      padding: "14px 18px",
-                      background: "rgba(255,255,255,0.03)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      borderRadius: "10px",
-                      color: "rgba(255,255,255,0.85)",
-                      fontSize: "0.95rem",
-                      cursor: "pointer",
-                      transition: "all 0.18s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLButtonElement).style.background =
-                        "rgba(55,138,221,0.1)";
-                      (e.currentTarget as HTMLButtonElement).style.borderColor = "#378ADD";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLButtonElement).style.background =
-                        "rgba(255,255,255,0.03)";
-                      (e.currentTarget as HTMLButtonElement).style.borderColor =
-                        "rgba(255,255,255,0.08)";
-                    }}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
+
+              {/* Previous answer (locked) */}
+              {lastAnswer && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "9px 14px 9px 16px",
+                    background: "rgba(255,255,255,0.02)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    borderLeft: "3px solid rgba(255,255,255,0.12)",
+                    borderRadius: "8px",
+                    marginBottom: "10px",
+                    opacity: 0.45,
+                    cursor: "default",
+                  }}
+                >
+                  <span style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)" }}>
+                    {lastAnswer}
+                  </span>
+                  <span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.3)", flexShrink: 0 }}>
+                    ✓
+                  </span>
+                </div>
+              )}
+
+              {/* Options */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                {q.options.map((opt) => {
+                  const isSelected = selectedOption === opt.label;
+                  return (
+                    <button
+                      key={opt.label}
+                      onClick={() => handleOption(opt.label, opt.pts)}
+                      style={{
+                        width: "100%",
+                        textAlign: "left",
+                        padding: "13px 16px",
+                        background: isSelected
+                          ? "linear-gradient(135deg, rgba(59,130,246,0.18), rgba(139,92,246,0.18))"
+                          : "rgba(255,255,255,0.03)",
+                        border: isSelected
+                          ? "1px solid rgba(139,92,246,0.45)"
+                          : "1px solid rgba(255,255,255,0.07)",
+                        borderLeft: isSelected
+                          ? "3px solid #8b5cf6"
+                          : "3px solid transparent",
+                        borderRadius: "10px",
+                        color: isSelected ? "#fff" : "rgba(255,255,255,0.78)",
+                        fontSize: "0.9rem",
+                        cursor: "pointer",
+                        transition: "all 0.15s ease",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (isSelected) return;
+                        const el = e.currentTarget as HTMLButtonElement;
+                        el.style.background = "rgba(59,130,246,0.08)";
+                        el.style.borderColor = "rgba(59,130,246,0.25)";
+                        el.style.borderLeftColor = "#3b82f6";
+                      }}
+                      onMouseLeave={(e) => {
+                        if (isSelected) return;
+                        const el = e.currentTarget as HTMLButtonElement;
+                        el.style.background = "rgba(255,255,255,0.03)";
+                        el.style.borderColor = "rgba(255,255,255,0.07)";
+                        el.style.borderLeftColor = "transparent";
+                      }}
+                    >
+                      <span>{opt.label}</span>
+                      {isSelected && (
+                        <span
+                          className="quiz-check-appear"
+                          style={{ color: "#a78bfa", fontWeight: 700, flexShrink: 0, marginLeft: "8px" }}
+                        >
+                          ✓
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -1704,7 +1975,7 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
                 }}
               >
                 <div style={{ position: "relative", width: 136, height: 136, flexShrink: 0 }}>
-                  <CircularProgress score={score} color={tier.color} />
+                  <CircularProgress score={normalizeScore(score)} color={tier.color} />
                   <div
                     style={{
                       position: "absolute",
@@ -1723,10 +1994,10 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
                         lineHeight: 1,
                       }}
                     >
-                      <AnimatedScore target={score} />
+                      <AnimatedScore target={normalizeScore(score)} />
                     </span>
                     <span style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.35)" }}>
-                      / 180
+                      / 100
                     </span>
                   </div>
                 </div>
@@ -1848,6 +2119,7 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
               </div>
             </div>
           )}
+          </div>
         </div>
       </div>
     </section>
@@ -2522,26 +2794,32 @@ function ClosingCTA() {
   return (
     <section
       id="cta"
-      className="border-t border-[#1f1f1f] px-6"
+      className="relative overflow-hidden border-t border-[#1f1f1f] px-6"
       style={{ background: "#000", paddingTop: "100px", paddingBottom: "100px" }}
     >
-      <div className="mx-auto max-w-3xl text-center">
-        {/* Giant glitch "5" background */}
-        <div className="scanline-5 mb-0 select-none" aria-hidden="true">
-          <span
-            className="glitch-5 font-black leading-none"
-            style={{
-              fontSize: "clamp(8rem, 28vw, 18rem)",
-              color: "rgba(55,138,221,0.08)",
-              display: "inline-block",
-            }}
-          >
-            5
-          </span>
-        </div>
+      {/* Giant decorative "5" — absolute background, does not affect flow */}
+      <div
+        className="scanline-5 pointer-events-none select-none"
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 0,
+        }}
+      >
+        <span
+          className="glitch-5 deco-five font-black leading-none"
+          style={{ color: "rgba(55,138,221,0.1)", display: "block" }}
+        >
+          5
+        </span>
+      </div>
 
+      <div className="relative mx-auto max-w-3xl text-center" style={{ zIndex: 10 }}>
         {/* Badge */}
-        <div className="relative -mt-8 mb-8 flex justify-center">
+        <div className="mb-8 flex justify-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-5 py-2">
             <span
               className="h-2 w-2 rounded-full bg-red-500 animate-pulse"
