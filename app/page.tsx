@@ -2799,19 +2799,12 @@ function ClosingCTA() {
     >
       {/* Giant decorative "5" — absolute background, does not affect flow */}
       <div
-        className="scanline-5 pointer-events-none select-none"
+        className="scanline-5 pointer-events-none select-none absolute top-0 left-1/2 -translate-x-1/2 z-0"
         aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 0,
-        }}
       >
         <span
-          className="glitch-5 deco-five font-black leading-none"
-          style={{ color: "rgba(55,138,221,0.1)", display: "block" }}
+          className="glitch-5 font-black leading-none block text-[120px] md:text-[300px]"
+          style={{ color: "rgba(55,138,221,0.1)" }}
         >
           5
         </span>
