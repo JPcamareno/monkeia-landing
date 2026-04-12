@@ -2799,7 +2799,7 @@ function ClosingCTA() {
     >
       {/* Giant decorative "5" — absolute background, does not affect flow */}
       <div
-        className="scanline-5 pointer-events-none select-none absolute top-0 left-1/2 -translate-x-1/2 z-0"
+        className="scanline-5 pointer-events-none select-none absolute top-0 left-0 right-0 w-full text-center z-0"
         aria-hidden="true"
       >
         <span
