@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useRef, useState, useCallback, createContext, useContext } from "react";
+import { useEffect, useRef, useState, useCallback, createContext, useContext, useMemo } from "react";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 
@@ -1520,7 +1520,7 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
 
 const MAX_RAW_SCORE = 180;
 function normalizeScore(raw: number) { return Math.round((raw / MAX_RAW_SCORE) * 100); }
-function getScoreColor(n: number) { return n <= 30 ? "#f87171" : n <= 60 ? "#facc15" : "#4ade80"; }
+function getScoreColor(n: number) { return n === 0 ? "rgba(255,255,255,0.25)" : n <= 30 ? "#f87171" : n <= 60 ? "#facc15" : "#4ade80"; }
 function getScoreLabel(n: number) { return n <= 30 ? "Crítico" : n <= 60 ? "En riesgo" : "Listo para escalar"; }
 
 type QuizTier = {
@@ -1582,11 +1582,21 @@ function AnimatedScore({ target }: { target: number }) {
 function LiveScore({ value }: { value: number }) {
   const [display, setDisplay] = useState(0);
   const prevRef = useRef(0);
+  const spanRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const from = prevRef.current;
     prevRef.current = value;
     if (from === value) return;
+
+    // Pop animation
+    const el = spanRef.current;
+    if (el && value > 0) {
+      el.classList.remove("score-pop");
+      void el.offsetWidth; // force reflow to restart animation
+      el.classList.add("score-pop");
+    }
+
     let start: number | null = null;
     const duration = 500;
     const tick = (ts: number) => {
@@ -1599,7 +1609,7 @@ function LiveScore({ value }: { value: number }) {
     requestAnimationFrame(tick);
   }, [value]);
 
-  return <>{display}</>;
+  return <span ref={spanRef} className="inline-block">{display}</span>;
 }
 
 function CircularProgress({ score, color }: { score: number; color: string }) {
@@ -1629,6 +1639,45 @@ function CircularProgress({ score, color }: { score: number; color: string }) {
         style={{ transition: "stroke-dashoffset 1.5s cubic-bezier(0.34,1.56,0.64,1)" }}
       />
     </svg>
+  );
+}
+
+const CONFETTI_COLORS = ["#3b82f6", "#8b5cf6", "#a78bfa", "#60a5fa", "#c4b5fd", "#818cf8"];
+function QuizConfetti() {
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 26 }, (_, i) => ({
+        id: i,
+        x: 5 + Math.random() * 90,
+        delay: Math.random() * 0.7,
+        duration: 1.1 + Math.random() * 0.9,
+        color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+        size: Math.round(4 + Math.random() * 4),
+        borderRadius: Math.random() > 0.5 ? "50%" : "2px",
+      })),
+    []
+  );
+  return (
+    <div
+      aria-hidden="true"
+      style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 5 }}
+    >
+      {particles.map((p) => (
+        <div
+          key={p.id}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: `${p.x}%`,
+            width: p.size,
+            height: p.size,
+            background: p.color,
+            borderRadius: p.borderRadius,
+            animation: `confettiFall ${p.duration}s ${p.delay}s ease-in forwards`,
+          }}
+        />
+      ))}
+    </div>
   );
 }
 
@@ -1767,8 +1816,8 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
               className="quiz-question-enter"
               style={{
                 opacity: visible ? 1 : 0,
-                transform: visible ? "translateX(0)" : "translateX(-20px)",
-                transition: "opacity 0.25s ease, transform 0.25s ease",
+                transform: visible ? "translateX(0)" : "translateX(-32px)",
+                transition: "opacity 0.3s ease-in-out, transform 0.3s ease-in-out",
               }}
             >
               {/* Header row: counter + live score */}
@@ -1899,7 +1948,7 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
                         textAlign: "left",
                         padding: "13px 16px",
                         background: isSelected
-                          ? "linear-gradient(135deg, rgba(59,130,246,0.18), rgba(139,92,246,0.18))"
+                          ? "linear-gradient(135deg, rgba(59,130,246,0.20), rgba(139,92,246,0.20))"
                           : "rgba(255,255,255,0.03)",
                         border: isSelected
                           ? "1px solid rgba(139,92,246,0.45)"
@@ -1915,13 +1964,16 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
+                        opacity: selectedOption !== null && !isSelected ? 0.4 : 1,
                       }}
                       onMouseEnter={(e) => {
                         if (isSelected) return;
                         const el = e.currentTarget as HTMLButtonElement;
-                        el.style.background = "rgba(59,130,246,0.08)";
+                        el.style.background = "linear-gradient(135deg, rgba(59,130,246,0.10), rgba(139,92,246,0.10))";
                         el.style.borderColor = "rgba(59,130,246,0.25)";
                         el.style.borderLeftColor = "#3b82f6";
+                        const span = el.querySelector<HTMLSpanElement>("span.opt-label");
+                        if (span) span.style.transform = "translateX(4px)";
                       }}
                       onMouseLeave={(e) => {
                         if (isSelected) return;
@@ -1929,9 +1981,16 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
                         el.style.background = "rgba(255,255,255,0.03)";
                         el.style.borderColor = "rgba(255,255,255,0.07)";
                         el.style.borderLeftColor = "transparent";
+                        const span = el.querySelector<HTMLSpanElement>("span.opt-label");
+                        if (span) span.style.transform = "translateX(0)";
                       }}
                     >
-                      <span>{opt.label}</span>
+                      <span
+                        className="opt-label"
+                        style={{ transition: "transform 0.15s ease", display: "inline-block" }}
+                      >
+                        {opt.label}
+                      </span>
                       {isSelected && (
                         <span
                           className="quiz-check-appear"
@@ -1949,12 +2008,8 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
 
           {/* Result step */}
           {step === "result" && tier && (
-            <div
-              style={{
-                opacity: visible ? 1 : 0,
-                transition: "opacity 0.4s ease",
-              }}
-            >
+            <div className="result-reveal">
+              <QuizConfetti />
               <p
                 style={{
                   fontSize: "0.75rem",
