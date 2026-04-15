@@ -600,6 +600,22 @@ body {
   }
 }
 
+/* ── Workflow connector: traveling dot ───────────── */
+@keyframes connectorTravelH {
+  0%   { stroke-dashoffset: -8;  opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { stroke-dashoffset: 108; opacity: 0; }
+}
+@keyframes connectorTravelV {
+  0%   { stroke-dashoffset: -8;  opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { stroke-dashoffset: 108; opacity: 0; }
+}
+.connector-dot-h { animation: connectorTravelH 2.2s linear infinite; }
+.connector-dot-v { animation: connectorTravelV 2.2s linear infinite; }
+
 /* ── Thank-you page: animated check SVG ─────────── */
 @keyframes drawCheckCircle {
   from { stroke-dashoffset: 277; }

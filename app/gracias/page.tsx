@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 const WA = "https://wa.me/50683225178";
@@ -164,48 +164,46 @@ function AnimatedCheck() {
 }
 
 /* ─────────────────────────────────────────────
-   STEP CARD
+   WORKFLOW NODE
 ───────────────────────────────────────────── */
-function StepCard({
+function WorkflowNode({
   num,
   title,
   body,
+  visible,
   delay,
 }: {
-  num:   string;
-  title: string;
-  body:  string;
-  delay: number;
+  num:     string;
+  title:   string;
+  body:    string;
+  visible: boolean;
+  delay:   number;
 }) {
   return (
     <div
       style={{
         flex:         "1 1 0",
-        minWidth:     "220px",
-        maxWidth:     "340px",
-        background:   "rgba(15,20,40,0.90)",
-        border:       "1px solid rgba(255,255,255,0.08)",
-        borderRadius: "16px",
-        padding:      "28px 24px",
-        opacity:      0,
-        animation:    `roadmapFlyIn 0.65s cubic-bezier(0.22,1,0.36,1) ${delay}s forwards`,
+        background:   "#0f172a",
+        border:       "1px solid rgba(255,255,255,0.10)",
+        borderRadius: "12px",
+        padding:      "24px 20px",
+        opacity:      visible ? 1 : 0,
+        transform:    visible ? "translateY(0)" : "translateY(16px)",
+        transition:   `opacity 0.55s ease ${delay}ms, transform 0.55s cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
       }}
     >
-      {/* Step number */}
+      {/* Step label */}
       <span
         style={{
-          fontFamily:          "'Courier New', 'Lucida Console', monospace",
-          fontSize:            "2rem",
-          fontWeight:          700,
-          lineHeight:          1,
-          display:             "block",
-          marginBottom:        "18px",
-          background:          "linear-gradient(135deg, #378ADD, #8b5cf6)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip:     "text",
+          fontFamily:    "'Courier New', 'Lucida Console', monospace",
+          fontSize:      "0.62rem",
+          fontWeight:    700,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase" as const,
+          color:         "#378ADD",
+          display:       "block",
+          marginBottom:  "14px",
         }}
-        aria-hidden="true"
       >
         {num}
       </span>
@@ -213,10 +211,10 @@ function StepCard({
       {/* Title */}
       <h3
         style={{
-          fontSize:     "1rem",
+          fontSize:     "0.95rem",
           fontWeight:   700,
           color:        "#fff",
-          marginBottom: "8px",
+          margin:       "0 0 6px",
           lineHeight:   1.3,
         }}
       >
@@ -226,14 +224,122 @@ function StepCard({
       {/* Body */}
       <p
         style={{
-          fontSize:   "0.875rem",
-          color:      "rgba(255,255,255,0.45)",
-          lineHeight: 1.6,
+          fontSize:   "0.82rem",
+          color:      "rgba(255,255,255,0.42)",
+          lineHeight: 1.55,
           margin:     0,
         }}
       >
         {body}
       </p>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   FLOW CONNECTOR
+───────────────────────────────────────────── */
+function FlowConnector() {
+  return (
+    <>
+      {/* Desktop: horizontal line */}
+      <div
+        className="hidden sm:block"
+        style={{ flex: "0 0 56px", alignSelf: "center" }}
+      >
+        <svg
+          width="100%"
+          height="4"
+          viewBox="0 0 100 4"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <line x1="0" y1="2" x2="100" y2="2" stroke="#1e293b" strokeWidth="2" />
+          <line
+            x1="0" y1="2" x2="100" y2="2"
+            stroke="#3b82f6"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeDasharray="8 100"
+            className="connector-dot-h"
+          />
+        </svg>
+      </div>
+
+      {/* Mobile: vertical line */}
+      <div className="sm:hidden">
+        <div style={{ display: "flex", justifyContent: "center", height: "44px" }}>
+          <svg
+            width="4"
+            height="44"
+            viewBox="0 0 4 100"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <line x1="2" y1="0" x2="2" y2="100" stroke="#1e293b" strokeWidth="2" />
+            <line
+              x1="2" y1="0" x2="2" y2="100"
+              stroke="#3b82f6"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeDasharray="8 100"
+              className="connector-dot-v"
+            />
+          </svg>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   WORKFLOW DIAGRAM
+───────────────────────────────────────────── */
+function WorkflowDiagram() {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) { setVisible(true); io.disconnect(); }
+      },
+      { threshold: 0.15 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className="flex flex-col items-stretch sm:flex-row sm:items-center"
+    >
+      <WorkflowNode
+        num="01"
+        title="Revisamos tu situación"
+        body="Analizamos tu proceso antes de la llamada para no perder ni un minuto."
+        visible={visible}
+        delay={0}
+      />
+      <FlowConnector />
+      <WorkflowNode
+        num="02"
+        title="La llamada de 30 min"
+        body="Sin ventas. Solo diagnóstico honesto."
+        visible={visible}
+        delay={150}
+      />
+      <FlowConnector />
+      <WorkflowNode
+        num="03"
+        title="Tu hoja de ruta"
+        body="Recibes exactamente qué sistema necesitas y qué esperar."
+        visible={visible}
+        delay={300}
+      />
     </div>
   );
 }
@@ -393,34 +499,7 @@ export default function GraciasPage() {
             </h2>
           </div>
 
-          {/* Cards row */}
-          <div
-            style={{
-              display:        "flex",
-              gap:            "20px",
-              flexWrap:       "wrap",
-              justifyContent: "center",
-            }}
-          >
-            <StepCard
-              num="01"
-              title="Revisamos tu situación"
-              body="Analizamos tu proceso actual antes de la llamada para no perder ni un minuto."
-              delay={0.3}
-            />
-            <StepCard
-              num="02"
-              title="La llamada de 30 min"
-              body="Sin ventas. Solo diagnóstico honesto de dónde está la fuga en tu operación."
-              delay={0.48}
-            />
-            <StepCard
-              num="03"
-              title="Tu hoja de ruta"
-              body="Te entregamos exactamente qué sistema necesitas y los resultados esperados."
-              delay={0.66}
-            />
-          </div>
+          <WorkflowDiagram />
         </div>
       </section>
 
