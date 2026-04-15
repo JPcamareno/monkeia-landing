@@ -522,7 +522,7 @@ function AnimatedHeadline({ text, accent }: { text: string; accent: string }) {
     <h1
       className="mb-6 font-extrabold leading-[1.04] tracking-tight text-white"
       style={{
-        fontSize: "clamp(1.875rem, 4vw, 3rem)",
+        fontSize: "clamp(2rem, 5vw, 3.75rem)",
         display: "flex",
         flexWrap: "wrap",
         gap: "0 0.3em",
@@ -1118,7 +1118,7 @@ function Hero() {
 
         <div
           className="mx-auto mb-10 max-w-2xl text-white/60"
-          style={{ fontSize: "clamp(1rem, 2vw, 1.2rem)" }}
+          style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}
         >
           <p>Mientras duermes, el sistema trabaja.</p>
           <p>Cada lead respondido. Cada venta perseguida.</p>
@@ -1259,11 +1259,11 @@ function WorkflowCard({ step, idx }: { step: WFStep; idx: number }) {
         }} />
       </div>
       {/* Title */}
-      <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem", lineHeight: 1.35, margin: "0 0 8px" }}>
+      <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "1.05rem", lineHeight: 1.35, margin: "0 0 8px" }}>
         {step.title}
       </h3>
       {/* Body */}
-      <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.8rem", lineHeight: 1.6, margin: "0 0 14px" }}>
+      <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.9rem", lineHeight: 1.6, margin: "0 0 14px" }}>
         {step.body}
       </p>
       {/* Tag */}
@@ -1391,13 +1391,13 @@ function Roadmap() {
         </div>
         <h2
           className="mb-4 text-balance font-extrabold tracking-tight text-white"
-          style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)" }}
+          style={{ fontSize: "clamp(2rem, 5vw, 3.75rem)" }}
         >
           Simple. Claro. Sin sorpresas.
         </h2>
         <p
           className="mb-0 text-white/40"
-          style={{ fontSize: "clamp(1rem, 2vw, 1.125rem)" }}
+          style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}
         >
           Esto es exactamente lo que pasa desde que nos contactas hasta que tu sistema está funcionando.
         </p>
@@ -1447,10 +1447,10 @@ function Roadmap() {
               </span>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: step.color, boxShadow: `0 0 6px ${step.color}` }} />
             </div>
-            <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem", lineHeight: 1.35, margin: "0 0 8px" }}>
+            <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "1.05rem", lineHeight: 1.35, margin: "0 0 8px" }}>
               {step.title}
             </h3>
-            <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.8rem", lineHeight: 1.6, margin: "0 0 14px" }}>
+            <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.9rem", lineHeight: 1.6, margin: "0 0 14px" }}>
               {step.body}
             </p>
             <span style={{
@@ -1764,13 +1764,13 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
         </div>
         <h2
           className="mb-4 text-balance text-center font-extrabold tracking-tight text-white"
-          style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)" }}
+          style={{ fontSize: "clamp(2rem, 5vw, 3.75rem)" }}
         >
           En 2 minutos sabes exactamente por qué no estás cerrando más.
         </h2>
         <p
           className="mb-12 text-center text-white/40"
-          style={{ fontSize: "clamp(1rem, 2vw, 1.15rem)" }}
+          style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}
         >
           5 preguntas. Sin rodeos. Con tu resultado al final.
         </p>
@@ -2219,13 +2219,13 @@ function Problem() {
         </div>
         <h2
           className="mb-4 text-balance text-center font-extrabold tracking-tight text-white"
-          style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)" }}
+          style={{ fontSize: "clamp(2rem, 5vw, 3.75rem)" }}
         >
           No es falta de leads.
         </h2>
         <p
           className="mb-16 text-center text-white/40"
-          style={{ fontSize: "clamp(1rem, 2vw, 1.2rem)" }}
+          style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}
         >
           Es lo que pasa después.
         </p>
@@ -2257,7 +2257,7 @@ function ProblemCard({
       <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[#378ADD]/10 text-[#378ADD]">
         {pain.icon}
       </div>
-      <h3 className="mb-3 text-lg font-bold leading-snug text-white">
+      <h3 className="mb-3 text-xl font-bold leading-snug text-white">
         {pain.title}
       </h3>
       <p className="leading-relaxed text-white/50">{pain.body}</p>
@@ -2576,7 +2576,7 @@ function Proof() {
         </div>
         <h2
           className="mb-16 text-balance text-center font-extrabold tracking-tight text-white"
-          style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)" }}
+          style={{ fontSize: "clamp(2rem, 5vw, 3.75rem)" }}
         >
           Funciona.
         </h2>
@@ -2689,13 +2689,13 @@ function Services() {
           </div>
           <h2
             className="mb-4 font-extrabold tracking-tight text-white"
-            style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)" }}
+            style={{ fontSize: "clamp(2rem, 5vw, 3.75rem)" }}
           >
             Elige por dónde empezar.
           </h2>
           <p
             className="mx-auto max-w-xl text-balance leading-relaxed text-white/50"
-            style={{ fontSize: "clamp(0.95rem, 2vw, 1.1rem)" }}
+            style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}
           >
             Cada negocio es diferente. Por eso cada sistema se diseña a medida.
           </p>
@@ -2778,7 +2778,7 @@ function Services() {
               {/* Title */}
               <h3
                 className="mb-3 font-bold leading-snug text-white"
-                style={{ fontSize: card.featured ? "1.2rem" : "1.05rem" }}
+                style={{ fontSize: card.featured ? "1.5rem" : "1.2rem" }}
               >
                 {card.title}
               </h3>
@@ -2794,7 +2794,7 @@ function Services() {
                   <li
                     key={f}
                     className="flex items-start gap-2.5"
-                    style={{ fontSize: "13px", color: "rgba(255,255,255,0.65)" }}
+                    style={{ fontSize: "14px", color: "rgba(255,255,255,0.65)" }}
                   >
                     {/* Checkmark circle */}
                     <span
@@ -2900,7 +2900,7 @@ function ClosingCTA() {
         {/* Subtext — three lines */}
         <p
           className="mb-10 leading-loose"
-          style={{ fontSize: "clamp(0.95rem, 2vw, 1.1rem)", color: "rgba(255,255,255,0.45)" }}
+          style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)", color: "rgba(255,255,255,0.45)" }}
         >
           Cada sistema se diseña e implementa a medida.
           <br />
@@ -2917,7 +2917,7 @@ function ClosingCTA() {
         {/* Trust signals */}
         <p
           className="mt-6"
-          style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)" }}
+          style={{ fontSize: "14px", color: "rgba(255,255,255,0.4)" }}
         >
           Sin compromiso · Respuesta en menos de 24h · Diagnóstico 100% gratuito
         </p>
