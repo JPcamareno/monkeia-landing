@@ -168,13 +168,11 @@ function AnimatedCheck() {
 ───────────────────────────────────────────── */
 function StepCard({
   num,
-  emoji,
   title,
   body,
   delay,
 }: {
   num:   string;
-  emoji: string;
   title: string;
   body:  string;
   delay: number;
@@ -196,30 +194,20 @@ function StepCard({
       {/* Step number */}
       <span
         style={{
-          fontFamily:    "'Courier New', monospace",
-          fontSize:      "0.62rem",
-          fontWeight:    700,
-          letterSpacing: "0.14em",
-          textTransform: "uppercase",
-          color:         "#378ADD",
-          marginBottom:  "16px",
-          display:       "block",
-        }}
-      >
-        {num}
-      </span>
-
-      {/* Emoji icon */}
-      <span
-        style={{
-          fontSize:     "2rem",
-          display:      "block",
-          marginBottom: "14px",
-          lineHeight:   1,
+          fontFamily:          "'Courier New', 'Lucida Console', monospace",
+          fontSize:            "2rem",
+          fontWeight:          700,
+          lineHeight:          1,
+          display:             "block",
+          marginBottom:        "18px",
+          background:          "linear-gradient(135deg, #378ADD, #8b5cf6)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip:     "text",
         }}
         aria-hidden="true"
       >
-        {emoji}
+        {num}
       </span>
 
       {/* Title */}
@@ -415,22 +403,19 @@ export default function GraciasPage() {
             }}
           >
             <StepCard
-              num="PASO 01"
-              emoji="🔍"
+              num="01"
               title="Revisamos tu situación"
               body="Analizamos tu proceso actual antes de la llamada para no perder ni un minuto."
               delay={0.3}
             />
             <StepCard
-              num="PASO 02"
-              emoji="📞"
+              num="02"
               title="La llamada de 30 min"
               body="Sin ventas. Solo diagnóstico honesto de dónde está la fuga en tu operación."
               delay={0.48}
             />
             <StepCard
-              num="PASO 03"
-              emoji="📄"
+              num="03"
               title="Tu hoja de ruta"
               body="Te entregamos exactamente qué sistema necesitas y los resultados esperados."
               delay={0.66}
