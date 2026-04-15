@@ -164,20 +164,31 @@ function AnimatedCheck() {
 }
 
 /* ─────────────────────────────────────────────
-   WORKFLOW NODE
+   WORKFLOW DIAGRAM
 ───────────────────────────────────────────── */
-function WorkflowNode({
-  num,
-  title,
-  body,
-  visible,
-  delay,
+
+const WF_NODES = [
+  {
+    num:   "01",
+    title: "Revisamos tu situación",
+    body:  "Analizamos tu proceso antes de la llamada para no perder ni un minuto.",
+  },
+  {
+    num:   "02",
+    title: "La llamada de 30 min",
+    body:  "Sin ventas. Solo diagnóstico honesto.",
+  },
+  {
+    num:   "03",
+    title: "Tu hoja de ruta",
+    body:  "Recibes exactamente qué sistema necesitas y qué esperar.",
+  },
+];
+
+function WFNode({
+  num, title, body, drawn, delay,
 }: {
-  num:     string;
-  title:   string;
-  body:    string;
-  visible: boolean;
-  delay:   number;
+  num: string; title: string; body: string; drawn: boolean; delay: number;
 }) {
   return (
     <div
@@ -187,12 +198,11 @@ function WorkflowNode({
         border:       "1px solid rgba(255,255,255,0.10)",
         borderRadius: "12px",
         padding:      "24px 20px",
-        opacity:      visible ? 1 : 0,
-        transform:    visible ? "translateY(0)" : "translateY(16px)",
+        opacity:      drawn ? 1 : 0,
+        transform:    drawn ? "translateY(0)" : "translateY(16px)",
         transition:   `opacity 0.55s ease ${delay}ms, transform 0.55s cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
       }}
     >
-      {/* Step label */}
       <span
         style={{
           fontFamily:    "'Courier New', 'Lucida Console', monospace",
@@ -207,21 +217,17 @@ function WorkflowNode({
       >
         {num}
       </span>
-
-      {/* Title */}
       <h3
         style={{
-          fontSize:     "0.95rem",
-          fontWeight:   700,
-          color:        "#fff",
-          margin:       "0 0 6px",
-          lineHeight:   1.3,
+          fontSize:   "0.95rem",
+          fontWeight: 700,
+          color:      "#fff",
+          margin:     "0 0 6px",
+          lineHeight: 1.3,
         }}
       >
         {title}
       </h3>
-
-      {/* Body */}
       <p
         style={{
           fontSize:   "0.82rem",
@@ -236,67 +242,95 @@ function WorkflowNode({
   );
 }
 
-/* ─────────────────────────────────────────────
-   FLOW CONNECTOR
-───────────────────────────────────────────── */
-function FlowConnector() {
+/* horizontal bezier connector — desktop only */
+function ConnH({
+  id, drawn, dots, delay,
+}: {
+  id: string; drawn: boolean; dots: boolean; delay: number;
+}) {
   return (
-    <>
-      {/* Desktop: horizontal line */}
-      <div
-        className="hidden sm:block"
-        style={{ flex: "0 0 56px", alignSelf: "center" }}
-      >
-        <svg
-          width="100%"
-          height="4"
-          viewBox="0 0 100 4"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <line x1="0" y1="2" x2="100" y2="2" stroke="#1e293b" strokeWidth="2" />
-          <line
-            x1="0" y1="2" x2="100" y2="2"
-            stroke="#3b82f6"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeDasharray="8 100"
-            className="connector-dot-h"
-          />
-        </svg>
-      </div>
-
-      {/* Mobile: vertical line */}
-      <div className="sm:hidden">
-        <div style={{ display: "flex", justifyContent: "center", height: "44px" }}>
-          <svg
-            width="4"
-            height="44"
-            viewBox="0 0 4 100"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <line x1="2" y1="0" x2="2" y2="100" stroke="#1e293b" strokeWidth="2" />
-            <line
-              x1="2" y1="0" x2="2" y2="100"
-              stroke="#3b82f6"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeDasharray="8 100"
-              className="connector-dot-v"
-            />
-          </svg>
-        </div>
-      </div>
-    </>
+    <div className="hidden sm:block" style={{ flex: "0 0 64px", alignSelf: "center" }}>
+      <svg width="64" height="80" viewBox="0 0 64 80" aria-hidden="true">
+        {/* track */}
+        <path
+          d="M 0,40 C 16,18 48,18 64,40"
+          fill="none"
+          stroke="rgba(255,255,255,0.06)"
+          strokeWidth="2"
+        />
+        {/* animated draw */}
+        <path
+          id={id}
+          d="M 0,40 C 16,18 48,18 64,40"
+          fill="none"
+          stroke="#3b82f6"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeDasharray="500"
+          style={{
+            strokeDashoffset: drawn ? 0 : 500,
+            transition:       `stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1) ${delay}ms`,
+          }}
+        />
+        {dots && (
+          <circle r="4" fill="#3b82f6">
+            <animateMotion dur="2.2s" repeatCount="indefinite">
+              <mpath href={`#${id}`} />
+            </animateMotion>
+          </circle>
+        )}
+      </svg>
+    </div>
   );
 }
 
-/* ─────────────────────────────────────────────
-   WORKFLOW DIAGRAM
-───────────────────────────────────────────── */
+/* vertical S-curve connector — mobile only */
+function ConnV({
+  id, drawn, dots, delay,
+}: {
+  id: string; drawn: boolean; dots: boolean; delay: number;
+}) {
+  return (
+    <div className="sm:hidden">
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <svg width="80" height="56" viewBox="0 0 80 56" aria-hidden="true">
+          {/* track */}
+          <path
+            d="M 40,0 C 16,14 64,42 40,56"
+            fill="none"
+            stroke="rgba(255,255,255,0.06)"
+            strokeWidth="2"
+          />
+          {/* animated draw */}
+          <path
+            id={id}
+            d="M 40,0 C 16,14 64,42 40,56"
+            fill="none"
+            stroke="#3b82f6"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeDasharray="500"
+            style={{
+              strokeDashoffset: drawn ? 0 : 500,
+              transition:       `stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1) ${delay}ms`,
+            }}
+          />
+          {dots && (
+            <circle r="4" fill="#3b82f6">
+              <animateMotion dur="2.2s" repeatCount="indefinite">
+                <mpath href={`#${id}`} />
+              </animateMotion>
+            </circle>
+          )}
+        </svg>
+      </div>
+    </div>
+  );
+}
+
 function WorkflowDiagram() {
-  const [visible, setVisible] = useState(false);
+  const [drawn, setDrawn] = useState(false);
+  const [dots,  setDots]  = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -304,7 +338,11 @@ function WorkflowDiagram() {
     if (!el) return;
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) { setVisible(true); io.disconnect(); }
+        if (entry.isIntersecting) {
+          setDrawn(true);
+          setTimeout(() => setDots(true), 1700);
+          io.disconnect();
+        }
       },
       { threshold: 0.15 }
     );
@@ -313,33 +351,14 @@ function WorkflowDiagram() {
   }, []);
 
   return (
-    <div
-      ref={ref}
-      className="flex flex-col items-stretch sm:flex-row sm:items-center"
-    >
-      <WorkflowNode
-        num="01"
-        title="Revisamos tu situación"
-        body="Analizamos tu proceso antes de la llamada para no perder ni un minuto."
-        visible={visible}
-        delay={0}
-      />
-      <FlowConnector />
-      <WorkflowNode
-        num="02"
-        title="La llamada de 30 min"
-        body="Sin ventas. Solo diagnóstico honesto."
-        visible={visible}
-        delay={150}
-      />
-      <FlowConnector />
-      <WorkflowNode
-        num="03"
-        title="Tu hoja de ruta"
-        body="Recibes exactamente qué sistema necesitas y qué esperar."
-        visible={visible}
-        delay={300}
-      />
+    <div ref={ref} className="flex flex-col sm:flex-row sm:items-stretch">
+      <WFNode {...WF_NODES[0]} drawn={drawn} delay={0}   />
+      <ConnH id="wf-d-c1" drawn={drawn} dots={dots} delay={200} />
+      <ConnV id="wf-m-c1" drawn={drawn} dots={dots} delay={200} />
+      <WFNode {...WF_NODES[1]} drawn={drawn} delay={150} />
+      <ConnH id="wf-d-c2" drawn={drawn} dots={dots} delay={500} />
+      <ConnV id="wf-m-c2" drawn={drawn} dots={dots} delay={500} />
+      <WFNode {...WF_NODES[2]} drawn={drawn} delay={300} />
     </div>
   );
 }
