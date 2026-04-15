@@ -26,7 +26,7 @@ function getSupabase() {
 const WA =
   "https://wa.me/50683225178?text=Hola%2C%20quiero%20solicitar%20el%20diagn%C3%B3stico%20gratuito%20de%20Monkeia";
 
-const TIDYCAL = "https://tidycal.com/monkeia/aseseoria";
+const TIDYCAL = "https://tidycal.com/monkeia/aseseoria?redirect=https://monkeia-landing.vercel.app/gracias";
 
 /* ─────────────────────────────────────────────
    BOOKING MODAL CONTEXT

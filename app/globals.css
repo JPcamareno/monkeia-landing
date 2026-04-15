@@ -600,6 +600,16 @@ body {
   }
 }
 
+/* ── Thank-you page: animated check SVG ─────────── */
+@keyframes drawCheckCircle {
+  from { stroke-dashoffset: 277; }
+  to   { stroke-dashoffset: 0;   }
+}
+@keyframes drawCheckMark {
+  from { stroke-dashoffset: 62; }
+  to   { stroke-dashoffset: 0;  }
+}
+
 /* ── Quiz score pop ─────────────────────────────── */
 @keyframes scorePop {
   0%   { transform: scale(1); }
