@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, createContext, useContext } from "react";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 
@@ -29,63 +29,69 @@ const WA =
 const TIDYCAL = "https://tidycal.com/monkeia/aseseoria";
 
 /* ─────────────────────────────────────────────
+   BOOKING MODAL CONTEXT
+───────────────────────────────────────────── */
+const BookingModalContext = createContext<(() => void) | null>(null);
+function useOpenBooking() {
+  const open = useContext(BookingModalContext);
+  if (!open) throw new Error("useOpenBooking must be used inside BookingModalContext.Provider");
+  return open;
+}
+
+/* ─────────────────────────────────────────────
    BOOKING MODAL
 ───────────────────────────────────────────── */
 function BookingModal({ onClose }: { onClose: () => void }) {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
   return (
     <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.9)",
-        zIndex: 50,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
       onClick={onClose}
     >
+      {/* Card */}
       <div
-        style={{
-          width: "90vw",
-          maxWidth: "800px",
-          height: "85vh",
-          background: "#0a0a0a",
-          border: "1px solid rgba(255,255,255,0.1)",
-          borderRadius: "12px",
-          position: "relative",
-          overflow: "hidden",
-        }}
+        className="relative flex w-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0f172a] sm:max-w-2xl"
+        style={{ height: "min(90dvh, 680px)" }}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Close button */}
         <button
           onClick={onClose}
           aria-label="Cerrar"
-          style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            width: "40px",
-            height: "40px",
-            background: "transparent",
-            border: "none",
-            color: "white",
-            fontSize: "18px",
-            cursor: "pointer",
-            zIndex: 10,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
         >
-          âœ•
+          ✕
         </button>
+
+        {/* Loading spinner */}
+        {!loaded && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <svg
+              className="h-10 w-10 animate-spin text-white/40"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+            </svg>
+          </div>
+        )}
+
+        {/* Mobile: 100dvh full screen; desktop: fixed height */}
         <iframe
           src={TIDYCAL}
           width="100%"
-          height="100%"
-          style={{ border: "none", display: "block" }}
+          className="block h-full w-full sm:h-full"
+          style={{ border: "none", height: "100%" }}
           title="Agendar sesión"
+          onLoad={() => setLoaded(true)}
         />
       </div>
     </div>
@@ -546,7 +552,8 @@ function CTAButton({
   children: React.ReactNode;
   large?: boolean;
 }) {
-  const btnRef = useRef<HTMLAnchorElement>(null);
+  const openBooking = useOpenBooking();
+  const btnRef = useRef<HTMLButtonElement>(null);
   const burstRef = useRef<HTMLSpanElement>(null);
 
   const onEnter = useCallback(() => {
@@ -575,17 +582,15 @@ function CTAButton({
   }, []);
 
   return (
-    <a
+    <button
       ref={btnRef}
-      href={TIDYCAL}
-      target="_blank"
-      rel="noopener noreferrer"
+      onClick={openBooking}
       onMouseEnter={onEnter}
       className={`cta-breathe relative inline-flex cursor-pointer items-center justify-center overflow-visible rounded-lg bg-[#378ADD] font-semibold text-white transition-colors duration-200 hover:bg-[#2a6db5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#378ADD] ${large ? "px-10 py-5 text-base" : "px-8 py-4 text-sm"}`}
     >
       <span ref={burstRef} aria-hidden="true" className="pointer-events-none absolute inset-0" />
       {children}
-    </a>
+    </button>
   );
 }
 
@@ -2590,6 +2595,27 @@ const SERVICE_CARDS = [
   },
 ];
 
+function PricingCTA({ featured, children }: { featured: boolean; children: React.ReactNode }) {
+  const openBooking = useOpenBooking();
+  return (
+    <button
+      onClick={openBooking}
+      className="flex w-full items-center justify-center font-semibold transition-opacity duration-200 hover:opacity-80"
+      style={{
+        height: "44px",
+        borderRadius: "8px",
+        fontSize: "14px",
+        background: featured ? "#10b981" : "rgba(255,255,255,0.07)",
+        color: featured ? "#fff" : "rgba(255,255,255,0.8)",
+        border: featured ? "none" : "1px solid rgba(255,255,255,0.1)",
+        cursor: "pointer",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
 function Services() {
   const ref = useSpringVisible();
   return (
@@ -2756,28 +2782,7 @@ function Services() {
 
               {/* CTA */}
               <div className="mt-auto">
-                <a
-                  href={TIDYCAL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center font-semibold transition-opacity duration-200 hover:opacity-80"
-                  style={{
-                    width: "100%",
-                    height: "44px",
-                    borderRadius: "8px",
-                    fontSize: "14px",
-                    background: card.featured
-                      ? "#10b981"
-                      : "rgba(255,255,255,0.07)",
-                    color: card.featured ? "#fff" : "rgba(255,255,255,0.8)",
-                    border: card.featured
-                      ? "none"
-                      : "1px solid rgba(255,255,255,0.1)",
-                    textDecoration: "none",
-                  }}
-                >
-                  {card.cta}
-                </a>
+                <PricingCTA featured={card.featured}>{card.cta}</PricingCTA>
               </div>
             </div>
           ))}
@@ -2903,24 +2908,27 @@ function Footer() {
 ───────────────────────────────────────────── */
 export default function Home() {
   const [bookingOpen, setBookingOpen] = useState(false);
+  const openBooking = useCallback(() => setBookingOpen(true), []);
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <CursorGlow />
-      <Nav />
-      <main>
-        <Hero />
-        {/* <ClientsCarousel /> */}
-        <Problem />
-        <AutomationQuiz onOpenBooking={() => setBookingOpen(true)} />
-        {bookingOpen && <BookingModal onClose={() => setBookingOpen(false)} />}
-        <Roadmap />
-        <Proof />
-        <Services />
-        <ClosingCTA />
-      </main>
-      <Footer />
-    </div>
+    <BookingModalContext.Provider value={openBooking}>
+      <div className="min-h-screen bg-black text-white">
+        <CursorGlow />
+        <Nav />
+        <main>
+          <Hero />
+          {/* <ClientsCarousel /> */}
+          <Problem />
+          <AutomationQuiz onOpenBooking={openBooking} />
+          {bookingOpen && <BookingModal onClose={() => setBookingOpen(false)} />}
+          <Roadmap />
+          <Proof />
+          <Services />
+          <ClosingCTA />
+        </main>
+        <Footer />
+      </div>
+    </BookingModalContext.Provider>
   );
 }
 
