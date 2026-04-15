@@ -1085,10 +1085,20 @@ function CRMMockup() {
 
 function Nav() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#1f1f1f] bg-black/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md">
+      {/* Row 1: logo + CTA */}
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 border-b border-[#1f1f1f]">
         <Image src="/logo.svg" alt="Monkeia" width={120} height={40} style={{objectFit: 'contain'}} />
         <CTAButton>Diagnóstico gratis</CTAButton>
+      </div>
+      {/* Row 2: status ticker */}
+      <div className="border-b border-[#1f1f1f] bg-[#080808] py-2 flex justify-center">
+        <div className="inline-flex items-center gap-2 rounded-full border border-[#378ADD]/30 bg-[#378ADD]/[0.07] px-4 py-1">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#378ADD] animate-pulse" />
+          <span className="terminal-label" style={{ letterSpacing: "0.14em" }}>
+            &gt;&gt; SISTEMA ACTIVO — PROCESANDO LEADS EN ESTE MOMENTO
+          </span>
+        </div>
       </div>
     </header>
   );
@@ -1099,16 +1109,8 @@ function Nav() {
 ───────────────────────────────────────────── */
 function Hero() {
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden px-6 pt-24 pb-20">
+    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-36 pb-20">
       <NetworkBackground />
-
-      {/* Badge — direct flex child so it always lands just below the Nav */}
-      <div className="badge-float mb-8 inline-flex items-center gap-2 rounded-full border border-[#378ADD]/30 bg-[#378ADD]/[0.07] px-4 py-2">
-        <span className="h-2 w-2 rounded-full bg-[#378ADD] animate-pulse" />
-        <span className="terminal-label" style={{ letterSpacing: "0.14em" }}>
-          &gt;&gt; SISTEMA ACTIVO — PROCESANDO LEADS EN ESTE MOMENTO
-        </span>
-      </div>
 
       <div className="relative mx-auto max-w-5xl text-center">
         <AnimatedHeadline
