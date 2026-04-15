@@ -522,7 +522,7 @@ function AnimatedHeadline({ text, accent }: { text: string; accent: string }) {
     <h1
       className="mb-6 font-extrabold leading-[1.04] tracking-tight text-white"
       style={{
-        fontSize: "clamp(2.8rem, 6.5vw, 5.2rem)",
+        fontSize: "clamp(1.875rem, 4vw, 3rem)",
         display: "flex",
         flexWrap: "wrap",
         gap: "0 0.3em",
@@ -899,6 +899,14 @@ function CRMMockup() {
         </span>
       </div>
 
+      {/* Status ticker */}
+      <div className="border-b border-[#1f1f1f] bg-[#0a0a0a] px-4 py-1.5 flex items-center justify-center gap-2">
+        <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#378ADD] animate-pulse" />
+        <span className="terminal-label" style={{ letterSpacing: "0.12em", fontSize: "9px" }}>
+          SISTEMA ACTIVO — PROCESANDO LEADS EN ESTE MOMENTO
+        </span>
+      </div>
+
       {/* Toast notification */}
       {notif && (
         <div
@@ -1085,20 +1093,10 @@ function CRMMockup() {
 
 function Nav() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md">
-      {/* Row 1: logo + CTA */}
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 border-b border-[#1f1f1f]">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#1f1f1f] bg-black/90 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Image src="/logo.svg" alt="Monkeia" width={120} height={40} style={{objectFit: 'contain'}} />
         <CTAButton>Diagnóstico gratis</CTAButton>
-      </div>
-      {/* Row 2: status ticker */}
-      <div className="border-b border-[#1f1f1f] bg-[#080808] py-2 flex justify-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-[#378ADD]/30 bg-[#378ADD]/[0.07] px-4 py-1">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#378ADD] animate-pulse" />
-          <span className="terminal-label" style={{ letterSpacing: "0.14em" }}>
-            &gt;&gt; SISTEMA ACTIVO — PROCESANDO LEADS EN ESTE MOMENTO
-          </span>
-        </div>
       </div>
     </header>
   );
@@ -1109,7 +1107,7 @@ function Nav() {
 ───────────────────────────────────────────── */
 function Hero() {
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-44 pb-20">
+    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-28 pb-20">
       <NetworkBackground />
 
       <div className="relative mx-auto max-w-3xl text-center">
