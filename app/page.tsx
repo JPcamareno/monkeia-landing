@@ -1112,7 +1112,7 @@ function Hero() {
     <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-44 pb-20">
       <NetworkBackground />
 
-      <div className="relative mx-auto max-w-5xl text-center">
+      <div className="relative mx-auto max-w-3xl text-center">
         <AnimatedHeadline
           text="El 78% de tus leads le compra al primero que responde."
           accent="¿Ese primero eres tú?"
