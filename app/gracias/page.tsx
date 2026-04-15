@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import ReactFlow, { Background, Handle, Position, type Edge, type Node, type NodeProps } from "reactflow";
+import "reactflow/dist/style.css";
 
 const WA = "https://wa.me/50683225178";
 
@@ -164,45 +166,26 @@ function AnimatedCheck() {
 }
 
 /* ─────────────────────────────────────────────
-   WORKFLOW DIAGRAM
+   WORKFLOW DIAGRAM — ReactFlow
 ───────────────────────────────────────────── */
 
-const WF_NODES = [
-  {
-    num:   "01",
-    title: "Revisamos tu situación",
-    body:  "Analizamos tu proceso antes de la llamada para no perder ni un minuto.",
-  },
-  {
-    num:   "02",
-    title: "La llamada de 30 min",
-    body:  "Sin ventas. Solo diagnóstico honesto.",
-  },
-  {
-    num:   "03",
-    title: "Tu hoja de ruta",
-    body:  "Recibes exactamente qué sistema necesitas y qué esperar.",
-  },
-];
-
-function WFNode({
-  num, title, body, drawn, delay,
-}: {
-  num: string; title: string; body: string; drawn: boolean; delay: number;
-}) {
+function WorkflowNodeCard({ data }: NodeProps) {
+  const parts = (data.label as string).split(" — ");
   return (
     <div
       style={{
-        flex:         "1 1 0",
         background:   "#0f172a",
-        border:       "1px solid rgba(255,255,255,0.10)",
+        border:       "1px solid rgba(255,255,255,0.1)",
         borderRadius: "12px",
-        padding:      "24px 20px",
-        opacity:      drawn ? 1 : 0,
-        transform:    drawn ? "translateY(0)" : "translateY(16px)",
-        transition:   `opacity 0.55s ease ${delay}ms, transform 0.55s cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
+        padding:      "16px",
+        width:        "180px",
       }}
     >
+      <Handle
+        type="target"
+        position={Position.Left}
+        style={{ opacity: 0, pointerEvents: "none" }}
+      />
       <span
         style={{
           fontFamily:    "'Courier New', 'Lucida Console', monospace",
@@ -212,153 +195,86 @@ function WFNode({
           textTransform: "uppercase" as const,
           color:         "#378ADD",
           display:       "block",
-          marginBottom:  "14px",
+          marginBottom:  "8px",
         }}
       >
-        {num}
+        {parts[0]}
       </span>
       <h3
         style={{
-          fontSize:   "0.95rem",
+          fontSize:   "0.85rem",
           fontWeight: 700,
           color:      "#fff",
-          margin:     "0 0 6px",
+          margin:     "0 0 4px",
           lineHeight: 1.3,
         }}
       >
-        {title}
+        {parts[1]}
       </h3>
       <p
         style={{
-          fontSize:   "0.82rem",
+          fontSize:   "0.78rem",
           color:      "rgba(255,255,255,0.42)",
-          lineHeight: 1.55,
+          lineHeight: 1.5,
           margin:     0,
         }}
       >
-        {body}
+        {data.sub as string}
       </p>
+      <Handle
+        type="source"
+        position={Position.Right}
+        style={{ opacity: 0, pointerEvents: "none" }}
+      />
     </div>
   );
 }
 
-/* horizontal bezier connector — desktop only */
-function ConnH({
-  id, drawn, dots, delay,
-}: {
-  id: string; drawn: boolean; dots: boolean; delay: number;
-}) {
-  return (
-    <div className="hidden sm:block" style={{ flex: "0 0 64px", alignSelf: "center" }}>
-      <svg width="64" height="80" viewBox="0 0 64 80" aria-hidden="true">
-        {/* track */}
-        <path
-          d="M 0,40 C 16,18 48,18 64,40"
-          fill="none"
-          stroke="rgba(255,255,255,0.06)"
-          strokeWidth="2"
-        />
-        {/* animated draw */}
-        <path
-          id={id}
-          d="M 0,40 C 16,18 48,18 64,40"
-          fill="none"
-          stroke="#3b82f6"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeDasharray="500"
-          style={{
-            strokeDashoffset: drawn ? 0 : 500,
-            transition:       `stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1) ${delay}ms`,
-          }}
-        />
-        {dots && (
-          <circle r="4" fill="#3b82f6">
-            <animateMotion dur="2.2s" repeatCount="indefinite">
-              <mpath href={`#${id}`} />
-            </animateMotion>
-          </circle>
-        )}
-      </svg>
-    </div>
-  );
-}
+const rfNodeTypes = { workflowNode: WorkflowNodeCard };
 
-/* vertical S-curve connector — mobile only */
-function ConnV({
-  id, drawn, dots, delay,
-}: {
-  id: string; drawn: boolean; dots: boolean; delay: number;
-}) {
-  return (
-    <div className="sm:hidden">
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <svg width="80" height="56" viewBox="0 0 80 56" aria-hidden="true">
-          {/* track */}
-          <path
-            d="M 40,0 C 16,14 64,42 40,56"
-            fill="none"
-            stroke="rgba(255,255,255,0.06)"
-            strokeWidth="2"
-          />
-          {/* animated draw */}
-          <path
-            id={id}
-            d="M 40,0 C 16,14 64,42 40,56"
-            fill="none"
-            stroke="#3b82f6"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeDasharray="500"
-            style={{
-              strokeDashoffset: drawn ? 0 : 500,
-              transition:       `stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1) ${delay}ms`,
-            }}
-          />
-          {dots && (
-            <circle r="4" fill="#3b82f6">
-              <animateMotion dur="2.2s" repeatCount="indefinite">
-                <mpath href={`#${id}`} />
-              </animateMotion>
-            </circle>
-          )}
-        </svg>
-      </div>
-    </div>
-  );
-}
+const rfNodes: Node[] = [
+  {
+    id:   "1",
+    type: "workflowNode",
+    position: { x: 0, y: 0 },
+    data: { label: "01 — Revisamos tu situación", sub: "Analizamos tu proceso antes de la llamada" },
+  },
+  {
+    id:   "2",
+    type: "workflowNode",
+    position: { x: 300, y: 0 },
+    data: { label: "02 — La llamada de 30 min", sub: "Sin ventas. Solo diagnóstico honesto." },
+  },
+  {
+    id:   "3",
+    type: "workflowNode",
+    position: { x: 600, y: 0 },
+    data: { label: "03 — Tu hoja de ruta", sub: "Recibes exactamente qué sistema necesitas" },
+  },
+];
+
+const rfEdges: Edge[] = [
+  { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#3b82f6", strokeWidth: 2 } },
+  { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#3b82f6", strokeWidth: 2 } },
+];
 
 function WorkflowDiagram() {
-  const [drawn, setDrawn] = useState(false);
-  const [dots,  setDots]  = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setDrawn(true);
-          setTimeout(() => setDots(true), 1700);
-          io.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
   return (
-    <div ref={ref} className="flex flex-col sm:flex-row sm:items-stretch">
-      <WFNode {...WF_NODES[0]} drawn={drawn} delay={0}   />
-      <ConnH id="wf-d-c1" drawn={drawn} dots={dots} delay={200} />
-      <ConnV id="wf-m-c1" drawn={drawn} dots={dots} delay={200} />
-      <WFNode {...WF_NODES[1]} drawn={drawn} delay={150} />
-      <ConnH id="wf-d-c2" drawn={drawn} dots={dots} delay={500} />
-      <ConnV id="wf-m-c2" drawn={drawn} dots={dots} delay={500} />
-      <WFNode {...WF_NODES[2]} drawn={drawn} delay={300} />
+    <div style={{ height: 200 }}>
+      <ReactFlow
+        nodes={rfNodes}
+        edges={rfEdges}
+        nodeTypes={rfNodeTypes}
+        nodesDraggable={false}
+        nodesConnectable={false}
+        zoomOnScroll={false}
+        panOnScroll={false}
+        panOnDrag={false}
+        fitView
+        style={{ background: "transparent", height: "200px", width: "100%" }}
+      >
+        <Background color="transparent" />
+      </ReactFlow>
     </div>
   );
 }
