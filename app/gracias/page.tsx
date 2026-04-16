@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import ReactFlow, { Background, Handle, Position, type Edge, type Node, type NodeProps } from "reactflow";
-import "reactflow/dist/style.css";
 
 const WA = "https://wa.me/50683225178";
 
@@ -165,119 +163,6 @@ function AnimatedCheck() {
   );
 }
 
-/* ─────────────────────────────────────────────
-   WORKFLOW DIAGRAM — ReactFlow
-───────────────────────────────────────────── */
-
-function WorkflowNodeCard({ data }: NodeProps) {
-  const parts = (data.label as string).split(" — ");
-  return (
-    <div
-      style={{
-        background:   "#0f172a",
-        border:       "1px solid rgba(255,255,255,0.1)",
-        borderRadius: "12px",
-        padding:      "16px",
-        width:        "180px",
-      }}
-    >
-      <Handle
-        type="target"
-        position={Position.Left}
-        style={{ opacity: 0, pointerEvents: "none" }}
-      />
-      <span
-        style={{
-          fontFamily:    "'Courier New', 'Lucida Console', monospace",
-          fontSize:      "0.62rem",
-          fontWeight:    700,
-          letterSpacing: "0.18em",
-          textTransform: "uppercase" as const,
-          color:         "#378ADD",
-          display:       "block",
-          marginBottom:  "8px",
-        }}
-      >
-        {parts[0]}
-      </span>
-      <h3
-        style={{
-          fontSize:   "0.85rem",
-          fontWeight: 700,
-          color:      "#fff",
-          margin:     "0 0 4px",
-          lineHeight: 1.3,
-        }}
-      >
-        {parts[1]}
-      </h3>
-      <p
-        style={{
-          fontSize:   "0.78rem",
-          color:      "rgba(255,255,255,0.42)",
-          lineHeight: 1.5,
-          margin:     0,
-        }}
-      >
-        {data.sub as string}
-      </p>
-      <Handle
-        type="source"
-        position={Position.Right}
-        style={{ opacity: 0, pointerEvents: "none" }}
-      />
-    </div>
-  );
-}
-
-const rfNodeTypes = { workflowNode: WorkflowNodeCard };
-
-const rfNodes: Node[] = [
-  {
-    id:   "1",
-    type: "workflowNode",
-    position: { x: 0, y: 0 },
-    data: { label: "01 — Revisamos tu situación", sub: "Analizamos tu proceso antes de la llamada" },
-  },
-  {
-    id:   "2",
-    type: "workflowNode",
-    position: { x: 300, y: 0 },
-    data: { label: "02 — La llamada de 30 min", sub: "Sin ventas. Solo diagnóstico honesto." },
-  },
-  {
-    id:   "3",
-    type: "workflowNode",
-    position: { x: 600, y: 0 },
-    data: { label: "03 — Tu hoja de ruta", sub: "Recibes exactamente qué sistema necesitas" },
-  },
-];
-
-const rfEdges: Edge[] = [
-  { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#3b82f6", strokeWidth: 2 } },
-  { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#3b82f6", strokeWidth: 2 } },
-];
-
-function WorkflowDiagram() {
-  return (
-    <div style={{ height: 200 }}>
-      <ReactFlow
-        nodes={rfNodes}
-        edges={rfEdges}
-        nodeTypes={rfNodeTypes}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        zoomOnScroll={false}
-        panOnScroll={false}
-        panOnDrag={false}
-        fitView
-        style={{ background: "transparent", height: "200px", width: "100%" }}
-      >
-        <Background color="transparent" />
-      </ReactFlow>
-    </div>
-  );
-}
 
 /* ─────────────────────────────────────────────
    GRACIAS PAGE
@@ -416,8 +301,11 @@ export default function GraciasPage() {
       {/* ── Lo que pasa ahora ───────────────────── */}
       <section
         style={{
-          borderBottom: "1px solid #1f1f1f",
-          padding:      "80px 24px",
+          borderBottom:  "1px solid #1f1f1f",
+          paddingTop:    "96px",
+          paddingBottom: "80px",
+          paddingLeft:   "24px",
+          paddingRight:  "24px",
         }}
       >
         <div style={{ maxWidth: "960px", margin: "0 auto" }}>
@@ -434,7 +322,19 @@ export default function GraciasPage() {
             </h2>
           </div>
 
-          <WorkflowDiagram />
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            {[
+              { n: "01", title: "Revisamos tu situación",  desc: "Analizamos tu proceso antes de la llamada." },
+              { n: "02", title: "La llamada de 30 min",    desc: "Sin ventas. Solo diagnóstico honesto." },
+              { n: "03", title: "Tu hoja de ruta",         desc: "Recibes exactamente qué sistema necesitas." },
+            ].map((step) => (
+              <div key={step.n} className="rounded-2xl border border-white/10 bg-white/5 p-8">
+                <p className="mb-3 text-xs font-medium tracking-widest text-blue-400">{step.n}</p>
+                <h3 className="mb-2 text-lg font-bold text-white">{step.title}</h3>
+                <p className="text-sm text-white/60">{step.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
