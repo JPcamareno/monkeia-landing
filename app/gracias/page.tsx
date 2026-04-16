@@ -2,164 +2,105 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import * as THREE from "three";
 
 const WA = "https://wa.me/50683225178";
 
 /* ─────────────────────────────────────────────
-   PARTICLE SPHERE — canvas-based, no deps
+   PARTICLE SPHERE — Three.js
 ───────────────────────────────────────────── */
-const SPHERE_COLORS = [
-  "#ffffff",
-  "#3b82f6", "#3b82f6", "#3b82f6",
-  "#60a5fa", "#60a5fa",
-  "#8b5cf6", "#a78bfa",
-];
-
 function ParticleSphere() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const mount = mountRef.current;
+    if (!mount) return;
 
-    const SIZE = 560;
-    const N    = 210;
-    const R    = 195;
-    const FOCAL = 440;
-    const PHI  = Math.PI * (3 - Math.sqrt(5)); // golden angle
+    const w = mount.clientWidth || window.innerWidth;
+    const h = mount.clientHeight || window.innerHeight;
 
-    canvas.width  = SIZE;
-    canvas.height = SIZE;
+    // Scene
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 100);
+    camera.position.z = 2.5;
 
-    const pts = Array.from({ length: N }, (_, i) => {
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setSize(w, h);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 1);
+    mount.appendChild(renderer.domElement);
+
+    // Spherical distribution (golden angle)
+    const N = 3000;
+    const positions = new Float32Array(N * 3);
+    const PHI = Math.PI * (3 - Math.sqrt(5));
+    for (let i = 0; i < N; i++) {
       const y  = 1 - (i / (N - 1)) * 2;
       const r  = Math.sqrt(Math.max(0, 1 - y * y));
       const th = PHI * i;
-      return {
-        ox: Math.cos(th) * r,
-        oy: y,
-        oz: Math.sin(th) * r,
-        color: SPHERE_COLORS[Math.floor(Math.random() * SPHERE_COLORS.length)],
-      };
-    });
+      positions[i * 3]     = Math.cos(th) * r;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = Math.sin(th) * r;
+    }
+    const original = positions.slice();
 
-    const cx = SIZE / 2;
-    const cy = SIZE / 2;
-    let   angle = 0;
-    let   raf: number;
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
-    const draw = () => {
-      ctx.clearRect(0, 0, SIZE, SIZE);
-      const cos = Math.cos(angle);
-      const sin = Math.sin(angle);
+    const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.008, sizeAttenuation: true });
+    const sphere = new THREE.Points(geometry, material);
+    scene.add(sphere);
 
-      const projected = pts
-        .map((p) => {
-          const x3 = p.ox * cos + p.oz * sin;
-          const z3 = -p.ox * sin + p.oz * cos;
-          const pers = FOCAL / (FOCAL + z3 * R);
-          return {
-            sx:    cx + x3 * R * pers,
-            sy:    cy + p.oy * R * pers,
-            size:  Math.max(0.4, 2.4 * pers - 0.5),
-            alpha: 0.06 + 0.78 * ((z3 + 1) / 2),
-            color: p.color,
-            z:     z3,
-          };
-        })
-        .sort((a, b) => a.z - b.z); // back-to-front
+    // Animation loop
+    let raf: number;
+    let t = 0;
+    const posAttr = geometry.attributes.position as THREE.BufferAttribute;
 
-      for (const p of projected) {
-        ctx.globalAlpha = p.alpha;
-        ctx.fillStyle   = p.color;
-        ctx.beginPath();
-        ctx.arc(p.sx, p.sy, p.size, 0, Math.PI * 2);
-        ctx.fill();
+    const animate = () => {
+      raf = requestAnimationFrame(animate);
+      t += 0.01;
+      sphere.rotation.y += 0.001;
+
+      // Breathing: subtle radial noise per particle
+      for (let i = 0; i < N; i++) {
+        const noise = 1 + 0.04 * Math.sin(t + i * 0.05);
+        posAttr.setXYZ(
+          i,
+          original[i * 3]     * noise,
+          original[i * 3 + 1] * noise,
+          original[i * 3 + 2] * noise,
+        );
       }
-      ctx.globalAlpha = 1;
-
-      angle += 0.004;
-      raf = requestAnimationFrame(draw);
+      posAttr.needsUpdate = true;
+      renderer.render(scene, camera);
     };
+    animate();
 
-    draw();
-    return () => cancelAnimationFrame(raf);
+    const onResize = () => {
+      const w2 = mount.clientWidth;
+      const h2 = mount.clientHeight;
+      camera.aspect = w2 / h2;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w2, h2);
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", onResize);
+      renderer.dispose();
+      geometry.dispose();
+      material.dispose();
+      if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
+    };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
+    <div
+      ref={mountRef}
       aria-hidden="true"
-      className="pointer-events-none select-none"
-      style={{
-        position:  "absolute",
-        top:       "50%",
-        left:      "50%",
-        transform: "translate(-50%, -50%)",
-        opacity:   0.38,
-      }}
+      style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none" }}
     />
-  );
-}
-
-/* ─────────────────────────────────────────────
-   ANIMATED CHECK ICON
-───────────────────────────────────────────── */
-function AnimatedCheck() {
-  return (
-    <div style={{ opacity: 0, animation: "springFlyIn 0.7s cubic-bezier(0.22,1,0.36,1) 0.1s forwards" }}>
-      <svg
-        width="88"
-        height="88"
-        viewBox="0 0 96 96"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <defs>
-          <linearGradient id="checkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%"   stopColor="#3b82f6" />
-            <stop offset="100%" stopColor="#8b5cf6" />
-          </linearGradient>
-        </defs>
-
-        {/* Faint fill circle */}
-        <circle cx="48" cy="48" r="44" fill="url(#checkGrad)" fillOpacity="0.08" />
-
-        {/* Animated border circle */}
-        <circle
-          cx="48"
-          cy="48"
-          r="44"
-          stroke="url(#checkGrad)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeDasharray="277"
-          strokeDashoffset="277"
-          style={{
-            animation:
-              "drawCheckCircle 0.85s cubic-bezier(0.22,1,0.36,1) 0.25s forwards",
-          }}
-        />
-
-        {/* Animated checkmark */}
-        <path
-          d="M28 50 L42 64 L68 32"
-          stroke="url(#checkGrad)"
-          strokeWidth="4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeDasharray="62"
-          strokeDashoffset="62"
-          style={{
-            animation:
-              "drawCheckMark 0.45s cubic-bezier(0.22,1,0.36,1) 1s forwards",
-          }}
-        />
-      </svg>
-    </div>
   );
 }
 
@@ -209,60 +150,18 @@ export default function GraciasPage() {
           borderBottom:    "1px solid #1f1f1f",
         }}
       >
-        {/* Subtle radial ambient */}
-        <div
-          aria-hidden="true"
-          style={{
-            position:   "absolute",
-            inset:      0,
-            background: "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(59,130,246,0.06) 0%, transparent 70%)",
-            pointerEvents: "none",
-          }}
-        />
+        {/* Three.js particle sphere — fullscreen background */}
+        <ParticleSphere />
 
         {/* Content */}
         <div
           style={{
             position:  "relative",
-            zIndex:    1,
+            zIndex:    10,
             textAlign: "center",
             maxWidth:  "640px",
           }}
         >
-          {/* Premium check circle */}
-          <div
-            style={{
-              display:        "flex",
-              justifyContent: "center",
-              marginBottom:   "32px",
-            }}
-          >
-            <div
-              className="animate-pulse"
-              style={{
-                border:        "1px solid rgba(100, 140, 255, 0.3)",
-                borderRadius:  "50%",
-                padding:       "12px",
-                display:       "inline-flex",
-              }}
-            >
-              <div
-                style={{
-                  width:          "120px",
-                  height:         "120px",
-                  borderRadius:   "50%",
-                  background:     "radial-gradient(circle at 35% 35%, rgba(120, 160, 255, 0.9), rgba(40, 60, 200, 0.8), rgba(10, 20, 100, 0.9))",
-                  boxShadow:      "0 0 40px rgba(80, 120, 255, 0.6), 0 0 80px rgba(60, 80, 255, 0.3), inset 0 0 30px rgba(180, 200, 255, 0.2)",
-                  display:        "flex",
-                  alignItems:     "center",
-                  justifyContent: "center",
-                }}
-              >
-                <span style={{ color: "white", fontSize: "40px", fontWeight: "bold", lineHeight: 1 }}>✓</span>
-              </div>
-            </div>
-          </div>
-
           {/* Label */}
           <div
             style={{
