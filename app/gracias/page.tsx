@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 const WA = "https://wa.me/50683225178";
@@ -301,6 +301,7 @@ export default function GraciasPage() {
       {/* ── Lo que pasa ahora ───────────────────── */}
       <section
         style={{
+          background:    "#000",
           borderBottom:  "1px solid #1f1f1f",
           paddingTop:    "96px",
           paddingBottom: "80px",
@@ -322,16 +323,63 @@ export default function GraciasPage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-            {[
-              { n: "01", title: "Revisamos tu situación",  desc: "Analizamos tu proceso antes de la llamada." },
-              { n: "02", title: "La llamada de 30 min",    desc: "Sin ventas. Solo diagnóstico honesto." },
-              { n: "03", title: "Tu hoja de ruta",         desc: "Recibes exactamente qué sistema necesitas." },
-            ].map((step) => (
-              <div key={step.n} className="rounded-2xl border border-white/10 bg-white/5 p-8">
-                <p className="mb-3 text-xs font-medium tracking-widest text-blue-400">{step.n}</p>
-                <h3 className="mb-2 text-lg font-bold text-white">{step.title}</h3>
-                <p className="text-sm text-white/60">{step.desc}</p>
+          <div className="mx-auto flex max-w-lg flex-col gap-4">
+            {(
+              [
+                {
+                  n: "01",
+                  title: "Revisamos tu situación",
+                  desc: "Analizamos tu proceso antes de la llamada.",
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <circle cx="11" cy="11" r="8" />
+                      <path d="m21 21-4.35-4.35" />
+                    </svg>
+                  ),
+                },
+                {
+                  n: "02",
+                  title: "La llamada de 30 min",
+                  desc: "Sin ventas. Solo diagnóstico honesto.",
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.07 10.81a19.79 19.79 0 0 1-1.07-8.49A2 2 0 0 1 3.83 2h3.09a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9a16 16 0 0 0 6.91 6.91l.61-.62a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                    </svg>
+                  ),
+                },
+                {
+                  n: "03",
+                  title: "Tu hoja de ruta",
+                  desc: "Recibes exactamente qué sistema necesitas.",
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
+                      <line x1="9" y1="3" x2="9" y2="18" />
+                      <line x1="15" y1="6" x2="15" y2="21" />
+                    </svg>
+                  ),
+                },
+              ] as { n: string; title: string; desc: string; icon: React.ReactNode }[]
+            ).map((step) => (
+              <div
+                key={step.n}
+                className="relative overflow-hidden rounded-2xl border border-blue-400/20 bg-gradient-to-br from-blue-900/20 to-slate-900/40 p-6 backdrop-blur-sm"
+              >
+                {/* Glow blob */}
+                <div className="absolute inset-0 rounded-2xl bg-blue-500/10 blur-xl" />
+                {/* Top glow line */}
+                <div className="absolute left-1/2 top-0 h-px w-3/5 -translate-x-1/2 bg-gradient-to-r from-transparent via-blue-400/80 to-transparent blur-sm" />
+                {/* Content */}
+                <div className="relative z-10">
+                  <div className="flex items-start justify-between">
+                    <p className="font-mono text-xs tracking-widest text-blue-400/60">{step.n}</p>
+                    <div className="rounded-xl border border-blue-500/30 bg-blue-600/20 p-2 text-blue-400">
+                      {step.icon}
+                    </div>
+                  </div>
+                  <h3 className="mt-4 text-xl font-semibold text-white">{step.title}</h3>
+                  <p className="mt-2 text-sm text-white/50">{step.desc}</p>
+                </div>
               </div>
             ))}
           </div>
