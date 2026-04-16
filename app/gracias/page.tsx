@@ -202,7 +202,7 @@ export default function GraciasPage() {
           display:         "flex",
           alignItems:      "center",
           justifyContent:  "center",
-          paddingTop:      "96px",
+          paddingTop:      "144px",
           paddingBottom:   "72px",
           paddingLeft:     "24px",
           paddingRight:    "24px",
@@ -220,9 +220,6 @@ export default function GraciasPage() {
           }}
         />
 
-        {/* Particle sphere background */}
-        <ParticleSphere />
-
         {/* Content */}
         <div
           style={{
@@ -232,7 +229,7 @@ export default function GraciasPage() {
             maxWidth:  "640px",
           }}
         >
-          {/* Animated check */}
+          {/* Premium check circle */}
           <div
             style={{
               display:        "flex",
@@ -240,7 +237,30 @@ export default function GraciasPage() {
               marginBottom:   "32px",
             }}
           >
-            <AnimatedCheck />
+            <div
+              className="animate-pulse"
+              style={{
+                border:        "1px solid rgba(100, 140, 255, 0.3)",
+                borderRadius:  "50%",
+                padding:       "12px",
+                display:       "inline-flex",
+              }}
+            >
+              <div
+                style={{
+                  width:          "120px",
+                  height:         "120px",
+                  borderRadius:   "50%",
+                  background:     "radial-gradient(circle at 35% 35%, rgba(120, 160, 255, 0.9), rgba(40, 60, 200, 0.8), rgba(10, 20, 100, 0.9))",
+                  boxShadow:      "0 0 40px rgba(80, 120, 255, 0.6), 0 0 80px rgba(60, 80, 255, 0.3), inset 0 0 30px rgba(180, 200, 255, 0.2)",
+                  display:        "flex",
+                  alignItems:     "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span style={{ color: "white", fontSize: "40px", fontWeight: "bold", lineHeight: 1 }}>✓</span>
+              </div>
+            </div>
           </div>
 
           {/* Label */}
