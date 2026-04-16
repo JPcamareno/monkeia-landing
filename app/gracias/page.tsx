@@ -323,13 +323,15 @@ export default function GraciasPage() {
             </h2>
           </div>
 
-          <div style={{ maxWidth: "512px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ maxWidth: "576px", margin: "0 auto", paddingLeft: "32px", paddingRight: "32px", display: "flex", flexDirection: "column", gap: "16px" }}>
             {(
               [
                 {
                   n: "01",
                   title: "Revisamos tu situación",
                   desc: "Analizamos tu proceso antes de la llamada.",
+                  transform: "rotate(-2deg)",
+                  marginTop: "0",
                   icon: (
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <circle cx="11" cy="11" r="8" />
@@ -341,6 +343,8 @@ export default function GraciasPage() {
                   n: "02",
                   title: "La llamada de 30 min",
                   desc: "Sin ventas. Solo diagnóstico honesto.",
+                  transform: "rotate(1.5deg)",
+                  marginTop: "-12px",
                   icon: (
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.07 10.81a19.79 19.79 0 0 1-1.07-8.49A2 2 0 0 1 3.83 2h3.09a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9a16 16 0 0 0 6.91 6.91l.61-.62a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
@@ -351,6 +355,8 @@ export default function GraciasPage() {
                   n: "03",
                   title: "Tu hoja de ruta",
                   desc: "Recibes exactamente qué sistema necesitas.",
+                  transform: "rotate(-1deg)",
+                  marginTop: "-12px",
                   icon: (
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
@@ -359,7 +365,7 @@ export default function GraciasPage() {
                     </svg>
                   ),
                 },
-              ] as { n: string; title: string; desc: string; icon: React.ReactNode }[]
+              ] as { n: string; title: string; desc: string; transform: string; marginTop: string; icon: React.ReactNode }[]
             ).map((step) => (
               <div
                 key={step.n}
@@ -371,13 +377,15 @@ export default function GraciasPage() {
                   border:         "1px solid rgba(99, 130, 255, 0.15)",
                   borderRadius:   "16px",
                   padding:        "24px",
+                  transform:      step.transform,
+                  marginTop:      step.marginTop,
                 }}
               >
                 {/* Glow halo */}
                 <div
                   style={{
                     position:      "absolute",
-                    top:           "30%",
+                    top:           "10%",
                     left:          "10%",
                     width:         "80%",
                     height:        "40%",
@@ -391,7 +399,7 @@ export default function GraciasPage() {
                 <div
                   style={{
                     position:      "absolute",
-                    top:           "45%",
+                    top:           "25%",
                     left:          "-5%",
                     width:         "110%",
                     height:        "2px",
@@ -409,12 +417,12 @@ export default function GraciasPage() {
                     </span>
                     <div
                       style={{
-                        background:   "rgba(80, 100, 255, 0.15)",
-                        border:       "1px solid rgba(80, 100, 255, 0.3)",
-                        borderRadius: "12px",
-                        padding:      "10px",
-                        display:      "flex",
-                        alignItems:   "center",
+                        background:     "rgba(80, 100, 255, 0.15)",
+                        border:         "1px solid rgba(80, 100, 255, 0.3)",
+                        borderRadius:   "12px",
+                        padding:        "10px",
+                        display:        "flex",
+                        alignItems:     "center",
                         justifyContent: "center",
                       }}
                     >
