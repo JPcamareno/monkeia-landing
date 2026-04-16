@@ -373,17 +373,32 @@ export default function GraciasPage() {
                   padding:        "24px",
                 }}
               >
-                {/* Glow effect */}
+                {/* Glow halo */}
                 <div
                   style={{
-                    position:    "absolute",
-                    top:         "40%",
-                    left:        "-10%",
-                    width:       "120%",
-                    height:      "60px",
-                    background:  "radial-gradient(ellipse at center, rgba(80, 100, 255, 0.4) 0%, transparent 70%)",
-                    filter:      "blur(20px)",
+                    position:      "absolute",
+                    top:           "30%",
+                    left:          "10%",
+                    width:         "80%",
+                    height:        "40%",
+                    background:    "radial-gradient(ellipse at center, rgba(80, 80, 255, 0.25) 0%, rgba(120, 60, 255, 0.15) 40%, transparent 70%)",
+                    filter:        "blur(15px)",
                     pointerEvents: "none",
+                    zIndex:        0,
+                  }}
+                />
+                {/* Glow line */}
+                <div
+                  style={{
+                    position:      "absolute",
+                    top:           "45%",
+                    left:          "-5%",
+                    width:         "110%",
+                    height:        "2px",
+                    background:    "linear-gradient(90deg, transparent 0%, rgba(120, 80, 255, 0.0) 10%, rgba(100, 120, 255, 0.9) 40%, rgba(180, 100, 255, 0.9) 50%, rgba(100, 120, 255, 0.9) 60%, rgba(120, 80, 255, 0.0) 90%, transparent 100%)",
+                    filter:        "blur(1px)",
+                    pointerEvents: "none",
+                    zIndex:        0,
                   }}
                 />
                 {/* Content */}
