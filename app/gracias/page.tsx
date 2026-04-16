@@ -10,96 +10,74 @@ const WA = "https://wa.me/50683225178";
    PARTICLE SPHERE — Three.js
 ───────────────────────────────────────────── */
 function ParticleSphere() {
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const mount = mountRef.current;
-    if (!mount) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    const w = mount.clientWidth || window.innerWidth;
-    const h = mount.clientHeight || window.innerHeight;
-
-    // Scene
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 100);
-    camera.position.z = 2.5;
+    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+    camera.position.z = 3;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setSize(w, h);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 1);
-    mount.appendChild(renderer.domElement);
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+    renderer.setSize(500, 500);
+    renderer.setClearColor(0x000000, 0);
 
-    // Spherical distribution (golden angle)
     const N = 3000;
     const positions = new Float32Array(N * 3);
-    const PHI = Math.PI * (3 - Math.sqrt(5));
     for (let i = 0; i < N; i++) {
-      const y  = 1 - (i / (N - 1)) * 2;
-      const r  = Math.sqrt(Math.max(0, 1 - y * y));
-      const th = PHI * i;
-      positions[i * 3]     = Math.cos(th) * r;
-      positions[i * 3 + 1] = y;
-      positions[i * 3 + 2] = Math.sin(th) * r;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const r = 1 + (Math.random() - 0.5) * 0.1;
+      positions[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      positions[i * 3 + 2] = r * Math.cos(phi);
     }
-    const original = positions.slice();
 
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
-    const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.008, sizeAttenuation: true });
-    const sphere = new THREE.Points(geometry, material);
-    scene.add(sphere);
+    const material = new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: 0.012,
+      transparent: true,
+      opacity: 0.6,
+    });
 
-    // Animation loop
+    const mesh = new THREE.Points(geometry, material);
+    scene.add(mesh);
+
     let raf: number;
-    let t = 0;
-    const posAttr = geometry.attributes.position as THREE.BufferAttribute;
-
     const animate = () => {
       raf = requestAnimationFrame(animate);
-      t += 0.01;
-      sphere.rotation.y += 0.001;
-
-      // Breathing: subtle radial noise per particle
-      for (let i = 0; i < N; i++) {
-        const noise = 1 + 0.04 * Math.sin(t + i * 0.05);
-        posAttr.setXYZ(
-          i,
-          original[i * 3]     * noise,
-          original[i * 3 + 1] * noise,
-          original[i * 3 + 2] * noise,
-        );
-      }
-      posAttr.needsUpdate = true;
+      mesh.rotation.y += 0.003;
       renderer.render(scene, camera);
     };
     animate();
 
-    const onResize = () => {
-      const w2 = mount.clientWidth;
-      const h2 = mount.clientHeight;
-      camera.aspect = w2 / h2;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w2, h2);
-    };
-    window.addEventListener("resize", onResize);
-
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
       renderer.dispose();
       geometry.dispose();
       material.dispose();
-      if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
     };
   }, []);
 
   return (
-    <div
-      ref={mountRef}
+    <canvas
+      ref={canvasRef}
       aria-hidden="true"
-      style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none" }}
+      style={{
+        position:    "absolute",
+        top:         "50%",
+        left:        "50%",
+        transform:   "translate(-50%, -50%)",
+        zIndex:      0,
+        pointerEvents: "none",
+        width:       "500px",
+        height:      "500px",
+      }}
     />
   );
 }
@@ -139,11 +117,12 @@ export default function GraciasPage() {
         style={{
           position:        "relative",
           overflow:        "hidden",
-          minHeight:       "72vh",
+          minHeight:       "100vh",
           display:         "flex",
+          flexDirection:   "column",
           alignItems:      "center",
           justifyContent:  "center",
-          paddingTop:      "144px",
+          paddingTop:      "120px",
           paddingBottom:   "72px",
           paddingLeft:     "24px",
           paddingRight:    "24px",
