@@ -18,10 +18,10 @@ function ParticleSphere() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-    camera.position.z = 3;
+    camera.position.z = 2;
 
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-    renderer.setSize(500, 500);
+    renderer.setSize(700, 700);
     renderer.setClearColor(0x000000, 0);
 
     const N = 3000;
@@ -75,8 +75,8 @@ function ParticleSphere() {
         transform:   "translate(-50%, -50%)",
         zIndex:      0,
         pointerEvents: "none",
-        width:       "500px",
-        height:      "500px",
+        width:       "700px",
+        height:      "700px",
       }}
     />
   );
