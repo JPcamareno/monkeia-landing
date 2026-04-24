@@ -1,11 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
 const MANYCHAT_TOKEN = process.env.MANYCHAT_API_TOKEN!
 const WHATSAPP_NUMBER = process.env.NOTIFICATION_WHATSAPP!
 
@@ -35,7 +30,6 @@ async function sendWhatsAppNotification(answers: Record<string, unknown>) {
 Ver todos los datos en Supabase → diagnosticos`
 
   try {
-    // Buscar o crear el subscriber en ManyChat por número de WhatsApp
     const findRes = await fetch('https://api.manychat.com/fb/subscriber/findByPhone', {
       method: 'POST',
       headers: {
@@ -53,7 +47,6 @@ Ver todos los datos en Supabase → diagnosticos`
       return
     }
 
-    // Enviar mensaje por WhatsApp vía ManyChat
     await fetch('https://api.manychat.com/fb/sending/sendContent', {
       method: 'POST',
       headers: {
@@ -65,12 +58,7 @@ Ver todos los datos en Supabase → diagnosticos`
         data: {
           version: 'v2',
           content: {
-            messages: [
-              {
-                type: 'text',
-                text: message,
-              },
-            ],
+            messages: [{ type: 'text', text: message }],
           },
         },
         message_tag: 'ACCOUNT_UPDATE',
@@ -83,6 +71,11 @@ Ver todos los datos en Supabase → diagnosticos`
 
 export async function POST(req: NextRequest) {
   try {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+
     const body = await req.json()
     const { answers } = body
 
@@ -90,7 +83,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No se recibieron respuestas' }, { status: 400 })
     }
 
-    // Guardar en Supabase
     const { error } = await supabase.from('diagnosticos').insert([
       {
         empresa: answers['empresa'] || null,
@@ -122,7 +114,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Error guardando datos' }, { status: 500 })
     }
 
-    // Enviar notificación por WhatsApp
     await sendWhatsAppNotification(answers)
 
     return NextResponse.json({ success: true })
