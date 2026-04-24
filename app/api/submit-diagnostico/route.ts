@@ -1,80 +1,30 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
-async function sendWhatsAppNotification(answers: Record<string, unknown>) {
-  const token = process.env.MANYCHAT_API_TOKEN
-  const whatsapp = process.env.NOTIFICATION_WHATSAPP
+const ACTIVEPIECES_WEBHOOK = 'https://cloud.activepieces.com/api/v1/webhooks/hnOyI74mg97pmuw3IIIC2'
 
-  if (!token || !whatsapp) {
-    console.error('Faltan variables de entorno de ManyChat')
-    return
-  }
-
-  const empresa = (answers['empresa'] as string) || 'Sin nombre'
-  const nombre = (answers['nombre'] as string) || '-'
-  const email = (answers['email'] as string) || '-'
-  const telefono = (answers['telefono'] as string) || '-'
-  const rol = (answers['rol'] as string) || '-'
-  const tamano = (answers['tamano'] as string) || '-'
-  const areaUrgente = (answers['area-urgente'] as string) || '-'
-  const presupuesto = (answers['presupuesto-mensual'] as string) || '-'
-  const plazo = (answers['plazo-resultados'] as string) || '-'
-  const objetivo = (answers['objetivo-12m'] as string) || '-'
-  const usoIa = (answers['uso-ia-previo'] as string) || '-'
-  const comentario = (answers['comentario-libre'] as string) || '-'
-
-  const message = `🔔 *Nuevo diagnóstico IA completado*
-
-👤 *Contacto:* ${nombre}
-📧 *Email:* ${email}
-📱 *Teléfono:* ${telefono}
-🏢 *Empresa:* ${empresa}
-💼 *Rol:* ${rol}
-👥 *Tamaño:* ${tamano}
-🎯 *Objetivo 12m:* ${objetivo}
-🚨 *Área urgente:* ${areaUrgente}
-💰 *Presupuesto:* ${presupuesto}
-⏱ *Plazo esperado:* ${plazo}
-🤖 *Experiencia IA:* ${usoIa}
-💬 *Comentario:* ${comentario}`
-
+async function sendToActivepieces(answers: Record<string, unknown>) {
   try {
-    const findRes = await fetch('https://api.manychat.com/fb/subscriber/findByPhone', {
+    await fetch(ACTIVEPIECES_WEBHOOK, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ phone: `+${whatsapp}` }),
-    })
-
-    const findData = await findRes.json()
-    const subscriberId = findData?.data?.id
-
-    if (!subscriberId) {
-      console.error('No se encontró el subscriber en ManyChat:', findData)
-      return
-    }
-
-    await fetch('https://api.manychat.com/fb/sending/sendContent', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        subscriber_id: subscriberId,
-        data: {
-          version: 'v2',
-          content: {
-            messages: [{ type: 'text', text: message }],
-          },
-        },
-        message_tag: 'ACCOUNT_UPDATE',
+        nombre: answers['nombre'] || '-',
+        email: answers['email'] || '-',
+        telefono: answers['telefono'] || '-',
+        empresa: answers['empresa'] || '-',
+        rol: answers['rol'] || '-',
+        tamano: answers['tamano'] || '-',
+        objetivo_12m: answers['objetivo-12m'] || '-',
+        area_urgente: answers['area-urgente'] || '-',
+        presupuesto: answers['presupuesto-mensual'] || '-',
+        plazo: answers['plazo-resultados'] || '-',
+        uso_ia: answers['uso-ia-previo'] || '-',
+        comentario: answers['comentario-libre'] || '-',
       }),
     })
   } catch (err) {
-    console.error('Error enviando WhatsApp:', err)
+    console.error('Error enviando a ActivePieces:', err)
   }
 }
 
@@ -89,7 +39,6 @@ export async function POST(req: NextRequest) {
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey)
-
     const body = await req.json()
     const { answers } = body
 
@@ -131,7 +80,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Error guardando datos' }, { status: 500 })
     }
 
-    await sendWhatsAppNotification(answers)
+    await sendToActivepieces(answers)
 
     return NextResponse.json({ success: true })
   } catch (err) {
