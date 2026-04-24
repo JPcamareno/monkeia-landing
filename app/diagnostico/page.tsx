@@ -5,7 +5,16 @@ import Image from 'next/image'
 
 type Answers = Record<string, string | string[]>
 
-const SECTIONS = [
+type Question = {
+  field: string
+  label: string
+  type: string
+  hint?: string
+  placeholder?: string
+  options?: string[]
+}
+
+const SECTIONS: { id: string; num: string; title: string; questions: Question[] }[] = [
   {
     id: 'sec-0',
     num: 'SECCIÓN 01 · CONTEXTO GENERAL',
