@@ -1,11 +1,19 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
-const MANYCHAT_TOKEN = process.env.MANYCHAT_API_TOKEN!
-const WHATSAPP_NUMBER = process.env.NOTIFICATION_WHATSAPP!
-
 async function sendWhatsAppNotification(answers: Record<string, unknown>) {
+  const token = process.env.MANYCHAT_API_TOKEN
+  const whatsapp = process.env.NOTIFICATION_WHATSAPP
+
+  if (!token || !whatsapp) {
+    console.error('Faltan variables de entorno de ManyChat')
+    return
+  }
+
   const empresa = (answers['empresa'] as string) || 'Sin nombre'
+  const nombre = (answers['nombre'] as string) || '-'
+  const email = (answers['email'] as string) || '-'
+  const telefono = (answers['telefono'] as string) || '-'
   const rol = (answers['rol'] as string) || '-'
   const tamano = (answers['tamano'] as string) || '-'
   const areaUrgente = (answers['area-urgente'] as string) || '-'
@@ -17,26 +25,27 @@ async function sendWhatsAppNotification(answers: Record<string, unknown>) {
 
   const message = `🔔 *Nuevo diagnóstico IA completado*
 
+👤 *Contacto:* ${nombre}
+📧 *Email:* ${email}
+📱 *Teléfono:* ${telefono}
 🏢 *Empresa:* ${empresa}
-👤 *Rol:* ${rol}
+💼 *Rol:* ${rol}
 👥 *Tamaño:* ${tamano}
 🎯 *Objetivo 12m:* ${objetivo}
 🚨 *Área urgente:* ${areaUrgente}
 💰 *Presupuesto:* ${presupuesto}
 ⏱ *Plazo esperado:* ${plazo}
-🤖 *Experiencia con IA:* ${usoIa}
-💬 *Comentario:* ${comentario}
-
-Ver todos los datos en Supabase → diagnosticos`
+🤖 *Experiencia IA:* ${usoIa}
+💬 *Comentario:* ${comentario}`
 
   try {
     const findRes = await fetch('https://api.manychat.com/fb/subscriber/findByPhone', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${MANYCHAT_TOKEN}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ phone: `+${WHATSAPP_NUMBER}` }),
+      body: JSON.stringify({ phone: `+${whatsapp}` }),
     })
 
     const findData = await findRes.json()
@@ -50,7 +59,7 @@ Ver todos los datos en Supabase → diagnosticos`
     await fetch('https://api.manychat.com/fb/sending/sendContent', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${MANYCHAT_TOKEN}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -71,10 +80,15 @@ Ver todos los datos en Supabase → diagnosticos`
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('Faltan variables de entorno de Supabase')
+      return NextResponse.json({ error: 'Configuración incompleta' }, { status: 500 })
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey)
 
     const body = await req.json()
     const { answers } = body
@@ -86,6 +100,9 @@ export async function POST(req: NextRequest) {
     const { error } = await supabase.from('diagnosticos').insert([
       {
         empresa: answers['empresa'] || null,
+        nombre: answers['nombre'] || null,
+        email: answers['email'] || null,
+        telefono: answers['telefono'] || null,
         rol: answers['rol'] || null,
         tamano: answers['tamano'] || null,
         canales: answers['canales'] || null,
