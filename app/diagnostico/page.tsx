@@ -17,9 +17,27 @@ type Question = {
 const SECTIONS: { id: string; num: string; title: string; questions: Question[] }[] = [
   {
     id: 'sec-0',
-    num: 'SECCIÓN 01 · CONTEXTO GENERAL',
-    title: 'Cuéntanos sobre tu empresa',
+    num: 'SECCIÓN 01 · TUS DATOS',
+    title: 'Primero, cuéntanos quién eres',
     questions: [
+      {
+        field: 'nombre',
+        label: '¿Cuál es tu nombre?',
+        type: 'text',
+        placeholder: 'Tu nombre completo',
+      },
+      {
+        field: 'email',
+        label: '¿Cuál es tu email?',
+        type: 'text',
+        placeholder: 'tu@empresa.com',
+      },
+      {
+        field: 'telefono',
+        label: '¿Cuál es tu WhatsApp o teléfono?',
+        type: 'text',
+        placeholder: '+506 8888 8888',
+      },
       {
         field: 'empresa',
         label: '¿Cómo se llama tu empresa?',
@@ -34,10 +52,17 @@ const SECTIONS: { id: string; num: string; title: string; questions: Question[] 
       },
       {
         field: 'tamano',
-        label: '¿Cuántas personas trabajan actualmente en la empresa?',
+        label: '¿Cuántas personas trabajan en la empresa?',
         type: 'single',
         options: ['1–5', '6–15', '16–30', 'Más de 30'],
       },
+    ],
+  },
+  {
+    id: 'sec-1',
+    num: 'SECCIÓN 02 · CANALES Y PRODUCTOS',
+    title: '¿Cómo vendes y qué vendes?',
+    questions: [
       {
         field: 'canales',
         label: '¿Cuáles son los principales canales de venta hoy?',
@@ -54,8 +79,8 @@ const SECTIONS: { id: string; num: string; title: string; questions: Question[] 
     ],
   },
   {
-    id: 'sec-1',
-    num: 'SECCIÓN 02 · OPERACIONES Y PROCESOS',
+    id: 'sec-2',
+    num: 'SECCIÓN 03 · OPERACIONES Y PROCESOS',
     title: '¿Cómo funciona hoy la operación?',
     questions: [
       {
@@ -87,9 +112,9 @@ const SECTIONS: { id: string; num: string; title: string; questions: Question[] 
     ],
   },
   {
-    id: 'sec-2',
-    num: 'SECCIÓN 03 · PRIORIDADES DE NEGOCIO',
-    title: '¿Dónde quieren crecer?',
+    id: 'sec-3',
+    num: 'SECCIÓN 04 · PRIORIDADES Y EXPERIENCIA IA',
+    title: '¿Dónde quieren crecer y qué han explorado?',
     questions: [
       {
         field: 'objetivo-12m',
@@ -104,24 +129,11 @@ const SECTIONS: { id: string; num: string; title: string; questions: Question[] 
         options: ['Ventas y adquisición de clientes', 'Soporte técnico y atención al cliente', 'Logística e inventario', 'Marketing y visibilidad digital', 'Administración y finanzas', 'Gestión del conocimiento interno'],
       },
       {
-        field: 'satisfaccion-respuesta',
-        label: 'En una escala del 1 al 5, ¿qué tan satisfechos están con la velocidad de respuesta a clientes?',
-        hint: '1 = muy insatisfechos · 5 = muy satisfechos',
-        type: 'scale',
-      },
-      {
         field: 'pct-repetidas',
         label: '¿Qué porcentaje de las consultas de clientes son preguntas repetidas?',
         type: 'single',
         options: ['Menos del 20%', '20–40%', '40–60%', 'Más del 60%', 'No lo hemos medido'],
       },
-    ],
-  },
-  {
-    id: 'sec-3',
-    num: 'SECCIÓN 04 · EXPERIENCIA CON IA Y TECNOLOGÍA',
-    title: '¿Cuánto han explorado la IA?',
-    questions: [
       {
         field: 'uso-ia-previo',
         label: '¿Han usado alguna herramienta de inteligencia artificial en la empresa?',
@@ -133,12 +145,6 @@ const SECTIONS: { id: string; num: string; title: string; questions: Question[] 
         label: '¿Cuál es la actitud general del equipo frente a adoptar nuevas tecnologías?',
         type: 'single-col',
         options: ['Muy abiertos — siempre buscamos mejorar con tecnología', 'Abiertos si ven resultados concretos primero', 'Hay resistencia — prefieren los procesos actuales', 'Depende del área — hay de todo'],
-      },
-      {
-        field: 'documentacion',
-        label: '¿Con qué nivel de detalle documentan los procesos internos hoy?',
-        type: 'single-col',
-        options: ['Procesos documentados y estandarizados', 'Algunas cosas documentadas, otras no', 'Casi nada documentado — el conocimiento está en las personas'],
       },
       {
         field: 'datos-historicos',
@@ -262,10 +268,10 @@ export default function DiagnosticoPage() {
           </p>
           <div className="grid grid-cols-2 gap-3 mb-8 text-left">
             {[
+              { label: 'Nombre', val: answers['nombre'] },
               { label: 'Empresa', val: answers['empresa'] },
               { label: 'Área prioritaria', val: answers['area-urgente'] },
               { label: 'Presupuesto mensual', val: answers['presupuesto-mensual'] },
-              { label: 'Plazo esperado', val: answers['plazo-resultados'] },
             ].filter(i => i.val).map(item => (
               <div key={item.label} className="bg-white/5 border border-white/10 rounded-xl p-3">
                 <div className="text-xs text-white/30 mb-1">{item.label}</div>
@@ -292,7 +298,6 @@ export default function DiagnosticoPage() {
     <div className="min-h-screen bg-black px-4 py-10">
       <div className="max-w-xl mx-auto">
 
-        {/* Header */}
         <div className="mb-8">
           <a href="/" className="inline-block mb-6">
             <Image src="/logo.svg" alt="Monkeia" width={120} height={32} />
@@ -308,7 +313,6 @@ export default function DiagnosticoPage() {
           </p>
         </div>
 
-        {/* Progress */}
         <div className="mb-8">
           <div className="text-xs text-white/30 mb-2">Sección {cur + 1} de {total}</div>
           <div className="h-[2px] bg-white/10 rounded-full">
@@ -319,7 +323,6 @@ export default function DiagnosticoPage() {
           </div>
         </div>
 
-        {/* Section */}
         <div>
           <div className="mb-6 pb-4 border-b border-white/10">
             <div className="text-xs text-white/30 font-medium tracking-widest mb-1">{section.num}</div>
@@ -331,7 +334,6 @@ export default function DiagnosticoPage() {
               <label className="block text-sm font-medium text-white mb-2 leading-snug">{q.label}</label>
               {q.hint && <p className="text-xs text-white/40 mb-2">{q.hint}</p>}
 
-              {/* Single row options */}
               {q.type === 'single' && (
                 <div className="flex flex-wrap gap-2">
                   {q.options!.map(opt => (
@@ -350,7 +352,6 @@ export default function DiagnosticoPage() {
                 </div>
               )}
 
-              {/* Single column options */}
               {q.type === 'single-col' && (
                 <div className="flex flex-col gap-2">
                   {q.options!.map(opt => (
@@ -369,7 +370,6 @@ export default function DiagnosticoPage() {
                 </div>
               )}
 
-              {/* Multi select */}
               {q.type === 'multi' && (
                 <div className="flex flex-wrap gap-2">
                   {q.options!.map(opt => (
@@ -388,7 +388,6 @@ export default function DiagnosticoPage() {
                 </div>
               )}
 
-              {/* Scale 1-5 */}
               {q.type === 'scale' && (
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-white/30 min-w-[70px]">Insatisfecho</span>
@@ -411,21 +410,19 @@ export default function DiagnosticoPage() {
                 </div>
               )}
 
-              {/* Text input */}
               {q.type === 'text' && (
                 <input
                   type="text"
-                  placeholder={q.placeholder}
+                  placeholder={q.placeholder || ''}
                   value={(answers[q.field] as string) || ''}
                   onChange={e => setAnswers(prev => ({ ...prev, [q.field]: e.target.value }))}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-blue/50 transition-colors"
                 />
               )}
 
-              {/* Textarea */}
               {q.type === 'textarea' && (
                 <textarea
-                  placeholder={q.placeholder}
+                  placeholder={q.placeholder || ''}
                   value={(answers[q.field] as string) || ''}
                   onChange={e => setAnswers(prev => ({ ...prev, [q.field]: e.target.value }))}
                   rows={4}
@@ -436,12 +433,10 @@ export default function DiagnosticoPage() {
           ))}
         </div>
 
-        {/* Error */}
         {error && (
           <p className="text-red-400 text-sm mb-4">{error}</p>
         )}
 
-        {/* Navigation */}
         <div className="flex justify-between items-center mt-8 pt-6 border-t border-white/10">
           <button
             onClick={navBack}
