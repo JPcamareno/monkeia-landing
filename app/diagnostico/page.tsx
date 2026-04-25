@@ -379,38 +379,123 @@ export default function DiagnosticoPage() {
   const section = SECTIONS[cur]
 
   if (done) {
+    const nombre = (answers['nombre'] as string) || ''
+    const empresa = (answers['empresa'] as string) || ''
+
+    // Calcular score de madurez IA
+    let score = 0
+    if (answers['situacion'] && answers['situacion'] !== 'Ninguna de las anteriores, vamos bien en general') score += 20
+    if (answers['respuesta_fds'] === 'Le respondemos en el momento, tenemos turnos') score += 10
+    else if (answers['respuesta_fds'] === 'A veces se nos pasa y respondemos tarde' || answers['respuesta_fds'] === 'No tenemos cómo medir cuánto se nos pasa') score += 25
+    if (answers['sentimiento'] === 'Estamos saturados, el día a día nos consume y no alcanzamos a hacer todo lo que queremos') score += 25
+    else if (answers['sentimiento'] === 'Hay áreas claras donde estamos perdiendo oportunidades por falta de tiempo o herramientas') score += 20
+    if (answers['prioridad'] === 'Es de las 3 prioridades principales del negocio') score += 25
+    else if (answers['prioridad'] === 'Es importante pero hay otras cosas más urgentes ahora') score += 15
+
+    const nivel = score >= 70 ? 'Alto potencial IA' : score >= 40 ? 'Potencial medio IA' : 'Explorando IA'
+    const nivelColor = score >= 70 ? '#3b82f6' : score >= 40 ? '#8b5cf6' : '#6b7280'
+    const nivelDesc = score >= 70
+      ? 'Tu operación tiene condiciones ideales para implementar IA con ROI rápido.'
+      : score >= 40
+      ? 'Hay oportunidades claras. La IA puede resolver cuellos de botella específicos.'
+      : 'Estás en el momento ideal para explorar qué puede hacer la IA por tu negocio.'
+
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center px-4">
-        <div className="max-w-lg w-full text-center">
-          <div className="w-16 h-16 rounded-full bg-blue/10 border border-blue/30 flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8 text-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6 py-16 relative overflow-hidden">
+        <style>{`
+          @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+          @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+          @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+          @keyframes countUp { from { opacity: 0; } to { opacity: 1; } }
+          .fade-1 { animation: fadeUp 0.7s ease 0.1s both; }
+          .fade-2 { animation: fadeUp 0.7s ease 0.3s both; }
+          .fade-3 { animation: fadeUp 0.7s ease 0.5s both; }
+          .fade-4 { animation: fadeUp 0.7s ease 0.7s both; }
+          .fade-5 { animation: fadeUp 0.7s ease 0.9s both; }
+          .fade-6 { animation: fadeUp 0.7s ease 1.1s both; }
+          .dot-pulse { animation: pulse 2s ease-in-out infinite; }
+          .ring-spin { animation: spin 8s linear infinite; }
+        `}</style>
+
+        {/* Background glow */}
+        <div style={{position:'absolute',top:'20%',left:'50%',transform:'translateX(-50%)',width:'400px',height:'400px',background:`radial-gradient(circle, ${nivelColor}15 0%, transparent 70%)`,pointerEvents:'none'}} />
+
+        {/* Status */}
+        <div className="fade-1 flex items-center gap-2 mb-10">
+          <div className="w-1.5 h-1.5 rounded-full bg-blue dot-pulse" />
+          <span className="text-xs text-white/30 tracking-widest uppercase">Diagnóstico recibido</span>
+        </div>
+
+        {/* Score ring */}
+        <div className="fade-2 relative flex items-center justify-center mb-8">
+          <svg width="140" height="140" viewBox="0 0 140 140" className="ring-spin" style={{position:'absolute'}}>
+            <circle cx="70" cy="70" r="64" fill="none" stroke="white" strokeOpacity="0.05" strokeWidth="1" />
+            <circle cx="70" cy="70" r="64" fill="none" stroke={nivelColor} strokeOpacity="0.3" strokeWidth="1" strokeDasharray="4 8" />
+          </svg>
+          <div style={{width:120,height:120,borderRadius:'50%',border:`1px solid ${nivelColor}40`,background:`${nivelColor}08`,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
+            <span style={{fontSize:36,fontWeight:700,color:nivelColor,lineHeight:1}}>{score}</span>
+            <span style={{fontSize:10,color:'rgba(255,255,255,0.3)',letterSpacing:2,marginTop:4}}>SCORE</span>
           </div>
-          <h2 className="text-2xl font-semibold text-white mb-3">Recibimos tus respuestas</h2>
-          <p className="text-white/50 text-sm leading-relaxed mb-8">
-            En menos de 24 horas te enviamos un diagnóstico personalizado con las 2 áreas donde la IA puede generar más retorno para tu negocio, junto con los pasos concretos si quieres profundizar.
-          </p>
-          <div className="grid grid-cols-2 gap-3 mb-8 text-left">
+        </div>
+
+        {/* Nivel */}
+        <div className="fade-3 text-center mb-2">
+          <span style={{fontSize:11,fontWeight:600,color:nivelColor,letterSpacing:3,textTransform:'uppercase'}}>{nivel}</span>
+        </div>
+
+        {/* Headline */}
+        <div className="fade-3 text-center mb-3 max-w-sm">
+          <h1 className="text-3xl font-semibold text-white leading-tight">
+            {nombre ? `${nombre},` : ''} tu diagnóstico<br />
+            <span style={{color:nivelColor}}>está en camino.</span>
+          </h1>
+        </div>
+
+        <div className="fade-3 text-center mb-10 max-w-xs">
+          <p className="text-white/30 text-sm leading-relaxed">{nivelDesc}</p>
+        </div>
+
+        {/* Divider */}
+        <div className="fade-4 w-full max-w-sm h-px bg-white/5 mb-10" />
+
+        {/* Próximos pasos */}
+        <div className="fade-4 w-full max-w-sm mb-10">
+          <p className="text-xs text-white/20 tracking-widest uppercase mb-5 text-center">Qué pasa ahora</p>
+          <div className="flex flex-col gap-4">
             {[
-              { label: 'Nombre', val: answers['nombre'] },
-              { label: 'Empresa', val: answers['empresa'] },
-            ].filter(i => i.val).map(item => (
-              <div key={item.label} className="bg-white/5 border border-white/10 rounded-xl p-3">
-                <div className="text-xs text-white/30 mb-1">{item.label}</div>
-                <div className="text-sm font-medium text-white">{item.val as string}</div>
+              { n: '01', title: 'Analizamos tus respuestas', desc: 'Identificamos las 2 áreas de mayor retorno para tu operación.' },
+              { n: '02', title: 'Te enviamos el diagnóstico', desc: 'En menos de 24h recibes un análisis personalizado con pasos concretos.' },
+              { n: '03', title: 'Hablamos si quieres profundizar', desc: 'Sin compromiso. Solo si tiene sentido para tu negocio.' },
+            ].map(step => (
+              <div key={step.n} className="flex gap-4 items-start">
+                <span style={{fontSize:11,fontWeight:700,color:nivelColor,letterSpacing:1,minWidth:24,paddingTop:2}}>{step.n}</span>
+                <div>
+                  <p className="text-white text-sm font-medium mb-0.5">{step.title}</p>
+                  <p className="text-white/30 text-xs leading-relaxed">{step.desc}</p>
+                </div>
               </div>
             ))}
           </div>
-          <p className="text-white/30 text-xs mb-6">Si tu caso es urgente, habla con nosotros directamente:</p>
+        </div>
+
+        {/* CTA */}
+        <div className="fade-5 text-center">
+          {empresa && <p className="text-white/20 text-xs mb-4">Diagnóstico para <span className="text-white/40">{empresa}</span></p>}
           <a
             href="https://wa.me/50683225178?text=Acabo%20de%20completar%20el%20diagn%C3%B3stico%20IA%20de%20Monkeia"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-blue text-white font-medium px-8 py-3 rounded-xl hover:opacity-90 transition-opacity"
+            style={{background:nivelColor}}
+            className="inline-block text-white text-sm font-medium px-8 py-3 rounded-xl hover:opacity-90 transition-opacity"
           >
             Hablar con el equipo →
           </a>
+          <p className="text-white/20 text-xs mt-3">Sin compromiso · Respuesta en menos de 24h</p>
+        </div>
+
+        {/* Logo */}
+        <div className="fade-6 mt-16">
+          <Image src="/logo.svg" alt="Monkeia" width={70} height={20} className="opacity-10" />
         </div>
       </div>
     )
