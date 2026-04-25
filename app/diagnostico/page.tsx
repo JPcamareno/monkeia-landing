@@ -14,10 +14,10 @@ type Question = {
   options?: string[]
 }
 
-const SECTIONS: { id: string; num: string; title: string; questions: Question[] }[] = [
+const SECTIONS: { id: string; num: string; title: string; subtitle?: string; questions: Question[] }[] = [
   {
     id: 'sec-0',
-    num: 'SECCIÓN 01 · TUS DATOS',
+    num: 'PASO 01',
     title: 'Primero, cuéntanos quién eres',
     questions: [
       {
@@ -25,6 +25,12 @@ const SECTIONS: { id: string; num: string; title: string; questions: Question[] 
         label: '¿Cuál es tu nombre?',
         type: 'text',
         placeholder: 'Tu nombre completo',
+      },
+      {
+        field: 'empresa',
+        label: '¿Cómo se llama tu empresa?',
+        type: 'text',
+        placeholder: 'Nombre de la empresa',
       },
       {
         field: 'email',
@@ -38,150 +44,123 @@ const SECTIONS: { id: string; num: string; title: string; questions: Question[] 
         type: 'text',
         placeholder: '+506 8888 8888',
       },
-      {
-        field: 'empresa',
-        label: '¿Cómo se llama tu empresa?',
-        type: 'text',
-        placeholder: 'Nombre de la empresa',
-      },
-      {
-        field: 'rol',
-        label: '¿Cuál es tu rol en la empresa?',
-        type: 'single',
-        options: ['Gerente / Dueño', 'Gerente comercial', 'Jefe de operaciones', 'Responsable TI', 'Otro'],
-      },
-      {
-        field: 'tamano',
-        label: '¿Cuántas personas trabajan en la empresa?',
-        type: 'single',
-        options: ['1–5', '6–15', '16–30', 'Más de 30'],
-      },
     ],
   },
   {
     id: 'sec-1',
-    num: 'SECCIÓN 02 · CANALES Y PRODUCTOS',
-    title: '¿Cómo vendes y qué vendes?',
+    num: 'PASO 02',
+    title: 'De estas situaciones, ¿cuál te suena más familiar esta semana?',
     questions: [
       {
-        field: 'canales',
-        label: '¿Cuáles son los principales canales de venta hoy?',
-        hint: 'Puedes seleccionar más de uno',
-        type: 'multi',
-        options: ['Tienda online (web)', 'WhatsApp / teléfono', 'Vendedor presencial', 'Correo electrónico', 'Distribuidores / mayoristas'],
-      },
-      {
-        field: 'skus',
-        label: '¿Cuántos productos o servicios manejan aproximadamente?',
-        type: 'single',
-        options: ['Menos de 50', '50–200', '200–1.000', 'Más de 1.000', 'No lo sé con exactitud'],
+        field: 'situacion',
+        label: '',
+        type: 'single-col',
+        options: [
+          'Perdimos una venta porque tardamos demasiado en responder una cotización',
+          'Tuvimos que repetirle a un cliente la misma información que ya está disponible',
+          'Nos quedamos sin stock de algo crítico y el cliente se fue a la competencia',
+          'Mi equipo está saturado respondiendo consultas en vez de cerrar negocios grandes',
+          'Sé que hay clientes que no nos compran porque no nos encuentran online',
+          'Ninguna de las anteriores, vamos bien en general',
+        ],
       },
     ],
   },
   {
     id: 'sec-2',
-    num: 'SECCIÓN 03 · OPERACIONES Y PROCESOS',
-    title: '¿Cómo funciona hoy la operación?',
+    num: 'PASO 03',
+    title: '¿Cuál de estas tareas le quita más tiempo a tu equipo cada semana?',
     questions: [
       {
-        field: 'sistemas',
-        label: '¿Qué sistemas o herramientas digitales utilizan actualmente?',
-        hint: 'Puedes seleccionar más de uno',
-        type: 'multi',
-        options: ['ERP (SAP, Defontana, etc.)', 'CRM (HubSpot, Pipedrive, etc.)', 'WooCommerce / Shopify / Mercado Libre', 'Excel / Google Sheets', 'WhatsApp Business', 'Ninguno formal'],
-      },
-      {
-        field: 'tiempo-respuesta',
-        label: '¿Cuánto tiempo demora en promedio atender una consulta de cliente?',
-        type: 'single',
-        options: ['Menos de 1 hora', '1–4 horas', '4–24 horas', 'Más de 24 horas'],
-      },
-      {
-        field: 'inventario',
-        label: '¿Cómo manejan actualmente el inventario o los recursos?',
+        field: 'tarea',
+        label: '',
         type: 'single-col',
-        options: ['Sistema automatizado con alertas', 'Revisión manual periódica (semanal/mensual)', 'Reaccionamos cuando hay problemas', 'Depende del proveedor o de la experiencia del equipo'],
-      },
-      {
-        field: 'tareas-repetitivas',
-        label: '¿Qué tareas consumen más tiempo innecesario a tu equipo hoy?',
-        hint: 'Puedes seleccionar más de uno',
-        type: 'multi',
-        options: ['Responder consultas repetidas', 'Generar cotizaciones manualmente', 'Actualizar catálogo o base de datos', 'Seguimiento de órdenes o clientes', 'Reportes y análisis de ventas', 'Coordinación interna de tareas'],
+        options: [
+          'Responder consultas técnicas y de cotización por WhatsApp o teléfono',
+          'Buscar información o compatibilidades de productos/servicios',
+          'Generar y enviar cotizaciones manualmente',
+          'Hacer seguimiento de órdenes y entregas',
+          'Coordinar con proveedores y revisar stock',
+          'Registrar información en planillas o sistemas distintos',
+        ],
       },
     ],
   },
   {
     id: 'sec-3',
-    num: 'SECCIÓN 04 · PRIORIDADES Y EXPERIENCIA IA',
-    title: '¿Dónde quieren crecer y qué han explorado?',
+    num: 'PASO 04',
+    title: '¿Cuál de estos clientes describe mejor a tu cliente promedio?',
     questions: [
       {
-        field: 'objetivo-12m',
-        label: '¿Cuál es el principal objetivo de la empresa para los próximos 12 meses?',
+        field: 'cliente',
+        label: '',
         type: 'single-col',
-        options: ['Aumentar ventas online', 'Mejorar la atención y retención de clientes', 'Escalar el equipo sin perder eficiencia', 'Expandirse a nuevas regiones o segmentos', 'Reducir costos operativos y mejorar márgenes'],
-      },
-      {
-        field: 'area-urgente',
-        label: '¿Qué área de la empresa tiene mayor urgencia de mejora?',
-        type: 'single-col',
-        options: ['Ventas y adquisición de clientes', 'Soporte técnico y atención al cliente', 'Logística e inventario', 'Marketing y visibilidad digital', 'Administración y finanzas', 'Gestión del conocimiento interno'],
-      },
-      {
-        field: 'pct-repetidas',
-        label: '¿Qué porcentaje de las consultas de clientes son preguntas repetidas?',
-        type: 'single',
-        options: ['Menos del 20%', '20–40%', '40–60%', 'Más del 60%', 'No lo hemos medido'],
-      },
-      {
-        field: 'uso-ia-previo',
-        label: '¿Han usado alguna herramienta de inteligencia artificial en la empresa?',
-        type: 'single-col',
-        options: ['Sí, ya tenemos soluciones IA en producción', 'Sí, hemos hecho pruebas puntuales (ChatGPT, etc.)', 'Hemos explorado el tema pero no hemos implementado nada', 'No hemos tocado el tema aún'],
-      },
-      {
-        field: 'actitud-tecnologia',
-        label: '¿Cuál es la actitud general del equipo frente a adoptar nuevas tecnologías?',
-        type: 'single-col',
-        options: ['Muy abiertos — siempre buscamos mejorar con tecnología', 'Abiertos si ven resultados concretos primero', 'Hay resistencia — prefieren los procesos actuales', 'Depende del área — hay de todo'],
-      },
-      {
-        field: 'datos-historicos',
-        label: '¿Tienen datos históricos de ventas, clientes o actividad disponibles?',
-        type: 'single-col',
-        options: ['Sí, en un sistema organizado y accesible', 'Sí, pero en archivos Excel o dispersos', 'Parcialmente — tenemos algunos datos históricos', 'No tenemos datos históricos estructurados'],
+        options: [
+          'Empresa que compra recurrentemente en volúmenes medianos',
+          'Cliente independiente o taller que compra puntualmente',
+          'Empresa de gran escala con compras grandes pero poco frecuentes',
+          'Cliente final que busca un producto o servicio específico',
+        ],
       },
     ],
   },
   {
     id: 'sec-4',
-    num: 'SECCIÓN 05 · PRESUPUESTO Y DECISIÓN',
-    title: 'Información para dimensionar la propuesta',
+    num: 'PASO 05',
+    title: 'Cuando un cliente nuevo te contacta un sábado a las 10pm, ¿qué pasa?',
     questions: [
       {
-        field: 'presupuesto-mensual',
-        label: '¿Cuánto estarían dispuestos a invertir mensualmente en una solución IA?',
+        field: 'respuesta_fds',
+        label: '',
         type: 'single-col',
-        options: ['Menos de $300 USD / mes', '$300–$800 USD / mes', '$800–$1.500 USD / mes', 'Más de $1.500 USD / mes (si el ROI está claro)', 'Aún no lo tenemos definido'],
+        options: [
+          'Le respondemos en el momento, tenemos turnos',
+          'Le respondemos el lunes en la mañana',
+          'A veces se nos pasa y respondemos tarde',
+          'No tenemos cómo medir cuánto se nos pasa',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'sec-5',
+    num: 'PASO 06',
+    title: '¿Cuál de estas frases describe mejor cómo se siente tu equipo con la operación actual?',
+    questions: [
+      {
+        field: 'sentimiento',
+        label: '',
+        type: 'single-col',
+        options: [
+          'Funcionamos bien, pero sabemos que podríamos crecer mucho más si fuéramos más eficientes',
+          'Hay áreas claras donde estamos perdiendo oportunidades por falta de tiempo o herramientas',
+          'Estamos saturados, el día a día nos consume y no alcanzamos a hacer todo lo que queremos',
+          'Honestamente no lo había pensado en estos términos hasta ahora',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'sec-6',
+    num: 'PASO 07',
+    title: '¿Qué tan prioritario es mejorar la eficiencia operativa este año?',
+    questions: [
+      {
+        field: 'prioridad',
+        label: '',
+        type: 'single-col',
+        options: [
+          'Es de las 3 prioridades principales del negocio',
+          'Es importante pero hay otras cosas más urgentes ahora',
+          'Lo tenemos en el radar pero no tiene plazo definido',
+          'Recién estamos empezando a pensarlo',
+        ],
       },
       {
-        field: 'decision-maker',
-        label: '¿Quién toma la decisión final de adoptar una solución como esta?',
-        type: 'single',
-        options: ['Yo mismo', 'Gerencia general', 'Decisión compartida', 'Dueño / directorio'],
-      },
-      {
-        field: 'plazo-resultados',
-        label: '¿En qué plazo esperarían ver resultados medibles?',
-        type: 'single',
-        options: ['1–2 meses', '3–6 meses', '6–12 meses', 'Más de 12 meses'],
-      },
-      {
-        field: 'comentario-libre',
-        label: '¿Hay algo específico que te gustaría que la IA resolviera en tu empresa?',
+        field: 'comentario',
+        label: 'Si no hacemos nada y todo sigue igual los próximos 12 meses, ¿qué crees que pasa con tu empresa? (opcional)',
         type: 'textarea',
-        placeholder: 'Escribe aquí tus comentarios o ideas adicionales...',
+        placeholder: 'Máximo 2 líneas...',
       },
     ],
   },
@@ -262,27 +241,26 @@ export default function DiagnosticoPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-2xl font-semibold text-white mb-3">¡Cuestionario completado!</h2>
+          <h2 className="text-2xl font-semibold text-white mb-3">Recibimos tus respuestas</h2>
           <p className="text-white/50 text-sm leading-relaxed mb-8">
-            Gracias por tomarte el tiempo. Con esta información podemos preparar un diagnóstico preciso y una hoja de ruta IA personalizada para tu empresa.
+            En menos de 24 horas te enviamos un diagnóstico preliminar con las 2 áreas donde la IA puede generar más retorno para tu negocio, junto con los siguientes pasos si quieres profundizar.
           </p>
           <div className="grid grid-cols-2 gap-3 mb-8 text-left">
             {[
               { label: 'Nombre', val: answers['nombre'] },
               { label: 'Empresa', val: answers['empresa'] },
-              { label: 'Área prioritaria', val: answers['area-urgente'] },
-              { label: 'Presupuesto mensual', val: answers['presupuesto-mensual'] },
             ].filter(i => i.val).map(item => (
               <div key={item.label} className="bg-white/5 border border-white/10 rounded-xl p-3">
                 <div className="text-xs text-white/30 mb-1">{item.label}</div>
                 <div className="text-sm font-medium text-white">
-                  {typeof item.val === 'string' ? item.val.replace(/ \(.*?\)/g, '') : item.val}
+                  {typeof item.val === 'string' ? item.val : item.val}
                 </div>
               </div>
             ))}
           </div>
+          <p className="text-white/30 text-xs mb-6">Si tu caso es urgente, habla con nosotros directamente:</p>
           <a
-            href="https://wa.me/50683225178?text=Acabo%20de%20completar%20el%20diagn%C3%B3stico%20IA"
+            href="https://wa.me/50683225178?text=Acabo%20de%20completar%20el%20diagn%C3%B3stico%20IA%20de%20Monkeia"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-blue text-white font-medium px-8 py-3 rounded-xl hover:opacity-90 transition-opacity"
@@ -303,18 +281,21 @@ export default function DiagnosticoPage() {
             <Image src="/logo.svg" alt="Monkeia" width={120} height={32} />
           </a>
           <div className="inline-block bg-blue/10 text-blue text-xs font-medium px-3 py-1 rounded-full mb-3">
-            Diagnóstico IA · Monkeia
+            Diagnóstico IA Express · 7 preguntas · 3 minutos
           </div>
           <h1 className="text-xl font-medium text-white mb-2">
-            Cuestionario de madurez digital y oportunidades IA
+            Descubre las 2 áreas donde la IA puede generar más retorno para tu negocio
           </h1>
           <p className="text-sm text-white/40 leading-relaxed">
-            Responde este cuestionario en 10–15 minutos. Tus respuestas nos permiten identificar con precisión dónde la inteligencia artificial puede generar más impacto en tu operación.
+            Al terminar, recibes un diagnóstico personalizado con los siguientes pasos.
           </p>
         </div>
 
         <div className="mb-8">
-          <div className="text-xs text-white/30 mb-2">Sección {cur + 1} de {total}</div>
+          <div className="flex justify-between text-xs text-white/30 mb-2">
+            <span>{section.num}</span>
+            <span>{cur + 1} de {total}</span>
+          </div>
           <div className="h-[2px] bg-white/10 rounded-full">
             <div
               className="h-full bg-blue rounded-full transition-all duration-500"
@@ -325,32 +306,14 @@ export default function DiagnosticoPage() {
 
         <div>
           <div className="mb-6 pb-4 border-b border-white/10">
-            <div className="text-xs text-white/30 font-medium tracking-widest mb-1">{section.num}</div>
-            <h2 className="text-lg font-medium text-white">{section.title}</h2>
+            <h2 className="text-lg font-medium text-white leading-snug">{section.title}</h2>
+            {section.subtitle && <p className="text-sm text-white/40 mt-1">{section.subtitle}</p>}
           </div>
 
           {section.questions.map(q => (
             <div key={q.field} className="mb-6">
-              <label className="block text-sm font-medium text-white mb-2 leading-snug">{q.label}</label>
+              {q.label && <label className="block text-sm font-medium text-white mb-2 leading-snug">{q.label}</label>}
               {q.hint && <p className="text-xs text-white/40 mb-2">{q.hint}</p>}
-
-              {q.type === 'single' && (
-                <div className="flex flex-wrap gap-2">
-                  {q.options!.map(opt => (
-                    <button
-                      key={opt}
-                      onClick={() => select(q.field, opt, false)}
-                      className={`px-4 py-2 rounded-xl text-sm border transition-all ${
-                        isSelected(q.field, opt)
-                          ? 'border-blue bg-blue/10 text-blue font-medium'
-                          : 'border-white/10 text-white/50 hover:border-blue/50 hover:text-blue/80'
-                      }`}
-                    >
-                      {opt}
-                    </button>
-                  ))}
-                </div>
-              )}
 
               {q.type === 'single-col' && (
                 <div className="flex flex-col gap-2">
@@ -370,12 +333,12 @@ export default function DiagnosticoPage() {
                 </div>
               )}
 
-              {q.type === 'multi' && (
+              {q.type === 'single' && (
                 <div className="flex flex-wrap gap-2">
                   {q.options!.map(opt => (
                     <button
                       key={opt}
-                      onClick={() => select(q.field, opt, true)}
+                      onClick={() => select(q.field, opt, false)}
                       className={`px-4 py-2 rounded-xl text-sm border transition-all ${
                         isSelected(q.field, opt)
                           ? 'border-blue bg-blue/10 text-blue font-medium'
@@ -385,28 +348,6 @@ export default function DiagnosticoPage() {
                       {opt}
                     </button>
                   ))}
-                </div>
-              )}
-
-              {q.type === 'scale' && (
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-white/30 min-w-[70px]">Insatisfecho</span>
-                  <div className="flex gap-2">
-                    {['1', '2', '3', '4', '5'].map(v => (
-                      <button
-                        key={v}
-                        onClick={() => select(q.field, v, false)}
-                        className={`w-10 h-10 rounded-xl text-sm font-medium border transition-all ${
-                          isSelected(q.field, v)
-                            ? 'border-blue bg-blue/10 text-blue'
-                            : 'border-white/10 text-white/50 hover:border-blue/50'
-                        }`}
-                      >
-                        {v}
-                      </button>
-                    ))}
-                  </div>
-                  <span className="text-xs text-white/30 min-w-[70px] text-right">Satisfecho</span>
                 </div>
               )}
 
@@ -425,7 +366,7 @@ export default function DiagnosticoPage() {
                   placeholder={q.placeholder || ''}
                   value={(answers[q.field] as string) || ''}
                   onChange={e => setAnswers(prev => ({ ...prev, [q.field]: e.target.value }))}
-                  rows={4}
+                  rows={3}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-blue/50 transition-colors resize-none"
                 />
               )}
@@ -433,9 +374,7 @@ export default function DiagnosticoPage() {
           ))}
         </div>
 
-        {error && (
-          <p className="text-red-400 text-sm mb-4">{error}</p>
-        )}
+        {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
 
         <div className="flex justify-between items-center mt-8 pt-6 border-t border-white/10">
           <button
@@ -449,7 +388,7 @@ export default function DiagnosticoPage() {
             disabled={submitting}
             className="px-6 py-2 rounded-xl text-sm font-medium bg-blue text-white hover:opacity-90 transition-opacity disabled:opacity-50"
           >
-            {submitting ? 'Enviando...' : cur === total - 1 ? 'Enviar cuestionario →' : 'Siguiente →'}
+            {submitting ? 'Enviando...' : cur === total - 1 ? 'Enviar diagnóstico →' : 'Siguiente →'}
           </button>
         </div>
 
