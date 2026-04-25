@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 type Answers = Record<string, string | string[]>
@@ -174,6 +174,20 @@ export default function DiagnosticoPage() {
   const [error, setError] = useState('')
 
   const total = SECTIONS.length
+
+  useEffect(() => {
+    fetch(`https://ipapi.co/json/`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.country_calling_code) {
+          setAnswers(prev => ({
+            ...prev,
+            telefono: prev["telefono"] ? prev["telefono"] : data.country_calling_code,
+          }))
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   function select(field: string, value: string, multi: boolean) {
     setAnswers(prev => {
