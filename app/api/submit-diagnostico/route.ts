@@ -13,14 +13,13 @@ async function sendToActivepieces(answers: Record<string, unknown>) {
         email: answers['email'] || '-',
         telefono: answers['telefono'] || '-',
         empresa: answers['empresa'] || '-',
-        rol: answers['rol'] || '-',
-        tamano: answers['tamano'] || '-',
-        objetivo_12m: answers['objetivo-12m'] || '-',
-        area_urgente: answers['area-urgente'] || '-',
-        presupuesto: answers['presupuesto-mensual'] || '-',
-        plazo: answers['plazo-resultados'] || '-',
-        uso_ia: answers['uso-ia-previo'] || '-',
-        comentario: answers['comentario-libre'] || '-',
+        situacion: answers['situacion'] || '-',
+        tarea: answers['tarea'] || '-',
+        cliente: answers['cliente'] || '-',
+        respuesta_fds: answers['respuesta_fds'] || '-',
+        sentimiento: answers['sentimiento'] || '-',
+        prioridad: answers['prioridad'] || '-',
+        comentario: answers['comentario'] || '-',
       }),
     })
   } catch (err) {
@@ -46,32 +45,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No se recibieron respuestas' }, { status: 400 })
     }
 
-    const { error } = await supabase.from('diagnosticos').insert([
+    const { error } = await supabase.from('diagnosticos_express').insert([
       {
-        empresa: answers['empresa'] || null,
         nombre: answers['nombre'] || null,
         email: answers['email'] || null,
         telefono: answers['telefono'] || null,
-        rol: answers['rol'] || null,
-        tamano: answers['tamano'] || null,
-        canales: answers['canales'] || null,
-        skus: answers['skus'] || null,
-        sistemas: answers['sistemas'] || null,
-        tiempo_respuesta: answers['tiempo-respuesta'] || null,
-        inventario: answers['inventario'] || null,
-        tareas_repetitivas: answers['tareas-repetitivas'] || null,
-        objetivo_12m: answers['objetivo-12m'] || null,
-        area_urgente: answers['area-urgente'] || null,
-        satisfaccion_respuesta: answers['satisfaccion-respuesta'] || null,
-        pct_repetidas: answers['pct-repetidas'] || null,
-        uso_ia_previo: answers['uso-ia-previo'] || null,
-        actitud_tecnologia: answers['actitud-tecnologia'] || null,
-        documentacion: answers['documentacion'] || null,
-        datos_historicos: answers['datos-historicos'] || null,
-        presupuesto_mensual: answers['presupuesto-mensual'] || null,
-        decision_maker: answers['decision-maker'] || null,
-        plazo_resultados: answers['plazo-resultados'] || null,
-        comentario_libre: answers['comentario-libre'] || null,
+        empresa: answers['empresa'] || null,
+        situacion: answers['situacion'] || null,
+        tarea: answers['tarea'] || null,
+        cliente: answers['cliente'] || null,
+        respuesta_fds: answers['respuesta_fds'] || null,
+        sentimiento: answers['sentimiento'] || null,
+        prioridad: answers['prioridad'] || null,
+        comentario: answers['comentario'] || null,
       },
     ])
 
