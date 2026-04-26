@@ -137,7 +137,6 @@ const SECTIONS: { id: string; num: string; title: string; questions: Question[] 
     id: 'sec-5',
     num: 'PASO 06',
     title: '¿Qué herramientas usas hoy para gestionar tu negocio?',
-    hint: 'Puedes seleccionar más de una',
     questions: [
       {
         field: 'ecosistema',
