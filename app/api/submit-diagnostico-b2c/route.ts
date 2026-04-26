@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
-const ACTIVEPIECES_WEBHOOK = 'https://cloud.activepieces.com/api/v1/webhooks/hnOyI74mg97pmuw3IIIC2'
+const ACTIVEPIECES_WEBHOOK = 'https://cloud.activepieces.com/api/v1/webhooks/vQQUNXOtIit8q2in5udFO'
 
 async function generarDiagnostico(answers: Record<string, unknown>): Promise<string> {
   const ecosistema = Array.isArray(answers['ecosistema']) ? (answers['ecosistema'] as string[]).join(', ') : answers['ecosistema']
