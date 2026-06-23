@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback, createContext, useContext, useMemo } from "react";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
+import { trackLead, trackContact } from "./lib/track";
 
 // -- SQL to run once in Supabase dashboard --
 // create table quiz_results (
@@ -26,7 +27,7 @@ function getSupabase() {
 const WA =
   "https://wa.me/50683225178?text=Hola%2C%20quiero%20solicitar%20el%20diagn%C3%B3stico%20gratuito%20de%20Monkeia";
 
-const TIDYCAL = "https://tidycal.com/monkeia/aseseoria?redirect=https://monkeia-landing.vercel.app/gracias";
+const TIDYCAL = "https://tidycal.com/monkeia/aseseoria?redirect=https://www.monkeia.com/gracias";
 
 /* ─────────────────────────────────────────────
    BOOKING MODAL CONTEXT
@@ -1730,6 +1731,9 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
             q4: newAnswers[3] ?? null,
             q5: newAnswers[4] ?? null,
           });
+          trackLead();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (window as any).clarity?.("set", "evento", "quiz_completado");
         }
       }
     }, 300);
@@ -1745,6 +1749,7 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (getSupabase()?.from("quiz_results") as any)?.update({ whatsapp: phone }).eq("score", score);
     }
+    trackContact();
     window.open(`https://wa.me/50683225178?text=${msg}`, "_blank");
     setWaSent(true);
   }

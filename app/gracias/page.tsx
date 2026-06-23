@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import * as THREE from "three";
+import { trackSchedule } from "../lib/track";
 
 const WA = "https://wa.me/50683225178";
 
@@ -87,6 +88,8 @@ function ParticleSphere() {
    GRACIAS PAGE
 ───────────────────────────────────────────── */
 export default function GraciasPage() {
+  useEffect(() => { trackSchedule(); }, []);
+
   return (
     <div className="min-h-screen bg-black text-white">
 
