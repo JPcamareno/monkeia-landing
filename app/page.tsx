@@ -786,7 +786,7 @@ function CRMMockup() {
 
         setStages((prev) => {
           const next = prev.map((s) => ({ ...s, deals: [...s.deals] }));
-          next[0] = { ...next[0], deals: [newDeal, ...next[0].deals] };
+          next[0] = { ...next[0], deals: [newDeal, ...next[0].deals].slice(0, 4) };
           return next;
         });
         setNewDealIds((prev) => new Set([...prev, id]));
