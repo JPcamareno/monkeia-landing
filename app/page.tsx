@@ -1097,7 +1097,7 @@ function Nav() {
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#1f1f1f] bg-black/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Image src="/logo.svg" alt="Monkeia" width={120} height={40} style={{objectFit: 'contain'}} />
-        <CTAButton>Diagnóstico gratis</CTAButton>
+        <CTAButton>Analizar mi empresa</CTAButton>
       </div>
     </header>
   );
@@ -1113,22 +1113,23 @@ function Hero() {
 
       <div className="relative mx-auto max-w-3xl text-center">
         <AnimatedHeadline
-          text="El 78% de tus leads le compra al primero que responde."
-          accent="¿Ese primero eres tú?"
+          text="Tu empresa no necesita más herramientas."
+          accent="Necesita un sistema que las conecte."
         />
 
         <div
           className="mx-auto mb-10 max-w-2xl text-white/60"
           style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}
         >
-          <p>Mientras duermes, el sistema trabaja.</p>
-          <p>Cada lead respondido. Cada venta perseguida.</p>
-          <p>Solo.</p>
+          <p>
+            Diseñamos e implementamos sistemas de IA y automatización que ayudan a empresas
+            a vender, atender y operar de forma más eficiente.
+          </p>
         </div>
 
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <CTAButton large>
-            Quiero mi diagnóstico gratuito — Solo 5 cupos
+            Analizar mi empresa
           </CTAButton>
         </div>
 
@@ -1538,26 +1539,26 @@ function getQuizTier(score: number): QuizTier {
     return {
       label: "CRÍTICO",
       color: "#f87171",
-      title: "Tu negocio está perdiendo ventas cada día.",
-      body: "Sin un sistema, cada lead que no respondes a tiempo es dinero que se va con tu competencia. Esto tiene solución inmediata.",
-      cta: "Quiero solucionar esto ahora",
+      title: "Tu operación está perdiendo oportunidades cada día.",
+      body: "Sin un sistema que conecte canales y seguimiento, cada oportunidad sin respuesta a tiempo se va con la competencia. Es corregible.",
+      cta: "Analizar mi empresa",
     };
   }
   if (n <= 60) {
     return {
       label: "EN RIESGO",
       color: "#facc15",
-      title: "Estás dejando dinero sobre la mesa.",
-      body: "Tu negocio funciona, pero le faltan piezas clave. Un sistema bien conectado puede duplicar tu conversión.",
-      cta: "Ver cómo mejorar mi sistema",
+      title: "Tienes la base, pero no está conectada.",
+      body: "La operación funciona, pero le faltan piezas clave. Un sistema bien integrado mejora conversión y tiempos de respuesta.",
+      cta: "Analizar mi empresa",
     };
   }
   return {
     label: "LISTO PARA ESCALAR",
     color: "#4ade80",
-    title: "Estás listo para automatizar — actuemos rápido.",
-    body: "Tienes la base. Con el sistema correcto puedes escalar sin contratar más gente.",
-    cta: "Quiero escalar mi sistema",
+    title: "Estás listo para escalar con IA.",
+    body: "Tu operación está ordenada. Con el sistema correcto puedes crecer sin sumar estructura.",
+    cta: "Analizar mi empresa",
   };
 }
 
@@ -1765,13 +1766,13 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="mb-4 text-center">
-          <span className="terminal-label">&gt;&gt; DIAGNÓSTICO GRATUITO</span>
+          <span className="terminal-label">&gt;&gt; ANÁLISIS RÁPIDO</span>
         </div>
         <h2
           className="mb-4 text-balance text-center font-extrabold tracking-tight text-white"
           style={{ fontSize: "clamp(2rem, 5vw, 3.75rem)" }}
         >
-          En 2 minutos sabes exactamente por qué no estás cerrando más.
+          En 2 minutos identifica dónde se está perdiendo eficiencia en tu operación.
         </h2>
         <p
           className="mb-12 text-center text-white/40"
@@ -2198,20 +2199,20 @@ function Problem() {
   const pains = [
     {
       icon: <IconClock />,
-      title: "Respondes tarde.",
-      body: "El lead ya compró en otro lado.",
+      title: "Leads sin seguimiento",
+      body: "Las oportunidades entran por varios canales y se enfrían antes de que alguien las trabaje. Nadie sabe quién responde ni cuándo.",
       delay: 0,
     },
     {
-      icon: <IconEye />,
-      title: "No sabes qué pasó.",
-      body: "Solo sabes que no cerró.",
+      icon: <IconLayers />,
+      title: "Información dispersa",
+      body: "CRM, WhatsApp, hojas de cálculo y correos que no se hablan entre sí. Cada área tiene su versión de la verdad y ninguna es completa.",
       delay: 120,
     },
     {
-      icon: <IconUsers />,
-      title: "Todo depende de ti.",
-      body: "Y tú no puedes estar en todas partes.",
+      icon: <IconRepeat />,
+      title: "Tareas repetitivas",
+      body: "Tu equipo invierte horas en cargar datos, mover información y dar seguimiento manual en lugar de vender y atender mejor.",
       delay: 240,
     },
   ];
@@ -2226,13 +2227,13 @@ function Problem() {
           className="mb-4 text-balance text-center font-extrabold tracking-tight text-white"
           style={{ fontSize: "clamp(2rem, 5vw, 3.75rem)" }}
         >
-          No es falta de leads.
+          No es falta de esfuerzo.
         </h2>
         <p
           className="mb-16 text-center text-white/40"
           style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}
         >
-          Es lo que pasa después.
+          Es falta de un sistema que conecte lo que ya tienes.
         </p>
 
         <div className="grid gap-6 md:grid-cols-3">
@@ -2274,55 +2275,14 @@ function ProblemCard({
 ───────────────────────────────────────────── */
 const TESTIMONIALS = [
   {
-    name: "Gerardo",
-    initials: "GE",
-    color: "#378ADD",
-    business: "Toro 650 — E-commerce",
-    stars: 5,
-    quote:
-      "Facturamos más de $2,500 en un solo mes gracias a una estrategia en Instagram Stories. Monkeia transformó cómo vendemos online.",
-    date: "Verificado",
-  },
-  {
-    name: "Maribel Agüero",
-    initials: "MA",
+    name: "Rubén Ocampo Licea",
+    initials: "RO",
     color: "#10b981",
-    business: "Latina Pizza",
+    business: "Mi Ranking — Plataforma deportiva",
     stars: 5,
     quote:
-      "Incrementamos las ventas un 45% en los primeros 2 meses. No esperábamos resultados tan rápidos. Totalmente recomendado.",
-    date: "Verificado",
-  },
-  {
-    name: "Juan Cáceres",
-    initials: "JC",
-    color: "#f59e0b",
-    business: "Multinivel",
-    stars: 5,
-    quote:
-      "Llevamos más de 10,000 leads a un webinar gracias a la automatización que implementó Monkeia. Un sistema que trabaja solo.",
-    date: "Verificado",
-  },
-  {
-    name: "Eliana",
-    initials: "EL",
-    color: "#8b5cf6",
-    business: "Flowback — Soporte",
-    stars: 5,
-    quote:
-      "El soporte de Monkeia es excepcional. Siempre disponibles, siempre resolviendo. Nos dieron tranquilidad total en el proceso.",
-    date: "Verificado",
-  },
-  {
-    name: "Gianpiero Fusco",
-    initials: "GF",
-    color: "#378ADD",
-    business: "@sw_gianpiero",
-    stars: 5,
-    photoUrl: "https://cdn.ln-cdn.com/c/recQV0G1EGj5iilpD/images/03137106.jpg",
-    quote:
-      "Antes perdía leads todos los días. Ahora el sistema los trabaja solo y yo solo cierro los que ya están listos.",
-    date: "Verificado",
+      "Pasamos de atender 300 jugadores mensuales a más de 7 mil. El sistema revolucionó nuestra atención al cliente con respuestas instantáneas 24/7.",
+    date: "Sep 2023",
   },
   {
     name: "Jimmy Labin",
@@ -2336,13 +2296,23 @@ const TESTIMONIALS = [
     date: "Verificado",
   },
   {
-    name: "Rubén Ocampo Licea",
-    initials: "RO",
-    color: "#10b981",
-    business: "Mi Ranking — Tennis",
+    name: "Juan Cáceres",
+    initials: "JC",
+    color: "#f59e0b",
+    business: "Operación comercial",
     stars: 5,
     quote:
-      "Pasamos de atender 300 jugadores mensuales a más de 7 mil. El sistema revolucionó nuestra atención al cliente con respuestas instantáneas 24/7.",
+      "Llevamos más de 10,000 leads a un webinar gracias a la automatización que implementó Monkeia. Un sistema que trabaja solo.",
+    date: "Verificado",
+  },
+  {
+    name: "SERcuidados",
+    initials: "SC",
+    color: "#8b5cf6",
+    business: "Servicio de Enfermería",
+    stars: 5,
+    quote:
+      "El enfoque orientado a resultados me da la confianza para recomendar Monkeia en el orden más alto. Profesionalismo y valor real.",
     date: "Sep 2023",
   },
   {
@@ -2356,14 +2326,25 @@ const TESTIMONIALS = [
     date: "Sep 2023",
   },
   {
-    name: "SERcuidados",
-    initials: "SC",
+    name: "Gianpiero Fusco",
+    initials: "GF",
+    color: "#378ADD",
+    business: "@sw_gianpiero",
+    stars: 5,
+    photoUrl: "https://cdn.ln-cdn.com/c/recQV0G1EGj5iilpD/images/03137106.jpg",
+    quote:
+      "Antes perdía leads todos los días. Ahora el sistema los trabaja solo y yo solo cierro los que ya están listos.",
+    date: "Verificado",
+  },
+  {
+    name: "Eliana",
+    initials: "EL",
     color: "#8b5cf6",
-    business: "Servicio de Enfermería",
+    business: "Flowback — Operación",
     stars: 5,
     quote:
-      "El enfoque orientado a resultados me da la confianza para recomendar Monkeia en el orden más alto. Profesionalismo y valor real.",
-    date: "Sep 2023",
+      "El soporte de Monkeia es excepcional. Siempre disponibles, siempre resolviendo. Nos dieron tranquilidad total en el proceso.",
+    date: "Verificado",
   },
   {
     name: "Gonzalo Ollarzún",
@@ -2373,66 +2354,6 @@ const TESTIMONIALS = [
     stars: 5,
     quote:
       "Monkeia superó mis expectativas en soporte técnico. Siempre disponibles para responder y resolver cualquier problema al instante.",
-    date: "Verificado",
-  },
-  {
-    name: "Alan Solís",
-    initials: "AS",
-    color: "#10b981",
-    business: "Cliente Monkeia",
-    stars: 5,
-    quote:
-      "La atención es excelente y el servicio muy innovador. Me gustó mucho la explicación y la resolución de dudas desde el primer día.",
-    date: "Verificado",
-  },
-  {
-    name: "Graciela Arredondo",
-    initials: "GA",
-    color: "#f59e0b",
-    business: "Cliente Monkeia",
-    stars: 5,
-    quote:
-      "Gran soporte al cliente. Me solucionaron todas mis dudas. Monkeia es super eficiente y el equipo siempre está dispuesto a ayudar.",
-    date: "Verificado",
-  },
-  {
-    name: "Cliente verificado",
-    initials: "CV",
-    color: "#8b5cf6",
-    business: "E-commerce",
-    stars: 5,
-    quote:
-      "¡Monkeia es simplemente fenomenal! Nos ayudaron a personalizar nuestras soluciones y siempre estuvieron ahí para asegurarse de que estuviéramos satisfechos.",
-    date: "Verificado",
-  },
-  {
-    name: "Cliente verificado",
-    initials: "CV",
-    color: "#378ADD",
-    business: "Negocio digital",
-    stars: 5,
-    quote:
-      "Han demostrado profesionalismo al resolver nuestros problemas y ofrecer valiosas mentorías. Sus capacitaciones nos ayudaron a maximizar nuestro impacto en línea.",
-    date: "Verificado",
-  },
-  {
-    name: "Cliente verificado",
-    initials: "CV",
-    color: "#10b981",
-    business: "Empresa",
-    stars: 5,
-    quote:
-      "No podríamos estar más satisfechos. Su chatbot IA ha superado todas nuestras expectativas y ha elevado nuestra empresa al siguiente nivel.",
-    date: "Verificado",
-  },
-  {
-    name: "Cliente verificado",
-    initials: "CV",
-    color: "#f59e0b",
-    business: "Cliente Monkeia",
-    stars: 5,
-    quote:
-      "Desarrollaron un chatbot IA personalizado para nuestra empresa que superó todas nuestras expectativas. Definitivamente los recomendaría.",
     date: "Verificado",
   },
 ];
@@ -2589,12 +2510,12 @@ function Proof() {
         {/* Testimonials marquee */}
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <MarqueeRow
-            cards={TESTIMONIALS.slice(0, 8)}
+            cards={TESTIMONIALS.slice(0, 4)}
             direction="left"
             duration={35}
           />
           <MarqueeRow
-            cards={TESTIMONIALS.slice(7, 15)}
+            cards={TESTIMONIALS.slice(4, 8)}
             direction="right"
             duration={40}
           />
@@ -2609,48 +2530,48 @@ function Proof() {
 ───────────────────────────────────────────── */
 const SERVICE_CARDS = [
   {
-    badge: "Quiero entender primero",
+    badge: "Diagnóstico y consultoría",
     badgeColor: "gray" as const,
-    title: "Diagnóstico Profundo",
+    title: "Entender antes de automatizar",
     description:
-      "Analizamos tu proceso actual de ventas y leads. Te entregamos un documento con exactamente dónde se rompe tu embudo y qué sistema necesitas.",
+      "Mapeamos cómo vende, atiende y opera tu empresa hoy. Identificamos dónde se pierde información, tiempo y oportunidades, y qué se debe resolver primero.",
     features: [
-      "Análisis de tu proceso actual",
-      "Identificación de puntos de fuga",
-      "Hoja de ruta de implementación",
-      "Se descuenta si contratas el sistema",
+      "Mapeo de procesos y canales actuales",
+      "Puntos de fuga y cuellos de botella",
+      "Casos de uso de IA priorizados por impacto",
+      "Hoja de ruta con alcance y secuencia",
     ],
-    cta: "Quiero la auditoría",
+    cta: "Analizar mi empresa",
     featured: false,
   },
   {
-    badge: "Quiero arrancar ya",
+    badge: "Implementación y optimización",
     badgeColor: "blue" as const,
-    title: "Instalamos tu sistema",
+    title: "Implementar sobre lo que ya tienes",
     description:
-      "Implementamos la pieza exacta que tu negocio necesita. Desde un bot de WhatsApp hasta un dashboard conectado a Meta Ads.",
+      "Integramos y automatizamos los procesos críticos con las herramientas que tu empresa ya usa. Sin migrar todo ni reemplazar a tu equipo.",
     features: [
-      "Diagnóstico gratuito incluido",
-      "Timeline definido según tu proyecto",
-      "IA + supervisión humana",
-      "30 días de soporte incluido",
+      "Integración con tu CRM y canales actuales",
+      "Automatización de seguimiento y atención",
+      "IA con supervisión y reglas de negocio",
+      "Medición y optimización continua",
     ],
-    cta: "Quiero mi diagnóstico",
+    cta: "Analizar mi empresa",
     featured: true,
   },
   {
-    badge: "Lo quiero todo",
+    badge: "Sistema completo",
     badgeColor: "purple" as const,
-    title: "Sistema Completo — De cero a automático",
+    title: "Operación conectada de punta a punta",
     description:
-      "Para negocios que necesitan un sistema completo: captura, calificación, nurturing, cierre y dashboard. Todo conectado. Todo automatizado.",
+      "Para empresas que necesitan un sistema completo: captación, calificación, seguimiento, atención y reportería. Todo conectado y visible en un solo lugar.",
     features: [
-      "Auditoría incluida",
-      "Diseño e implementación completa",
+      "Diagnóstico y arquitectura del sistema",
+      "Implementación por fases con entregables",
       "IA + equipo humano de supervisión",
-      "Soporte y optimización continua",
+      "Reportería ejecutiva y mejora continua",
     ],
-    cta: "Hablar con nosotros",
+    cta: "Analizar mi empresa",
     featured: false,
   },
 ];
@@ -2702,7 +2623,7 @@ function Services() {
             className="mx-auto max-w-xl text-balance leading-relaxed text-white/50"
             style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}
           >
-            Cada negocio es diferente. Por eso cada sistema se diseña a medida.
+            Cada empresa opera distinto. Por eso cada sistema se diseña a medida.
           </p>
         </div>
 
@@ -2853,6 +2774,250 @@ function Services() {
 }
 
 /* ─────────────────────────────────────────────
+   DIFERENCIACIÓN
+───────────────────────────────────────────── */
+const DIFF_CONTRAST = {
+  common: [
+    "Se compra una herramienta y se espera que resuelva sola",
+    "Cada área automatiza por su cuenta, sin criterio común",
+    "La información sigue viviendo en silos",
+    "Nadie mide si el proceso mejoró",
+  ],
+  ours: [
+    "Primero el proceso, después la tecnología",
+    "Un solo criterio para ventas, atención y operación",
+    "Datos conectados entre canales y sistemas",
+    "Indicadores claros antes y después de implementar",
+  ],
+};
+
+const DIFF_PILLARS = [
+  {
+    num: "01",
+    title: "Diseñamos el proceso, no la herramienta",
+    body: "Antes de automatizar definimos cómo debe funcionar la operación. La tecnología se elige después, en función de esa decisión.",
+    delay: 0,
+  },
+  {
+    num: "02",
+    title: "Construimos sobre lo que ya existe",
+    body: "Tu CRM, tus canales y tus sistemas actuales se integran en lugar de reemplazarse. Menos fricción, adopción más rápida.",
+    delay: 120,
+  },
+  {
+    num: "03",
+    title: "Entregamos operación, no una demo",
+    body: "Implementación por fases, con responsables, documentación y métricas. El sistema queda funcionando dentro de tu empresa.",
+    delay: 240,
+  },
+];
+
+function DiffPillarCard({ pillar }: { pillar: (typeof DIFF_PILLARS)[number] }) {
+  const ref = useSpringVisible(0.15);
+
+  return (
+    <div
+      ref={ref}
+      className="card-problem rounded-2xl bg-[#0d0d0d] p-8"
+      style={{ animationDelay: `${pillar.delay}ms` }}
+    >
+      <div className="card-top-border" />
+      <span
+        className="mb-5 inline-flex items-center rounded-full font-mono font-bold"
+        style={{
+          fontSize: "10px",
+          letterSpacing: "0.1em",
+          color: "#378ADD",
+          background: "rgba(55,138,221,0.10)",
+          border: "1px solid rgba(55,138,221,0.25)",
+          padding: "3px 10px",
+        }}
+      >
+        {pillar.num}
+      </span>
+      <h3 className="mb-3 text-xl font-bold leading-snug text-white">
+        {pillar.title}
+      </h3>
+      <p className="leading-relaxed text-white/50">{pillar.body}</p>
+    </div>
+  );
+}
+
+function Differentiation() {
+  const ref = useSpringVisible();
+
+  return (
+    <section className="px-6 py-28">
+      <div ref={ref} className="spring-hidden mx-auto max-w-6xl">
+        {/* Header */}
+        <div className="mb-16 text-center">
+          <div className="mb-5">
+            <span className="terminal-label">&gt;&gt; NUESTRO ENFOQUE</span>
+          </div>
+          <h2
+            className="mb-4 text-balance font-extrabold tracking-tight text-white"
+            style={{ fontSize: "clamp(2rem, 5vw, 3.75rem)", lineHeight: 1.1 }}
+          >
+            No vendemos herramientas.
+            <br />
+            <span className="text-[#378ADD]">Construimos sistemas.</span>
+          </h2>
+          <p
+            className="mx-auto max-w-2xl text-balance leading-relaxed text-white/50"
+            style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}
+          >
+            Una herramienta más no arregla un proceso roto. Lo que cambia los resultados es
+            cómo se conectan los datos, los canales y el equipo.
+          </p>
+        </div>
+
+        {/* Contraste: enfoque común vs. nuestro enfoque */}
+        <div className="mb-6 grid grid-cols-1 gap-5 md:grid-cols-2">
+          {/* Enfoque común */}
+          <div
+            className="flex flex-col"
+            style={{
+              background: "rgba(255,255,255,0.02)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: "16px",
+              padding: "28px",
+            }}
+          >
+            <span
+              className="mb-5"
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.07em",
+                color: "rgba(255,255,255,0.45)",
+                fontWeight: 600,
+                textTransform: "uppercase",
+              }}
+            >
+              Cómo se hace normalmente
+            </span>
+            <div style={{ height: "1px", background: "rgba(255,255,255,0.06)", marginBottom: "20px" }} />
+            <ul className="flex flex-col gap-3.5">
+              {DIFF_CONTRAST.common.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-2.5"
+                  style={{ fontSize: "14px", color: "rgba(255,255,255,0.45)" }}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="flex flex-shrink-0 items-center justify-center rounded-full"
+                    style={{
+                      width: "16px",
+                      height: "16px",
+                      background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.12)",
+                      marginTop: "2px",
+                    }}
+                  >
+                    <svg
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      stroke="rgba(255,255,255,0.4)"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      style={{ width: "7px", height: "7px" }}
+                    >
+                      <line x1="2" y1="2" x2="10" y2="10" />
+                      <line x1="10" y1="2" x2="2" y2="10" />
+                    </svg>
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Nuestro enfoque */}
+          <div
+            className="relative flex flex-col overflow-hidden"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(55,138,221,0.4)",
+              borderRadius: "16px",
+              padding: "28px",
+            }}
+          >
+            {/* Glow superior, mismo lenguaje que la tarjeta destacada de servicios */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: "200px",
+                background:
+                  "radial-gradient(ellipse 80% 40% at 50% 0%, rgba(55,138,221,0.25) 0%, transparent 60%)",
+                pointerEvents: "none",
+              }}
+            />
+            <span
+              className="mb-5"
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.07em",
+                color: "#378ADD",
+                fontWeight: 600,
+                textTransform: "uppercase",
+              }}
+            >
+              Cómo lo hacemos en Monkeia
+            </span>
+            <div style={{ height: "1px", background: "rgba(255,255,255,0.06)", marginBottom: "20px" }} />
+            <ul className="flex flex-col gap-3.5">
+              {DIFF_CONTRAST.ours.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-2.5"
+                  style={{ fontSize: "14px", color: "rgba(255,255,255,0.75)" }}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="flex flex-shrink-0 items-center justify-center rounded-full"
+                    style={{
+                      width: "16px",
+                      height: "16px",
+                      background: "rgba(55,138,221,0.15)",
+                      border: "1px solid rgba(55,138,221,0.4)",
+                      marginTop: "2px",
+                    }}
+                  >
+                    <svg
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      stroke="#378ADD"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{ width: "8px", height: "8px" }}
+                    >
+                      <polyline points="2 6 5 9 10 3" />
+                    </svg>
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Pilares */}
+        <div className="grid gap-6 md:grid-cols-3">
+          {DIFF_PILLARS.map((pillar) => (
+            <DiffPillarCard key={pillar.num} pillar={pillar} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────
    CLOSING CTA
 ───────────────────────────────────────────── */
 function ClosingCTA() {
@@ -2862,7 +3027,7 @@ function ClosingCTA() {
       className="relative overflow-hidden border-t border-[#1f1f1f] px-6"
       style={{ background: "#000", paddingTop: "100px", paddingBottom: "100px" }}
     >
-      {/* Giant decorative "5" — absolute background, does not affect flow */}
+      {/* Giant decorative "30" — absolute background, does not affect flow */}
       <div
         className="scanline-5 pointer-events-none select-none absolute top-0 left-0 right-0 w-full text-center z-0"
         aria-hidden="true"
@@ -2871,23 +3036,23 @@ function ClosingCTA() {
           className="glitch-5 font-black leading-none block text-[120px] md:text-[300px]"
           style={{ color: "rgba(55,138,221,0.1)" }}
         >
-          5
+          30
         </span>
       </div>
 
       <div className="relative mx-auto max-w-3xl text-center" style={{ zIndex: 10 }}>
         {/* Badge */}
         <div className="mb-8 flex justify-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-5 py-2">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#378ADD]/30 bg-[#378ADD]/10 px-5 py-2">
             <span
-              className="h-2 w-2 rounded-full bg-red-500 animate-pulse"
-              style={{ boxShadow: "0 0 6px rgba(239,68,68,0.8)" }}
+              className="h-2 w-2 rounded-full bg-[#378ADD] animate-pulse"
+              style={{ boxShadow: "0 0 6px rgba(55,138,221,0.8)" }}
             />
             <span
-              className="font-mono text-xs font-semibold tracking-widest text-red-400"
+              className="font-mono text-xs font-semibold tracking-widest text-[#378ADD]"
               style={{ letterSpacing: "0.16em" }}
             >
-              QUEDAN 3 CUPOS ESTE MES
+              PROYECTOS POR FASES · CUPO LIMITADO POR TRIMESTRE
             </span>
           </div>
         </div>
@@ -2899,7 +3064,7 @@ function ClosingCTA() {
         >
           No trabajamos con todos.
           <br />
-          Elegimos los negocios que queremos ver crecer.
+          Trabajamos con empresas listas para operar distinto.
         </h2>
 
         {/* Subtext — three lines */}
@@ -2907,16 +3072,16 @@ function ClosingCTA() {
           className="mb-10 leading-loose"
           style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)", color: "rgba(255,255,255,0.45)" }}
         >
-          Cada sistema se diseña e implementa a medida.
+          Cada sistema se diseña e implementa a medida de tu operación.
           <br />
-          Si no ves resultados en 30 días — seguimos sin costo.
+          Si no ves resultados en 30 días — seguimos sin costo adicional.
           <br />
-          30 minutos es todo lo que necesitas para saber si hay fit.
+          30 minutos bastan para saber si hay fit.
         </p>
 
         {/* CTA */}
         <CTAButton large>
-          Quiero mi diagnóstico
+          Analizar mi empresa
         </CTAButton>
 
         {/* Trust signals */}
@@ -2924,7 +3089,7 @@ function ClosingCTA() {
           className="mt-6"
           style={{ fontSize: "14px", color: "rgba(255,255,255,0.4)" }}
         >
-          Sin compromiso · Respuesta en menos de 24h · Diagnóstico 100% gratuito
+          Sin compromiso · Respuesta en menos de 24h · Análisis inicial sin costo
         </p>
       </div>
     </section>
@@ -2941,7 +3106,7 @@ function Footer() {
         <span className="text-lg font-bold tracking-tight">
           Monk<span className="text-[#378ADD]">ei</span>a
         </span>
-        <p className="text-sm text-white/30">© 2026 Monkeia · Sistemas de ventas autónomos para negocios que crecen.</p>
+        <p className="text-sm text-white/30">© 2026 Monkeia · Sistemas de IA y automatización para empresas.</p>
         <div className="flex items-center gap-6">
           <a
             href={WA}
@@ -2984,6 +3149,7 @@ export default function Home() {
           <Roadmap />
           <Proof />
           <Services />
+          <Differentiation />
           <ClosingCTA />
         </main>
         <Footer />
@@ -3006,26 +3172,27 @@ function IconClock() {
   );
 }
 
-function IconEye() {
+function IconLayers() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
       stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"
       className="h-6 w-6" aria-hidden="true">
-      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-      <line x1="1" y1="1" x2="23" y2="23" />
+      <polygon points="12 2 22 8.5 12 15 2 8.5 12 2" />
+      <polyline points="2 15.5 12 22 22 15.5" />
+      <polyline points="2 12 12 18.5 22 12" />
     </svg>
   );
 }
 
-function IconUsers() {
+function IconRepeat() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
       stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"
       className="h-6 w-6" aria-hidden="true">
-      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      <polyline points="17 1 21 5 17 9" />
+      <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+      <polyline points="7 23 3 19 7 15" />
+      <path d="M21 13v2a4 4 0 0 1-4 4H3" />
     </svg>
   );
 }
