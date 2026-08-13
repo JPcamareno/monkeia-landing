@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useRef, useState, useCallback, createContext, useContext, useMemo } from "react";
+import { useEffect, useRef, useState, useCallback, createContext, useContext, useMemo, Fragment } from "react";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { trackLead, trackContact } from "./lib/track";
@@ -27,7 +27,7 @@ function getSupabase() {
 const WA =
   "https://wa.me/50683225178?text=Hola%2C%20quiero%20solicitar%20el%20diagn%C3%B3stico%20gratuito%20de%20Monkeia";
 
-const TIDYCAL = "https://tidycal.com/monkeia/aseseoria?redirect=https://www.monkeia.com/gracias";
+const TIDYCAL = "https://tidycal.com/monkeia/transforma-la-forma-en-que-opera-tu-empresa?redirect=https://www.monkeia.com/gracias";
 
 /* ─────────────────────────────────────────────
    BOOKING MODAL CONTEXT
@@ -514,30 +514,28 @@ function NetworkBackground() {
    ANIMATED HERO HEADLINE
 ───────────────────────────────────────────── */
 function AnimatedHeadline({ text, accent }: { text: string; accent: string }) {
-  // Split full string into words, mark which belong to accent
-  const allWords = `${text} ${accent}`.trim().split(" ");
-  const textWords = text.trim().split(" ");
+  // Split into words, mark which belong to accent
+  const textWords = text.trim().split(/\s+/);
+  const accentWords = accent.trim().split(/\s+/);
+  const allWords = [...textWords, ...accentWords];
   const accentStart = textWords.length;
 
   return (
     <h1
-      className="mb-6 font-extrabold leading-[1.04] tracking-tight text-white"
-      style={{
-        fontSize: "clamp(2rem, 5vw, 3.75rem)",
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "0 0.3em",
-        justifyContent: "center",
-      }}
+      className="mb-6 text-balance font-extrabold leading-[1.04] tracking-tight text-white"
+      style={{ fontSize: "clamp(2rem, 5vw, 3.75rem)" }}
     >
       {allWords.map((word, i) => (
-        <span
-          key={i}
-          className={`word-animate${i >= accentStart ? " text-[#378ADD]" : ""}`}
-          style={{ animationDelay: `${i * 80}ms`, display: "inline-block" }}
-        >
-          {word}
-        </span>
+        // Real space text nodes between words — inline-block spans would otherwise run together
+        <Fragment key={i}>
+          <span
+            className={`word-animate${i >= accentStart ? " text-[#378ADD]" : ""}`}
+            style={{ animationDelay: `${i * 80}ms` }}
+          >
+            {word}
+          </span>
+          {i < allWords.length - 1 ? " " : null}
+        </Fragment>
       ))}
     </h1>
   );

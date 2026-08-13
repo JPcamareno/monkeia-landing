@@ -14,31 +14,31 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.monkeia.com"),
-  title: "Monkeia — Automatización con IA para escalar tu negocio",
+  title: "Monkeia — Sistemas de IA y automatización para empresas",
   description:
-    "Instalamos el sistema que convierte tus leads de Meta en clientes. Sin setters. Sin seguimiento manual. Pipeline autónomo en 30 días.",
+    "Diseñamos e implementamos sistemas de IA y automatización que ayudan a empresas a vender, atender y operar de forma más eficiente.",
   keywords: [
-    "automatización con IA",
-    "agencia Meta Ads Costa Rica",
-    "chatbot WhatsApp ventas",
-    "sistema de ventas automático",
-    "captación de leads Costa Rica",
+    "sistemas de IA para empresas",
+    "automatización de procesos empresariales",
+    "consultoría en IA y automatización",
+    "integración de CRM y canales",
+    "automatización de ventas y atención",
   ],
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: "https://www.monkeia.com",
     siteName: "Monkeia",
-    title: "Monkeia — Automatización con IA para escalar tu negocio",
+    title: "Monkeia — Sistemas de IA y automatización para empresas",
     description:
-      "El sistema que convierte tus leads de Meta en clientes. Pipeline autónomo en 30 días.",
+      "Diseñamos e implementamos sistemas de IA y automatización que ayudan a empresas a vender, atender y operar de forma más eficiente.",
     locale: "es_CR",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Monkeia — Automatización con IA para escalar tu negocio",
+    title: "Monkeia — Sistemas de IA y automatización para empresas",
     description:
-      "El sistema que convierte tus leads de Meta en clientes. Pipeline autónomo en 30 días.",
+      "Diseñamos e implementamos sistemas de IA y automatización que ayudan a empresas a vender, atender y operar de forma más eficiente.",
   },
   icons: { icon: "/logo.svg" },
   // verification: { google: "PEGAR-CÓDIGO-SEARCH-CONSOLE" },
@@ -62,7 +62,7 @@ export default function RootLayout({
               name: "Monkeia",
               url: "https://www.monkeia.com",
               description:
-                "Agencia de automatización con IA y Meta Ads. Sistemas autónomos de captación, calificación y seguimiento de leads.",
+                "Diseño e implementación de sistemas de IA y automatización para empresas: ventas, atención y operación conectadas.",
               areaServed: { "@type": "Country", name: "Costa Rica" },
               telephone: "+50683225178",
               email: "hi@monkeia.com",
