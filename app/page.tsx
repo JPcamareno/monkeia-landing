@@ -1095,7 +1095,7 @@ function Nav() {
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#1f1f1f] bg-black/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Image src="/logo.svg" alt="Monkeia" width={120} height={40} style={{objectFit: 'contain'}} />
-        <CTAButton>Analizar mi empresa</CTAButton>
+        <CTAButton>Agenda tu diagnóstico de 30 minutos</CTAButton>
       </div>
     </header>
   );
@@ -1127,9 +1127,13 @@ function Hero() {
 
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <CTAButton large>
-            Analizar mi empresa
+            Agenda tu diagnóstico de 30 minutos
           </CTAButton>
         </div>
+
+        <p className="mt-4 text-sm text-white/40">
+          Gratis · Sin compromiso · Respuesta en 24 horas
+        </p>
 
         <div className="mx-auto mt-16 max-w-3xl crm-float">
           <CRMMockup />
@@ -1539,7 +1543,7 @@ function getQuizTier(score: number): QuizTier {
       color: "#f87171",
       title: "Tu operación está perdiendo oportunidades cada día.",
       body: "Sin un sistema que conecte canales y seguimiento, cada oportunidad sin respuesta a tiempo se va con la competencia. Es corregible.",
-      cta: "Analizar mi empresa",
+      cta: "Agenda tu diagnóstico de 30 minutos",
     };
   }
   if (n <= 60) {
@@ -1548,7 +1552,7 @@ function getQuizTier(score: number): QuizTier {
       color: "#facc15",
       title: "Tienes la base, pero no está conectada.",
       body: "La operación funciona, pero le faltan piezas clave. Un sistema bien integrado mejora conversión y tiempos de respuesta.",
-      cta: "Analizar mi empresa",
+      cta: "Agenda tu diagnóstico de 30 minutos",
     };
   }
   return {
@@ -1556,7 +1560,7 @@ function getQuizTier(score: number): QuizTier {
     color: "#4ade80",
     title: "Estás listo para escalar con IA.",
     body: "Tu operación está ordenada. Con el sistema correcto puedes crecer sin sumar estructura.",
-    cta: "Analizar mi empresa",
+    cta: "Agenda tu diagnóstico de 30 minutos",
   };
 }
 
@@ -2539,7 +2543,7 @@ const SERVICE_CARDS = [
       "Casos de uso de IA priorizados por impacto",
       "Hoja de ruta con alcance y secuencia",
     ],
-    cta: "Analizar mi empresa",
+    cta: "Agenda tu diagnóstico de 30 minutos",
     featured: false,
   },
   {
@@ -2554,7 +2558,7 @@ const SERVICE_CARDS = [
       "IA con supervisión y reglas de negocio",
       "Medición y optimización continua",
     ],
-    cta: "Analizar mi empresa",
+    cta: "Agenda tu diagnóstico de 30 minutos",
     featured: true,
   },
   {
@@ -2569,7 +2573,7 @@ const SERVICE_CARDS = [
       "IA + equipo humano de supervisión",
       "Reportería ejecutiva y mejora continua",
     ],
-    cta: "Analizar mi empresa",
+    cta: "Agenda tu diagnóstico de 30 minutos",
     featured: false,
   },
 ];
@@ -3079,7 +3083,7 @@ function ClosingCTA() {
 
         {/* CTA */}
         <CTAButton large>
-          Analizar mi empresa
+          Agenda tu diagnóstico de 30 minutos
         </CTAButton>
 
         {/* Trust signals */}
@@ -3087,7 +3091,7 @@ function ClosingCTA() {
           className="mt-6"
           style={{ fontSize: "14px", color: "rgba(255,255,255,0.4)" }}
         >
-          Sin compromiso · Respuesta en menos de 24h · Análisis inicial sin costo
+          Gratis · Sin compromiso · Respuesta en 24 horas
         </p>
       </div>
     </section>
