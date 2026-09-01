@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
     return [
       { source: "/diagnostico", destination: "/", permanent: true },
       { source: "/diagnostico-b2c", destination: "/", permanent: true },
+      { source: "/services", destination: "/", permanent: true },
+      { source: "/about", destination: "/", permanent: true },
+      { source: "/monkeiapp", destination: "/", permanent: true },
+      { source: "/test30", destination: "/", permanent: true },
     ];
   },
 };
