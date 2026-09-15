@@ -1,11 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 type Consent = "accepted" | "rejected" | null;
 const STORAGE_KEY = "monkeia_cookie_consent";
 
+let memoryConsent: Consent = null;
+const listeners = new Set<() => void>();
+
 function readConsent(): Consent {
+  if (memoryConsent) return memoryConsent;
   try {
     const v = localStorage.getItem(STORAGE_KEY);
     return v === "accepted" || v === "rejected" ? v : null;
@@ -14,23 +18,29 @@ function readConsent(): Consent {
   }
 }
 
-export function useConsent() {
-  const [consent, setConsentState] = useState<Consent>(null);
+function readServerConsent(): Consent {
+  return null;
+}
 
-  useEffect(() => {
-    setConsentState(readConsent());
-  }, []);
+function subscribe(callback: () => void) {
+  listeners.add(callback);
+  return () => listeners.delete(callback);
+}
 
-  function setConsent(value: "accepted" | "rejected") {
-    try {
-      localStorage.setItem(STORAGE_KEY, value);
-    } catch {
-      // localStorage no disponible (modo privado, etc.) — el consentimiento
-      // solo dura la sesión en memoria.
-    }
-    setConsentState(value);
+function writeConsent(value: "accepted" | "rejected") {
+  memoryConsent = value;
+  try {
+    localStorage.setItem(STORAGE_KEY, value);
+  } catch {
+    // localStorage no disponible (modo privado, etc.) — el consentimiento
+    // solo dura la sesión en memoria.
   }
+  listeners.forEach((l) => l());
+}
 
+export function useConsent() {
+  const consent = useSyncExternalStore(subscribe, readConsent, readServerConsent);
+  const setConsent = useCallback((value: "accepted" | "rejected") => writeConsent(value), []);
   return { consent, setConsent };
 }
 
