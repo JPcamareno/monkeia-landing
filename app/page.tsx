@@ -2376,7 +2376,9 @@ function MarqueeCard({ t }: { t: (typeof TESTIMONIALS)[number] }) {
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={t.photoUrl}
-            alt={t.name}
+            alt={`${t.name}, ${t.business}`}
+            width={40}
+            height={40}
             style={{
               width: 40,
               height: 40,
@@ -3114,7 +3116,7 @@ function Footer() {
             WhatsApp
           </a>
           <a
-            href="mailto:hi@monkeia.com"
+            href="mailto:hi@monkeia.com?subject=Consulta%20desde%20el%20sitio"
             className="cursor-pointer text-sm text-white/40 transition-colors duration-200 hover:text-[#378ADD]"
           >
             hi@monkeia.com
