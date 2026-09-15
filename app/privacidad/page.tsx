@@ -11,12 +11,6 @@ export const metadata: Metadata = {
 export default function PrivacidadPage() {
   return (
     <main style={{ maxWidth: 720, margin: "0 auto", padding: "80px 24px 120px", color: "rgba(255,255,255,0.85)" }}>
-      <p style={{ fontSize: 12, color: "#f59e0b", marginBottom: 24, lineHeight: 1.5 }}>
-        Borrador pendiente de revisión legal. Este texto describe de buena fe qué datos
-        recolecta el sitio y con qué herramientas, pero no ha sido revisado por un
-        abogado y no constituye asesoría legal.
-      </p>
-
       <h1 style={{ fontSize: 32, fontWeight: 700, marginBottom: 8 }}>Política de privacidad</h1>
       <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 40 }}>
         Última actualización: septiembre de 2026
