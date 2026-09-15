@@ -2526,6 +2526,79 @@ function Proof() {
 }
 
 /* ─────────────────────────────────────────────
+   CASE STUDIES
+───────────────────────────────────────────── */
+const CASE_STUDIES = [
+  {
+    href: "/casos/latina-pizza",
+    industry: "Restaurantes",
+    stat: "$40,000 USD",
+    statLabel: "ingreso adicional en 6 meses",
+    title: "Latina Pizza reemplazó las comisiones de delivery por una plataforma propia",
+  },
+  {
+    href: "/casos/thoro-650",
+    industry: "E-commerce",
+    stat: "$50,000 MXN",
+    statLabel: "en ventas en 7 horas, 100% orgánico",
+    title: "Thoro 650 vendió su meta mensual en una sola historia de Instagram",
+  },
+  {
+    href: "/casos/academia-aprende",
+    industry: "Educación",
+    stat: "5,000+",
+    statLabel: "contactos segmentados en 3 meses",
+    title: "Academia Aprende construyó su base de datos con $6 USD al día en pauta",
+  },
+];
+
+function CaseStudies() {
+  return (
+    <section className="border-t border-[#1f1f1f] px-6 py-20">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-4 text-center">
+          <span className="terminal-label">&gt;&gt; CASOS DE ÉXITO</span>
+        </div>
+        <h2
+          className="mb-16 text-balance text-center font-extrabold tracking-tight text-white"
+          style={{ fontSize: "clamp(2rem, 5vw, 3.75rem)" }}
+        >
+          Resultados reales, no promesas.
+        </h2>
+
+        <div className="grid gap-6 sm:grid-cols-3">
+          {CASE_STUDIES.map((c) => (
+            <Link
+              key={c.href}
+              href={c.href}
+              className="block transition-colors duration-200 hover:border-[#378ADD]/40"
+              style={{
+                padding: "28px 24px",
+                borderRadius: 16,
+                border: "1px solid rgba(255,255,255,0.08)",
+                background: "rgba(255,255,255,0.03)",
+              }}
+            >
+              <span
+                style={{ fontSize: 12, fontWeight: 600, color: "#378ADD", letterSpacing: "0.06em", textTransform: "uppercase" }}
+              >
+                {c.industry}
+              </span>
+              <div style={{ marginTop: 14, marginBottom: 6, fontSize: 28, fontWeight: 700, color: "#fff" }}>
+                {c.stat}
+              </div>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 16 }}>{c.statLabel}</p>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.7)", lineHeight: 1.5, marginBottom: 16 }}>{c.title}</p>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#378ADD" }}>Leer caso completo →</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────
    SERVICES
 ───────────────────────────────────────────── */
 const SERVICE_CARDS = [
@@ -3225,6 +3298,7 @@ export default function Home() {
           {bookingOpen && <BookingModal onClose={() => setBookingOpen(false)} />}
           <Roadmap />
           <Proof />
+          <CaseStudies />
           <Services />
           <Differentiation />
           <ClosingCTA />
