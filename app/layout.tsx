@@ -58,15 +58,29 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "ProfessionalService",
-              name: "Monkeia",
-              url: "https://www.monkeia.com",
-              description:
-                "Diseño e implementación de sistemas de IA y automatización para empresas: ventas, atención y operación conectadas.",
-              areaServed: { "@type": "Country", name: "Costa Rica" },
-              telephone: "+50683225178",
-              email: "hi@monkeia.com",
-              sameAs: [],
+              "@graph": [
+                {
+                  "@type": "ProfessionalService",
+                  "@id": "https://www.monkeia.com/#organization",
+                  name: "Monkeia",
+                  url: "https://www.monkeia.com",
+                  description:
+                    "Diseño e implementación de sistemas de IA y automatización para empresas: ventas, atención y operación conectadas.",
+                  areaServed: { "@type": "Country", name: "Costa Rica" },
+                  telephone: "+50683225178",
+                  email: "hi@monkeia.com",
+                  logo: "https://www.monkeia.com/logo.svg",
+                  sameAs: [],
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": "https://www.monkeia.com/#website",
+                  name: "Monkeia",
+                  url: "https://www.monkeia.com/",
+                  inLanguage: "es-CR",
+                  publisher: { "@id": "https://www.monkeia.com/#organization" },
+                },
+              ],
             }),
           }}
         />

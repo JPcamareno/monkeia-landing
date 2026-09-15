@@ -3137,6 +3137,77 @@ export default function Home() {
   return (
     <BookingModalContext.Provider value={openBooking}>
       <div className="min-h-screen bg-black text-white">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Service",
+                  name: "Diagnóstico y consultoría",
+                  description:
+                    "Mapeamos cómo vende, atiende y opera tu empresa hoy. Identificamos dónde se pierde información, tiempo y oportunidades, y qué se debe resolver primero.",
+                  provider: { "@id": "https://www.monkeia.com/#organization" },
+                  areaServed: { "@type": "Country", name: "Costa Rica" },
+                },
+                {
+                  "@type": "Service",
+                  name: "Implementación y optimización",
+                  description:
+                    "Integramos y automatizamos los procesos críticos con las herramientas que tu empresa ya usa. Sin migrar todo ni reemplazar a tu equipo.",
+                  provider: { "@id": "https://www.monkeia.com/#organization" },
+                  areaServed: { "@type": "Country", name: "Costa Rica" },
+                },
+                {
+                  "@type": "Service",
+                  name: "Sistema completo",
+                  description:
+                    "Para empresas que necesitan un sistema completo: captación, calificación, seguimiento, atención y reportería. Todo conectado y visible en un solo lugar.",
+                  provider: { "@id": "https://www.monkeia.com/#organization" },
+                  areaServed: { "@type": "Country", name: "Costa Rica" },
+                },
+                {
+                  "@type": "FAQPage",
+                  mainEntity: [
+                    {
+                      "@type": "Question",
+                      name: "¿Qué pasa si no veo resultados en 30 días?",
+                      acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "Si no ves resultados en 30 días, Monkeia sigue trabajando sin costo adicional hasta lograrlo.",
+                      },
+                    },
+                    {
+                      "@type": "Question",
+                      name: "¿Con qué tipo de empresas trabaja Monkeia?",
+                      acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "Monkeia no trabaja con todas las empresas: trabaja con empresas listas para operar distinto. Una llamada de 30 minutos basta para saber si hay fit.",
+                      },
+                    },
+                    {
+                      "@type": "Question",
+                      name: "¿Qué pasa si ya tengo un CRM?",
+                      acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "Monkeia integra y automatiza sobre las herramientas que tu empresa ya usa, sin migrar todo ni reemplazar a tu equipo.",
+                      },
+                    },
+                    {
+                      "@type": "Question",
+                      name: "¿Cómo es el proceso de trabajo?",
+                      acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "Cinco pasos: agendas un diagnóstico gratis de 30 minutos, Monkeia revisa tu operación, recibes una hoja de ruta en PDF, se construye el sistema a tu ritmo y queda una garantía de 30 días — si no ves resultados, Monkeia sigue trabajando sin costo adicional.",
+                      },
+                    },
+                  ],
+                },
+              ],
+            }),
+          }}
+        />
         <CursorGlow />
         <Nav />
         <main>
