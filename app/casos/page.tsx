@@ -17,6 +17,16 @@ const CASES = [
     title: "Latina Pizza: $40,000 USD adicionales en 6 meses sin pautar",
     industry: "Restaurantes",
   },
+  {
+    href: "/casos/thoro-650",
+    title: "Thoro 650: $50,000 MXN en 7 horas con una historia de Instagram",
+    industry: "E-commerce",
+  },
+  {
+    href: "/casos/academia-aprende",
+    title: "Academia Aprende: 5,000 prospectos calificados en 3 meses",
+    industry: "Educación",
+  },
 ];
 
 export default function CasosIndex() {
