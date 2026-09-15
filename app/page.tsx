@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback, createContext, useContext, useMemo, Fragment } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { trackLead, trackContact } from "./lib/track";
 
@@ -3121,6 +3122,12 @@ function Footer() {
           >
             hi@monkeia.com
           </a>
+          <Link
+            href="/privacidad"
+            className="cursor-pointer text-sm text-white/40 transition-colors duration-200 hover:text-[#378ADD]"
+          >
+            Privacidad
+          </Link>
         </div>
       </div>
     </footer>

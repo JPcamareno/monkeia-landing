@@ -4,6 +4,7 @@ import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Analytics from "./components/Analytics";
+import ConsentGate from "./components/ConsentGate";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -84,12 +85,14 @@ export default function RootLayout({
             }),
           }}
         />
-        <Analytics />
         <VercelAnalytics />
         <SpeedInsights />
-        {process.env.NEXT_PUBLIC_GA_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
-        )}
+        <ConsentGate>
+          <Analytics />
+          {process.env.NEXT_PUBLIC_GA_ID && (
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+          )}
+        </ConsentGate>
       </body>
     </html>
   );
