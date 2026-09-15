@@ -641,8 +641,8 @@ const INITIAL_STAGES: PipelineStage[] = [
     label: "Cerrado",
     color: "#8b5cf6",
     deals: [
-      { id: "d8", company: "Gianpiero Fusco", contact: "Gianpiero F.", value: "$40,000", numericValue: 40000, date: "Este mes" },
-      { id: "d9", company: "Jimm Lavin", contact: "Jimm L.", value: "$12,000", numericValue: 12000, date: "Este mes" },
+      { id: "d8", company: "Estudio Creativo Norte", contact: "Diego Salas", value: "$40,000", numericValue: 40000, date: "Este mes" },
+      { id: "d9", company: "Taller Mecánico Rivas", contact: "Kevin Rivas", value: "$12,000", numericValue: 12000, date: "Este mes" },
     ],
   },
 ];
@@ -653,11 +653,11 @@ const FEED_EVENTS = [
   "→ Sistema envió seguimiento automático",
   "→ Carlos Mendez calificado por IA",
   "→ Luis Torres avanzó a Calificado",
-  "→ Gianpiero F. firmó contrato",
+  "→ Diego Salas firmó contrato",
   "→ Marco Vidal vio demo de producto",
   "→ Diana Flores solicitó más información",
   "→ Natalia V. en fase de negociación",
-  "→ Sistema cerró trato con Jimm L.",
+  "→ Sistema cerró trato con Kevin Rivas",
 ];
 
 const NEW_LEAD_POOL: Omit<DealCard, "id" | "date">[] = [
@@ -888,21 +888,20 @@ function CRMMockup() {
         <span className="flex-1 text-center font-mono text-[11px] font-semibold text-white/60">
           Pipeline activo
         </span>
-        {/* Live badge — ping animation */}
+        {/* Illustrative-example badge */}
         <span className="flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[10px] font-semibold" style={{ background: "rgba(55,138,221,0.12)", color: "#378ADD", border: "1px solid rgba(55,138,221,0.25)" }}>
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#378ADD] opacity-60" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-[#378ADD]" />
           </span>
-          En vivo
+          Ejemplo ilustrativo
         </span>
       </div>
 
       {/* Status ticker */}
       <div className="border-b border-[#1f1f1f] bg-[#0a0a0a] px-4 py-1.5 flex items-center justify-center gap-2">
-        <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#378ADD] animate-pulse" />
+        <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#378ADD]" />
         <span className="terminal-label" style={{ letterSpacing: "0.12em", fontSize: "9px" }}>
-          SISTEMA ACTIVO — PROCESANDO LEADS EN ESTE MOMENTO
+          ASÍ SE VE TU PIPELINE CUANDO EL SISTEMA TRABAJA POR TI
         </span>
       </div>
 
