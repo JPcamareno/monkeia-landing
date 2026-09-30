@@ -3,27 +3,9 @@
 import { useEffect, useRef, useState, useCallback, createContext, useContext, useMemo, Fragment } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { createClient } from "@supabase/supabase-js";
 import { trackLead, trackContact } from "./lib/track";
-
-// -- SQL to run once in Supabase dashboard --
-// create table quiz_results (
-//   id uuid default gen_random_uuid() primary key,
-//   score int,
-//   q1 text, q2 text, q3 text, q4 text, q5 text,
-//   whatsapp text,
-//   created_at timestamp with time zone default now()
-// );
-
-let _supabase: ReturnType<typeof createClient> | null = null;
-function getSupabase() {
-  if (!_supabase) {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
-    if (url && key) _supabase = createClient(url, key);
-  }
-  return _supabase;
-}
+import { consentError, phoneError } from "./lib/validation";
+import ConsentCheckbox from "./components/ConsentCheckbox";
 
 const WA =
   "https://wa.me/50683225178?text=Hola%2C%20quiero%20solicitar%20el%20diagn%C3%B3stico%20gratuito%20de%20Monkeia";
@@ -1692,8 +1674,12 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
   const [liveScore, setLiveScore] = useState(0);
   const [lastAnswer, setLastAnswer] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [waErrors, setWaErrors] = useState<{ telefono?: string; consentimiento?: string }>({});
   const [waSent, setWaSent] = useState(false);
   const [saved, setSaved] = useState(false);
+  // id de la fila en quiz_results; el WhatsApp se guarda en esa fila y solo en esa
+  const quizIdRef = useRef<Promise<string | null> | null>(null);
 
   const totalQuestions = QUIZ_QUESTIONS.length;
 
@@ -1718,18 +1704,16 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
         setScore(total);
         setStep("result");
         setVisible(true);
-        // save to supabase
         if (!saved) {
           setSaved(true);
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (getSupabase()?.from("quiz_results") as any)?.insert({
-            score: total,
-            q1: newAnswers[0] ?? null,
-            q2: newAnswers[1] ?? null,
-            q3: newAnswers[2] ?? null,
-            q4: newAnswers[3] ?? null,
-            q5: newAnswers[4] ?? null,
-          });
+          quizIdRef.current = fetch("/api/submit-quiz", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ score: total, answers: newAnswers }),
+          })
+            .then((res) => (res.ok ? res.json() : null))
+            .then((data) => data?.id ?? null)
+            .catch(() => null);
           trackLead();
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (window as any).clarity?.("set", "evento", "quiz_completado");
@@ -1739,15 +1723,24 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
   }
 
   function handleWhatsApp() {
+    const errors = { telefono: phoneError(phone), consentimiento: consentError(consent) };
+    setWaErrors(errors);
+    if (errors.telefono || errors.consentimiento) return;
+
     const tier = getQuizTier(score);
     const summary = answers.map((a, i) => `P${i + 1}: ${a}`).join(" | ");
     const msg = encodeURIComponent(
       `Hola, hice el diagnóstico de Monkeia.\nMi puntaje: ${normalizeScore(score)}/100 (${tier.label})\n${summary}`
     );
-    if (phone) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (getSupabase()?.from("quiz_results") as any)?.update({ whatsapp: phone }).eq("score", score);
-    }
+    quizIdRef.current?.then((id) => {
+      if (!id) return;
+      fetch("/api/submit-quiz", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, telefono: phone, consentimiento: consent }),
+        keepalive: true,
+      }).catch(() => {});
+    });
     trackContact();
     window.open(`https://wa.me/50683225178?text=${msg}`, "_blank");
     setWaSent(true);
@@ -2144,18 +2137,20 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
                     ¡Listo! Te enviamos tu plan.
                   </p>
                 ) : (
+                  <>
                   <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
                     <input
                       type="tel"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      placeholder="+506 8322 5178"
+                      placeholder="+506 8888 8888"
+                      aria-invalid={!!waErrors.telefono}
                       style={{
                         flex: 1,
                         minWidth: "140px",
                         padding: "12px 14px",
                         background: "rgba(255,255,255,0.05)",
-                        border: "1px solid rgba(255,255,255,0.1)",
+                        border: `1px solid ${waErrors.telefono ? "rgba(248,113,113,0.6)" : "rgba(255,255,255,0.1)"}`,
                         borderRadius: "8px",
                         color: "#fff",
                         fontSize: "0.9rem",
@@ -2179,6 +2174,17 @@ function AutomationQuiz({ onOpenBooking }: { onOpenBooking: () => void }) {
                       Enviar mi plan por WhatsApp
                     </button>
                   </div>
+                  {waErrors.telefono && (
+                    <p className="mt-2 text-xs text-red-400">{waErrors.telefono}</p>
+                  )}
+                  <div className="mt-4">
+                    <ConsentCheckbox
+                      checked={consent}
+                      onChange={setConsent}
+                      error={waErrors.consentimiento}
+                    />
+                  </div>
+                  </>
                 )}
               </div>
             </div>
