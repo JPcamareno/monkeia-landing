@@ -32,7 +32,7 @@ export default function PrivacidadPage() {
         <p>
           El responsable del tratamiento es José Pablo Rojas Camareno, persona física con
           cédula de identidad 2-0620-0589, quien opera bajo el nombre comercial Monkeia, en
-          Costa Rica. Para ejercer sus derechos, escriba a{" "}
+          Costa Rica. Para ejercer tus derechos, escribe a{" "}
           <a href="mailto:hi@monkeia.com" style={{ color: "#378ADD" }}>hi@monkeia.com</a>.
         </p>
       </Section>
