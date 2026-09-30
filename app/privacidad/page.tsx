@@ -1,5 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { POLITICA_VERSION } from "../lib/privacy";
+
+// "2026-09-30" → "30 de septiembre de 2026"
+function formatFecha(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("es-CR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 export const metadata: Metadata = {
   title: "Política de privacidad — Monkeia",
@@ -13,16 +25,15 @@ export default function PrivacidadPage() {
     <main style={{ maxWidth: 720, margin: "0 auto", padding: "80px 24px 120px", color: "rgba(255,255,255,0.85)" }}>
       <h1 style={{ fontSize: 32, fontWeight: 700, marginBottom: 8 }}>Política de privacidad</h1>
       <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 40 }}>
-        Última actualización: septiembre de 2026
+        Última actualización: {formatFecha(POLITICA_VERSION)}
       </p>
 
       <Section title="Responsable">
         <p>
-          Monkeia es responsable del tratamiento de los datos que se describen en esta
-          política. Puedes contactarnos en{" "}
-          <a href="mailto:hi@monkeia.com" style={{ color: "#378ADD" }}>hi@monkeia.com</a>{" "}
-          o por WhatsApp al{" "}
-          <a href="https://wa.me/50683225178" style={{ color: "#378ADD" }}>+506 8322 5178</a>.
+          El responsable del tratamiento es José Pablo Rojas Camareno, persona física con
+          cédula de identidad 2-0620-0589, quien opera bajo el nombre comercial Monkeia, en
+          Costa Rica. Para ejercer sus derechos, escriba a{" "}
+          <a href="mailto:hi@monkeia.com" style={{ color: "#378ADD" }}>hi@monkeia.com</a>.
         </p>
       </Section>
 
@@ -68,11 +79,10 @@ export default function PrivacidadPage() {
       </Section>
 
       <Section title="Plazo de conservación">
-        <p style={{ color: "rgba(255,255,255,0.5)" }}>
-          Pendiente de definir con precisión (ver nota legal arriba). Por defecto,
-          conservamos los datos de contacto mientras exista una relación comercial
-          activa o potencial, y los datos de analítica según el plazo estándar de cada
-          proveedor listado arriba.
+        <p>
+          Conservamos tus datos de contacto hasta 12 meses después del último contacto.
+          Los datos de analítica se conservan según el plazo estándar de cada proveedor
+          listado arriba.
         </p>
       </Section>
 
