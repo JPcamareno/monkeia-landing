@@ -157,12 +157,22 @@ export default function PrivacidadPage() {
 
       <Section title="Datos de Google Calendar">
         <p style={{ marginBottom: 8 }}>
-          Cuando un negocio conecta su Google Calendar, Monkeia solicita el permiso{" "}
-          <code>calendar.events</code> y lo usa solo para:
+          Cuando un negocio conecta su Google Calendar, Monkeia solicita estos permisos y los
+          usa solo para lo siguiente:
         </p>
         <ul style={{ paddingLeft: 20, display: "flex", flexDirection: "column", gap: 6 }}>
-          <li>consultar los eventos existentes y saber qué horarios están libres;</li>
-          <li>crear, reprogramar y cancelar las citas que los clientes del negocio solicitan por WhatsApp.</li>
+          <li>
+            <code>calendar.freebusy</code>: ver qué horarios están ocupados, sin ver el detalle
+            de los eventos;
+          </li>
+          <li>
+            <code>calendar.events</code>: crear, reprogramar y cancelar las citas que los
+            clientes del negocio solicitan por WhatsApp;
+          </li>
+          <li>
+            <code>userinfo.email</code>: conocer el correo de la cuenta de Google, para mostrar
+            qué calendario está conectado.
+          </li>
         </ul>
         <p style={{ margin: "12px 0 8px" }}>Con respecto a esos datos, Monkeia:</p>
         <ul style={{ paddingLeft: 20, display: "flex", flexDirection: "column", gap: 6 }}>
